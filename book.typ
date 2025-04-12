@@ -780,9 +780,385 @@ arr.iter()
    .collect()
 ```
 
-#pagebreak()
-=== On Lambdas an Logos
+And immutablity by default. We have to use the `mut` keyword for the only variable we modify in this example:
+
+```rust
+let mut result = quicksort(&smaller);
+result.push(pivot);
+result.extend(quicksort(&greater));
+```
+
+Functional programming is not the primary goal of Rust, but its features help towards its major goals:
+Control, explicitness and safety. Since different programming have different goals, we cannot say that
+a language is bad because it does not have full features of paradigm A, if it never intended to do so
+in the first place.
+
+A programming language is good if its fulfills it goals effectively (or at all), if it is well implemented,#footnote[
+    You would be surprised, but there have been times in history where we had struggled implementing grand ideas.
+    PL/I was a fairly influential programming language created in 1966 by IBM, and it was about as massive
+    as you would expect things made by IBM to be. Many competing implementations were created, almost none of which
+    implemented the language fully. Very quickly, we had several incompatible dialects out in the wild.
+]
+and if it is internally consistent.#footnote[
+    Some languages are internally inconsistent intentionally, the chief among them being Perl. This is
+    fine, since it has justification, although it may not be your (or my) cup of tea. On the other hand
+    PHP is internally inconsistent because it is a patchwork language of dubious heritage.
+]. These are fairly difficult requirements, and generally, one can point out flaws in the design of any
+programming language.
+
+Sometimes, programming language make intentional sacrifices in their design that prove to be far too
+expensive for the general programmer population, which hampers the adoption of a programming language.
+Let's take a look at one last `quicksort` implementation, this time in Common Lisp, solved in the style
+of symbolic programming:
+
+#show raw: set text(font: "Berkeley Mono", size: 7pt)
+```lisp
+(define-sort-algorithm quicksort
+  (sort (sequence)
+        (if (null sequence)
+            nil
+            (let ((pivot (car sequence))
+                  (rest  (cdr sequence)))
+              (apply-rule 'combine
+                         (apply-rule 'sort (apply-rule 'smaller pivot rest))
+                         pivot
+                         (apply-rule 'sort (apply-rule 'bigger pivot rest))))))
+
+  (smaller (pivot rest)
+           (remove-if-not (lambda (x) (<= x pivot)) rest))
+
+  (bigger (pivot rest)
+          (remove-if-not (lambda (x) (> x pivot)) rest))
+
+  (combine (smaller pivot bigger)
+           (append smaller (list pivot) bigger)))
+```
+#show raw: set text(font: "Berkeley Mono", size: 8pt)
+
+If you haven't done any Lisp, you probably can't read what's going on. Lisp's syntax is incredibly simple,
+it only has two#footnote[If you are a fellow experienced Lisper, shut the fuck up for now :)] syntactic elements:
+
+- #block[The *atom*, which is anything that is not a list, for example:
+
+```lisp
+1234    ;; number
+"hello" ;; string
+t       ;; true
+nil     ;; false or empty or missing value
+:green  ;; keyword
+jeremy  ;; symbol
+#\a     ;; char
+```]
+
+- #block[The *list*, which is a sequence in parentheses containing atoms or other lists:#footnote[
+    In Lisp (which originally stood for #strong[LIS]t #strong[P]rocessor), lists are heterogenous, each element can be a different type. Because lists can also contain lists,
+    we can easily represent values of all sorts of nested data structures. In fact, the notion of user-defined types came quite
+    late -- we could just shove everything into lists.
+]
+    ```lisp
+  ((Heart and soul I fell in love with you)
+   (Heart and soul the way a fool would do madly)
+   (Because you held me tight)
+   (And stole a kiss in the night))
+    ```
+    This is the first verse of the song Heart and Soul, written as a list of bars. Each bar is a list of symbols representing
+    the words.
+]
+
+The humble combination of atoms and lists is enough to represent the syntax of all of the concepts of
+a full-fledged programming language.#footnote[
+    And largely also the state of the running programs written in it, more on that later. Homoiconicity is a scary word.
+], to call a function, use a macro or define something, you just write a list. Here is how to make a function:
+
+```lisp
+(defun hello (name)
+  ;; t means print to standard output,
+  ;; ~A is printing a positional argumentfor display
+  ;; ~% means newline... Lisp is quite old
+  (format t "Hello, ~A!~%" name))
+```
+
+The form `(defun)`#footnote[
+    We will clarify what that is in a moment!
+] has the folloding arguments:
+- the name of the function -> `hello`
+- a list of arguments -> `(name)`
+- the body of the function, which can be N elements, in this case just a single call of the `(format)`
+  function
+
+And you call this function like this:
+
+```lisp
+(hello "John") ;; prints out "Hello, John!"
+```
+
+Therefore, the form `(define-sort-algorithm)` takes five arguments:
+- The name of the algorithm -> `quicksort`
+- #block[Four transformation rules that describe the algorithm - `sort`, `smaller`, `bigger`, and `combine`:
+    #show raw: set text(font: "Berkeley Mono", size: 7pt)
+    ```lisp
+    (sort (sequence)
+        (if (null sequence)
+            nil
+            (let ((pivot (car sequence))
+                  (rest  (cdr sequence)))
+              (apply-rule 'combine
+                         (apply-rule 'sort (apply-rule 'smaller pivot rest))
+                         pivot
+                         (apply-rule 'sort (apply-rule 'bigger pivot rest))))))
+    (smaller (pivot rest)
+             (remove-if-not (lambda (x) (<= x pivot)) rest))
+    (bigger (pivot rest)
+            (remove-if-not (lambda (x) (> x pivot)) rest))
+    (combine (smaller pivot bigger)
+             (append smaller (list pivot) bigger))
+    ```
+    #show raw: set text(font: "Berkeley Mono", size: 7pt)
+]
+
+The rules can apply each other using the `(apply-rule ...)` form. So you ask me: "Common Lisp has a built-in syntax
+for describing sorting algorithms? That's awesome, can you give me a source so I can look into it?"
+
+My source is that I made it the fuck up. I actually defined a macro, for this tiny Domain-Specific Language.
+That is something that we do very often in Common Lisp, in order to introduce new structures. Symbolic programming
+is about treating code and data as interchangeable. We can make "functions" (in common parlance macros), that take
+code and output other code. Or take data and output code. Or take code and output data.
+
+This let's us think in terms of the relationships between data, and between code, and create the optimal tools
+to describe the problems we are solving. The curse of Lisp is that it uses parentheses for a syntax that's just lists,
+but it needs syntax to be lists, because Lisp is a language exceptionally suited for manipulating lists! And we want
+to be able to manipulate syntax as lists, so that we can create new syntax with meaning! So Lisp cannot make any other
+choice, or it would not be so good for syntax manipulation!#footnote[
+    As a matter of fact, there have been so many attempts to revolutionize the syntax of Lisp that I have lost track.
+    People always end up gravitating back to the parenthetical S-expressions --- `(something ...)` --- in this case,
+    there is immense power in simplicity.
+]
+
+And for this reason, Lisp is not a mainstream programming language. The most mainstream Lisp-y language is Clojure,
+and Clojure made some sacrifices of "Lispness" by moving less towards symbolic programming and more towards functional
+programming. Oh well.
+
+For the non-Lisper, macro definitions often look like nasal demons. Here is the definitionn of my
+`(define-sort-algorithm)`. It is perfectly fine and expected if you don't understand it, there is a lot
+of context and knowledge you are unlikely to have at this point, unless you have done Lisp before:
+
+#block(breakable: false)[
+```lisp
+(defmacro define-sort-algorithm (name &body rules)
+  `(defun ,name (sequence)
+     ;; create a function to execute a rule by name
+     (let ((rule-table (make-hash-table)))
+
+       ;; function to apply a rule by name
+       (flet ((apply-rule (rule-name &rest args)
+                (let ((rule-fn (gethash rule-name rule-table)))
+                  (unless rule-fn
+                    (error "No rule named ~S found" rule-name))
+                  (apply rule-fn args))))
+
+         ;; define each rule with access to apply-rule
+         ,@(mapcar (lambda (rule)
+                     `(setf (gethash ',(car rule) rule-table)
+                            (lambda ,(cadr rule)
+                              ,@(cddr rule))))
+                   rules)
+
+         ;; start the algorithm
+         (apply-rule 'sort sequence)))))
+```
+]
+
+Macros are what make Lisp a language that can grow to meet your needs. Common Lisp was designed for the "programming in the large" era of the 1980s and 1990s, anticipating that programmers would build large systems over time. The ability to extend the language itself with new syntax constructs allows teams to build domain-specific languages tailored to their problem domains.
+
+This is symbolic programming at its finest - treating code as data that can be manipulated, transformed, and reasoned about. While many modern languages have adopted functional programming features, few have embraced this level of syntactic flexibility.
+
+The `define-sort-algorithm` macro allows us to describe sorting algorithms at a higher level of abstraction. Rather than focusing on implementation details, we express the essence of the algorithm as transformation rules. This approach makes the core logic more apparent:
+
+1. If the sequence is empty, return empty
+2. Otherwise, take the first element as pivot
+3. Find elements smaller than the pivot
+4. Find elements bigger than the pivot
+5. Sort both partitions recursively
+6. Combine the results
+
+Different languages offer different tools for expressing these ideas. C lets us manipulate memory directly but requires explicit control flow. Python makes the algorithm more readable with list comprehensions. Haskell's pattern matching and type system enforce correctness. Rust combines safety with control. Lisp elevates the abstraction to manipulate the language itself.
+
+Each approach represents a different balance in the eternal tension between what the computer understands and what humans understand. This tension is at the heart of programming as communication.
+
+=== On Lambdas and Logos, refined
+
+In the beginning, there was the λ-calculus.
+
+Well, not quite the beginning. But when Alonzo Church formalized the λ-calculus in the 1930s,
+he created what would become the theoretical foundation for functional programming languages.
+This mathematical system for expressing computation using function abstraction and application
+showed that all computable functions could be expressed through these simple mechanisms.
+
+The λ (lambda) symbol has since become emblematic of functional programming, representing the
+idea of anonymous functions that can be passed around, composed, and applied. When John McCarthy
+created Lisp in 1958, he directly implemented lambda expressions, bringing Church's mathematical
+abstraction into the realm of practical programming.#footnote[
+    Lisp was first invented as a "useful notation", McCarthy did not expect that someone would go
+    and implement it.
+]
+
+Meanwhile, "logos" comes to us from ancient Greek philosophy, where it represented discourse,
+reason, and the underlying principles that govern reality. Heraclitus spoke of the logos as
+the universal principle according to which all things happen. For the Stoics, it was the divine
+reason that pervades everything. In the Gospel of John, "In the beginning was the Logos" - the
+Word, the fundamental ordering principle.
+
+In our context, logos represents the communicative aspect of programming - how we express our
+ideas through code, how we reason about problems, and how we share that reasoning with others
+(including our future selves).
+
+Programming languages sit at the intersection of these two concepts. They are formal systems
+with precise rules (lambda), yet they are also media for human expression and communication (logos).
+The elegance of a programming language comes from how well it balances these two aspects -
+how effectively it allows us to express human ideas in a form that computers can execute.
+
+This brings us back to the Sapir-Whorf hypothesis. Just as human languages might influence how we
+perceive and categorize the world, programming languages influence how we decompose problems and construct
+solutions. A programmer fluent only in C sees the world in terms of procedures and memory management.
+A dedicated Haskell programmer sees it as type transformations and pure functions. A Lisp hacker
+sees code itself as just another data structure to manipulate.
+
+The true art of programming lies not in mastering any single language or paradigm, but in
+understanding the fundamental principles that underlie all of them.
+Each paradigm illuminates different aspects of computation:
+
+- Imperative programming gives us direct control over the machine's state
+- Functional programming gives us mathematical reasoning and composition
+- Object-oriented programming gives us modeling through encapsulation and behavior
+- Symbolic programming gives us code that can reason about and transform itself
+
+By learning multiple paradigms, we expand our conceptual vocabulary. We become multilingual programmers,
+or programming linguists, able to choose the right language (or combination of languages) for the problem at hand.#footnote[
+    Unfortunately in the real world, the choice of language is often made for you. In that case,
+    your multilingual skills help you recognize how to write better code, and how to apply wisdom of different
+    worlds in this one.
+]
+We can communicate more clearly, not just with the computer, but with other programmers
+who will read and maintain our code.
+
+The lambda gives us the formal tools to express computation. The logos gives us the purpose: to communicate ideas clearly and elegantly. Together, they represent the dual nature of programming as both science and art - a rigorous formal system that is also a medium of human expression.
+
+In the chapters that follow, we'll explore how to put these principles into practice. We'll examine patterns of elegant code across paradigms, and we'll learn how to structure our programs to communicate their intent clearly. Whether you're writing a quicksort algorithm or a complex enterprise system, the fundamental challenge remains the same: to express your ideas in a way that both computers and humans can understand.
 == Coding != Programming
+
+In our modern technological landscape, the terms "coding" and "programming" are often used interchangeably,
+as if they were perfect synonyms. This linguistic laziness obscures an important distinction that lies
+at the heart of our discipline. While related, these terms represent fundamentally different activities
+and mindsets, a distinction worth exploring if we wish to elevate our craft.
+
+*Coding* refers to the mechanical process of writing instructions in a programming language. It's about syntax,
+about translating already-formed ideas into code that a machine can execute. At its most basic level, coding
+is a transcription task – taking a solution that exists in some form and rendering it in a formal language.
+This is not to diminish its difficulty; good coding requires attention to detail, knowledge of language
+features, and technical skill. But coding, in isolation, is merely implementation.
+
+*Programming*, on the other hand, encompasses a far broader intellectual territory. Programming is the
+art of computational thinking, of dissecting problems into their essential components, of discovering
+or inventing abstractions that make complexity manageable. It involves architecture and design, algorithm
+selection, data structure consideration, and deep engagement with the problem domain. Programming happens
+away from the keyboard as often as at it – in conversations, on whiteboards, during walks, in the shower,
+or while falling asleep.#footnote[
+    My best programming is done on long walks through nature or old Prague. I find that the repetitive motion
+    of walking, and the sounds of outside help me eliminate distractions, and naturally lead me into a
+    deep thinking state. On the comparatively rarer occassions that I wear earphones, walks a
+]
+
+When I tell people I'm a programmer, they often imagine me sitting at a computer typing frantically for hours,
+producing line after line of obscure symbols. This Hollywood-perpetuated image misses the essence of what
+I actually do. Most of my time is spent thinking, reading, discussing, sketching, and understanding. The
+actual typing of code might represent only 20-30% of my workday. As the legendary computer scientist
+Donald Knuth once observed, "Programming is the art of telling another human what one wants the computer to do."
+
+Consider the evolution of our tools. Early programmers used punch cards, where each card represented a
+single line of code. This physical constraint forced programmers to think carefully before committing an
+instruction, as mistakes were costly to correct. Today, we can type code rapidly and undo mistakes with
+a keystroke, but this ease has sometimes disconnected us from the deliberation that preceded implementation.
+The best programmers maintain that deliberative mindset even with modern tools – they think
+deeply before they code.
+
+A programmer places understanding at the apex of priorities. Without a thorough grasp of the problem, even
+the most elegant code is merely an attractive wrong answer. This understanding is multi-layered: understanding
+the stated requirements, the unstated expectations, the users' actual needs (which may differ from what they
+say they want), the constraints of the system, and the implications of different approaches. A programmer
+recognizes that the hardest part of building software isn't the coding – it's figuring out what to build.
+
+As a result, a programmer's code should be refined, clear, and purposeful – a crystallization of their thinking process.
+Just as good writing isn't merely grammatically correct but also clear and persuasive, good programming isn't
+merely syntactically valid but also elegant and comprehensible. The code we write is a communication
+medium, not just to the computer but to other programmers (including our future selves). As Robert
+C. Martin puts it, "Clean code always looks like it was written by someone who cares."#footnote[
+    Credit where credit is due, but I am not a huge fan of the Clean Code book, but that is for
+    another day.
+]
+
+The distinction extends further when we consider professional roles. A *software engineer* applies
+programming principles to solve real-world problems within practical constraints. Engineers must
+bridge multiple domains – they need to understand not just computation but also the specific field
+where they're applying it. A financial software engineer needs to grasp accounting principles. A
+medical software engineer needs to understand healthcare workflows. This cross-domain expertise is
+what enables them to translate messy human systems into computational models that actually serve
+their intended purpose.
+
+Meanwhile, a *researcher* in programming explores the theoretical foundations, develops new paradigms,
+creates programming languages, or investigates computational limits. They may work on problems that
+won't have practical applications for decades, if ever, but their work expands our understanding of
+what's possible and pushes the boundaries of our field.
+
+It's worth noting that many people who aren't programmers write code. Scientists use scripting languages
+to analyze data. Accountants create Excel formulas. System administrators write automation scripts. With
+the advent of large language models and AI assistants, the number of people who can produce
+functional code without deep programming knowledge will increase dramatically.
+
+These tools democratize access to coding, which is generally positive, but they cannot substitute for
+the thinking process at the heart of programming. An LLM can help you express an idea in code, but it
+cannot (yet) tell you which idea is worth expressing. It can implement a solution, but it cannot tell
+you if you're solving the right problem. It can optimize code, but it cannot tell you if your entire
+approach should be reconsidered. The language model might write syntactically perfect code that's conceptually
+misguided because it mirrors the user's incomplete understanding.
+
+This is why the role of the programmer remains critical: we are not merely code producers but computational
+thinkers who understand problems deeply enough to model them effectively. While an LLM might help a doctor
+write code to analyze patient data, it cannot replace the programmer who designs the hospital's entire
+electronic health record system with an understanding of security, data integrity, workflow,
+scalability, and regulatory compliance.
+
+If you're reading this book, you should think of yourself as a programmer (or a programmer-in-training),
+not just a coder. Abandon any imposter syndrome that might make you think otherwise. You are engaging
+with a discipline that requires creative thinking, problem-solving, and deep
+understanding – you're not just learning syntax.
+
+However, in claiming the title of programmer, hold yourself to the standards it implies. Make understanding
+your priority. Refine your thinking before you refine your code. Recognize that clear code comes from clear
+thought, and confused code usually reflects confused thinking. Be willing to restart when you realize
+your approach is fundamentally flawed – as painful as that can be.
+
+Remember that programming is inherently creative. We build digital worlds from nothing but thought, giving
+form to ideas and solving problems that often have no precedent. In what other field can you create
+something so complex, yet so mutable and alive, with nothing more than a computer and your mind? There's
+a particular joy in seeing your thoughts externalized and animated, in watching a computer dance
+to the tune you've composed. When we refer to "elegant" code, we're making an aesthetic judgment
+not unlike how we might evaluate a poem or a painting.
+
+Programming should be fun – not always in the moment (debugging can be frustrating), but in the
+larger sense of providing intellectual satisfaction and creative fulfillment. It should engage your
+curiosity, challenge your mind, and reward your efforts with the distinct pleasure of seeing abstract
+ideas become concrete reality.
+
+The distinction between coding and programming isn't about establishing a hierarchy where programmers
+look down on "mere coders." Rather, it's about recognizing the full scope of what programming entails
+and aspiring to practice it in its complete form. Coding is an essential component of programming, but
+programming is more than coding – it's a mode of thinking, a way of approaching problems, and a
+creative discipline that happens to produce code as its artifact.
+
+As you progress through this book and your career, strive to be more than someone who writes code.
+Be someone who thinks clearly about problems, who designs elegant solutions, who communicates
+effectively through code, and who finds joy in the creative process of programming. The code you
+produce will be better for it, and so will your experience of creating it.
 
 == Programming should be fun
 
