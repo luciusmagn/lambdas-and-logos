@@ -92,7 +92,7 @@
 #outline()
 
 = Preface
-This book is for the junior or intermediate programmer, and to any other
+This book is for the junior or intermediate programmer, and for any other
 interested party. To be more specific, you will gain the most from this
 book if you fall into one or more of the following categories:
 
@@ -1341,27 +1341,55 @@ than fundamental concepts. They're taught to use frameworks and libraries withou
 This approach might produce programmers who can quickly build applications using current tools, but it fails
 to develop the deep thinking necessary for innovation.
 
+Today, this is not true in all universities. Some universities offer courses such as theoretical computer science,
+which are far less about vocational training. The shift toward more vocational training is understandable, seeing
+as in recent decades, companies have wanted to hire more and more programmers, as software takes an increasingly
+important role in running our society.#footnote[
+    Can you imagine a govermnent where all the operations are up to people, and no software is involved? It
+    doesn't even work *with* the software, let alone without.
+]
+
 Third, the growing complexity of software ecosystems has made it nearly impossible for any single person to
 truly understand the entirety of a system. This compartmentalization leads to a sense of alienation - programmers
-become cogs in a machine rather than craftspeople who take pride in their work.
+become cogs in a machine rather than craftspeople who take pride in their work.#footnote[
+    This also makes it increasingly more difficult to write good code, as you have to watch out for interactions
+    with the rest of the ecosystem, which may be non-trivial. Part of the success of the Rust programming language
+    is that it is low-level enough to support systems programming and strict and explicit enough to alert programmers
+    to potentially problematic interactions, and encourage them to handle them by default. Part of the issues with
+    programs written in C and C++ is that the safety features are opt-in, not opt-out, and programmers tend to
+    have an inflated sense of their own skill and infallibility.
+]
 
 As an antidote to these trends, Sussman advocates for a return to programming as intellectual exploration.
 He suggests we should build systems from first principles, understanding each component thoroughly.
 Rather than treating complex systems as black boxes, we should strive to understand them "all the way
-down" - from high-level abstractions to the hardware that executes our code.
+down" - from high-level abstractions to the hardware that executes our code.#footnote[
+    This should be def
+]
 
 What is most interesting to me, Sussman takes a contrarian perspective on bugs and errors that many professional
-environments would find heretical. Instead of viewing bugs as failures to be eliminated, he frames them as
+environments would find heretical.#footnote[
+    Many programmers in general would, have you ever heard the term "skill issue"?
+] Instead of viewing bugs as failures to be eliminated, he frames them as
 opportunities for learning. When something goes wrong, it often reveals gaps in our understanding. These
 moments, while frustrating, provide chances to deepen our knowledge of systems.
 
-This view doesn't mean Sussman encourages sloppy programming. Rather, he suggests that the process of finding and fixing
+This view doesn't mean Sussman encourages sloppy programming. As a matter of fact, sloppy programming is to be avoided at
+all costs! Rather, he suggests that the process of finding and fixing
 bugs can be intellectually rewarding. It's through this exploration - building something, seeing it fail, understanding
 why, and improving it - that we develop genuine expertise. The joy comes not just from creating something that works, but
 from truly understanding how and why it works.
 
+As a matter of fact, the presence of bugs can often reveal information about the problem that originally wasn't
+available to you. By discovering and fixing bugs, you learn more about the problem you are solving. You may
+discover edge cases or inputs that you previously didn't think could occur.
+
 Sussman is particularly critical of the trend toward "programming by coincidence" - where developers copy-paste code from
-Stack Overflow or other sources without fully understanding it. This approach might produce working software in the short
+Stack Overflow or other sources without fully understanding it.#footnote[
+    I suppose this could be considered, the earlier, more involved form of vibe coding.
+    Nowadays, Stack Overflow traffic is decreasing, while LLMs have revolutionized programming.
+    I know many people who now have models integrated into their editors.
+] This approach might produce working software in the short
 term, but it creates brittle systems that resist modification and improvement. True mastery comes from building
 a deep mental model of how systems work, which allows for creative problem-solving rather than rote application of patterns.
 
@@ -1376,8 +1404,18 @@ and powerful - emerges from deep understanding. Yet modern development processes
 functionality over thoughtful design. The result is bloated, complex systems that become increasingly
 difficult to maintain and extend.
 
+This is typically done in the name of meeting deadlines and generating profits, and boy, I, as an evil
+capitalist, have no problem with the notion of generating profits. However, rushing too much leads to
+the creation of significant amount of technical debt. Technical debt is costly, and the longer it exists and
+the more is your product scaling the costliest it is. Eventually, it may happen that the dam breaks,
+and the only thing that can save a project is a complete rewrite -- which is costly and takes time.
+
 Sussman points to Lisp and its descendants (like his own Scheme) as languages that embody the principles he values.
-These languages are built on a small set of powerful abstractions that can be combined in countless ways.
+These languages are built on a small set of powerful abstractions that can be combined in countless ways.#footnote[
+    Lisp was the first programming language that espoused functional programming ideals.
+    However, later languages were more theoretically rigorous, whereas the main strength of Lisp,
+    that makes it unique to other languages became symbolic computation and its metaprogramming features.
+]
 They encourage thinking about programming in terms of transformations and compositions rather than step-by-step
 procedures. This approach fosters the kind of deep understanding that makes programming both intellectually
 stimulating and personally rewarding.
@@ -1399,7 +1437,109 @@ exploration, discovery, and the joy of understanding complex systems. While ackn
 of commercial software development, he suggests that by reconnecting with the fun and creativity of programming, we
 not only make our work more personally fulfilling but also become better problem-solvers.
 
+And I couldn't have said it better myself.
+
 == It's not just the code
+
+A lot of the understanding of code is from how you write the actual lines of code, as in, the text
+in them. However, that is not all. There are other things that are important to help your understanding,
+and to proliferate the understanding of others.
+
+For you, one thing that is important, and that may be often discounted is how you look at the code.
+Do you have an IDE, or a properly set up editor, that provides hints, Language Server Protocol actions,
+or REPL integration, editor that has nice colorful syntax highlighting that is appropriately smart#footnote[
+    One thing I do often in my Emacs setup is that I define additional highlighting for the programming
+    languages I use extensively for things that are not distinguished by default. In Scheme, for instance
+    I highlight different naming conventions with different colors - predicate functions typically end
+    with a question mark (like `string?`), mutating functions end with a exclamation mark (such as
+    `set!` - I highlight those in red, we hate mutation in our beautiful functional world! Grrr), type conversion
+    functions often have an arrow in them `->`.
+], and other bells and whistles that help navigating and understanding codebases.
+
+The Lisp language has a reputation for being unreadable. This is only partially true, but is very often
+an artefact from early days, where many unlucky students had to contend with Lisp that had no syntax
+highlighting, barely matching parentheses highlighting, and possibly improper formatting. Let's consider
+the macro I showed you for defining *quicksort* in terms of transformation rules.
+
+This is how it looked:
+
+```lisp
+(defmacro define-sort-algorithm (name &body rules)
+  `(defun ,name (sequence)
+     ;; create a function to execute a rule by name
+     (let ((rule-table (make-hash-table)))
+
+       ;; function to apply a rule by name
+       (flet ((apply-rule (rule-name &rest args)
+                (let ((rule-fn (gethash rule-name rule-table)))
+                  (unless rule-fn
+                    (error "No rule named ~S found" rule-name))
+                  (apply rule-fn args))))
+
+         ;; define each rule with access to apply-rule
+         ,@(mapcar (lambda (rule)
+                     `(setf (gethash ',(car rule) rule-table)
+                            (lambda ,(cadr rule)
+                              ,@(cddr rule))))
+                   rules)
+
+         ;; start the algorithm
+         (apply-rule 'sort sequence)))))
+```
+
+This is very colorful, maybe too colorful depending on your tastes (and what color scheme I end up
+going with for the examples). Let's take a look at it completely deprived of colors:
+
+#block(breakable: false)[
+```
+(defmacro define-sort-algorithm (name &body rules)
+  `(defun ,name (sequence)
+     ;; create a function to execute a rule by name
+     (let ((rule-table (make-hash-table)))
+
+       ;; function to apply a rule by name
+       (flet ((apply-rule (rule-name &rest args)
+                (let ((rule-fn (gethash rule-name rule-table)))
+                  (unless rule-fn
+                    (error "No rule named ~S found" rule-name))
+                  (apply rule-fn args))))
+
+         ;; define each rule with access to apply-rule
+         ,@(mapcar (lambda (rule)
+                     `(setf (gethash ',(car rule) rule-table)
+                            (lambda ,(cadr rule)
+                              ,@(cddr rule))))
+                   rules)
+
+         ;; start the algorithm
+         (apply-rule 'sort sequence)))))
+```
+]
+
+To me, this is far less readable. The syntax highlighting helped my brain visually distinguish different
+categories of elements. It is important that you find a good color scheme and level of syntax highlighting.
+This may mean you have to switch editor, if you are using something that is not very configurable. I use
+Emacs, which is the extreme when it comes to configurability, and it may be far too configurable for
+most people. However, even in VS Code, you should be able to affect how things are syntax highlighted.
+
+Let's see how the previous example looks in my editor in light mode. I use an amalgamation of themes
+related to the default colors of the Acme editor. The Acme editor famously had no syntax highlighting,
+and had properties which make it even more different from the mainstream than Emacs and Vim. Here's the picture:
+
+#image("lispmacro-light.png")
+
+As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parenthesis.
+This is very important in Lisp, but may be less important other languages. In dark theme, the highlighting
+is quite similar:
+
+#image("lispmacro-dark.png")
+
+On the "understanding of others" side, which may, once again, include a future you, we have documentation,
+tests (which happen to be useful small examples for things that may be unclear!), bigger examples, comments
+in the source code (however, keep in mind that too many comments reduce visual clarity), and so on.
+
+The big idea is that for elegant programs and proper understanding, it helps to view the code in a way
+that helps you the most, and when distributing it, you should aid the understanding of others.
 
 == Elegant code and the cost of inelegant code
 
