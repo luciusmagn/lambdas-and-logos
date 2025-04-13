@@ -680,7 +680,7 @@ We define the base case: when given an empty list, return an empty list (an empt
 quicksort (first:rest) =
 ```
 This pattern matches a non-empty list, splitting it into the first element `first` (our pivot) and the rest of the list `rest`.
-In languages related to Haskall, it is very common to name these bindings `(x:xs)`. However, if you aren't a Haskell
+In languages related to Haskell, it is very common to name these bindings `(x:xs)`. However, if you aren't a Haskell
 programmer, I think `(first:rest)` tells you a little bit more about what's going on.
 
 ```haskell
@@ -1134,29 +1134,46 @@ or while falling asleep.#footnote[
 When I tell people I'm a programmer, they often imagine me sitting at a computer typing frantically for hours,
 producing line after line of obscure symbols. This Hollywood-perpetuated image misses the essence of what
 I actually do. Most of my time is spent thinking, reading, discussing, arguing with idiots on the internet,
-sketching, and understanding. The actual typing of code might represent only 20-30% of my workday. As the legendary computer scientist
-Donald Knuth once observed, "Programming is the art of telling another human what one wants the computer to do."
+sketching, and understanding. The actual typing of code might represent only a fraction of my working day,
+especially now that I am no longer working as a software engineer, but take a more educational role.
+As the legendary computer scientist Donald Knuth once observed, "Programming is the art of telling another human
+what one wants the computer to do."
 
 Consider the evolution of our tools. Early programmers used punch cards, where each card represented a
-single line of code. This physical constraint forced programmers to think carefully before committing an
+single line of code.#footnote[
+    If you have ever been wondering where the practice of "80 characters per line of code max" comes from,
+    guess how many characters you could fit on a punchcard, and how many characters could horizontally fit
+    on early terminals.
+] This physical constraint forced programmers to think carefully before committing an
 instruction, as mistakes were costly to correct. Today, we can type code rapidly and undo mistakes with
 a keystroke, but this ease has sometimes disconnected us from the deliberation that preceded implementation.
 The best programmers maintain that deliberative mindset even with modern tools – they think
 deeply before they code.
 
 A programmer places understanding at the apex of priorities. Without a thorough grasp of the problem, even
-the most elegant code is merely an attractive wrong answer. This understanding is multi-layered: understanding
-the stated requirements, the unstated expectations, the users' actual needs (which may differ from what they
-say they want), the constraints of the system, and the implications of different approaches. A programmer
-recognizes that the hardest part of building software isn't the coding – it's figuring out what to build.
+the most elegant code is merely an attractive wrong answer. I have made a lot of attractive wrong answers in my life.
+This understanding is multi-layered: understanding the stated requirements, the unstated expectations, the users'
+actual needs (which may differ from what they
+say they want)#footnote[
+    Often, the user is completely wrong about what they want, and their needs have to be taken with a grain of salt
+    and ideally, signed in blood.
+], the constraints of the system, and the implications of different approaches. A programmer
+recognizes that the hardest part of building software isn't the "coding" – it's figuring out
+what to build, and how to build it, and especially how to build it in a way that is robust enough
+for a given usecase.
 
-As a result, a programmer's code should be refined, clear, and purposeful – a crystallization of their thinking process.
-Just as good writing isn't merely grammatically correct but also clear and persuasive, good programming isn't
-merely syntactically valid but also elegant and comprehensible. The code we write is a communication
-medium, not just to the computer but to other programmers (including our future selves). As Robert
+As a result, a programmer's code should be refined, clear, and purposeful – a crystallization of
+their thinking process. After all, the code you write is the reflection of your thought process. If your
+thinking about a given problem is disorganized, so will be the code you write.
+Just as good writing isn't merely grammatically correct but also clear, and persuasive, and properly utilizes
+the language you are writing your text in, good programming isn't merely syntactically valid but also elegant
+and comprehensible. The code we write is a communication medium, not just to the computer but to other
+programmers (including our future selves)#footnote[
+    If you take one thing from this book, let it be this.
+]. As Robert
 C. Martin puts it, "Clean code always looks like it was written by someone who cares."#footnote[
     Credit where credit is due, but I am not a huge fan of the Clean Code book, but that is for
-    another day.
+    another day. It is mostly just that it is very old-Java-centric.
 ]
 
 The distinction extends further when we consider professional roles. A *software engineer* applies
@@ -1166,6 +1183,16 @@ where they're applying it. A financial software engineer needs to grasp accounti
 medical software engineer needs to understand healthcare workflows. This cross-domain expertise is
 what enables them to translate messy human systems into computational models that actually serve
 their intended purpose.
+
+As a software engineer, you are the lord of compromises. You need to design and implement a system
+that fullfills a task as well as possible, you have to do it in reasonable time, and you generally
+have to make some sacrifices in the name of integrating the project with the rest of the company ecosystem#footnote[
+    You can't just say "Oh, we have Python everywhere, and our company is mostly Python develepers,
+    so I will write this in a purely functional Haskell, which I happen to know, and it will have monads,
+    and blackjack and hookers!". What you can do, however, is integrate elements of good functional style
+    into the architecture and implementation of the project in Python, granted that these elements
+    create a cohesive structure.
+]
 
 Meanwhile, a *researcher*#footnote[_Computer scientist_ also feels appropriate] in programming
 explores the theoretical foundations, develops new paradigms,
@@ -1180,7 +1207,7 @@ In my free time, I like to guide my programming activities according to the foll
 ]
 
 This is great for having fun, and for learning a lot. It is important to make a distinction, which
-a lot of programmers of all skill levels sometimes fail to make, and that is that free-time, open-source
+a lot of programmers of all skill levels sometimes fail to make, and that is that free-time, open-source,
 and commercial programming are all different disciplines#footnote[
     And don't get me started on the needs and conventions of different fields. Commercial web-development
     is a completely different world from programming in the automotive industry, and not just because
@@ -1195,46 +1222,59 @@ Scientists use scripting languages to analyze data.#footnote[
 the advent of large language models and AI assistants, the number of people who can produce
 functional code without deep programming knowledge will increase dramatically.
 
-These tools democratize access to coding, which is generally positive, but they cannot substitute for
+These tools democratize access to coding, which is can be positive,#footnote[
+    What I mean is that LLMs are timesavers - you can ask them for small changes, minor refactors,
+    and looking up information. I have benefitted from this, although probably arguably less than someone
+    who uses more conventional programming languages and technologies.
+] but they cannot substitute for
 the thinking process at the heart of programming. An LLM can help you express an idea in code, but it
-cannot (yet) tell you which idea is worth expressing. It can implement a solution, but it cannot tell
-you if you're solving the right problem. It can optimize code, but it cannot tell you if your entire
-approach should be reconsidered. The language model might write syntactically perfect code that's conceptually
-misguided because it mirrors the user's incomplete understanding.
+cannot (yet) tell you which idea is worth expressing, and for each idea, how it should be expressed such that
+it fits into a greater context. At the time of this writing, LLMs are really bad at higher-level architecture.
+An AI can implement a solution, but it cannot tell you if you're solving the right problem. It can optimize code,
+but it cannot tell you if your entire approach should be reconsidered. The language model might write syntactically
+perfect code that's conceptually misguided because it mirrors the user's incomplete understanding.
 
 This is why the role of the programmer remains critical: we are not merely code producers but computational
 thinkers who understand problems deeply enough to model them effectively. While an LLM might help a doctor
-write code to analyze patient data, it cannot replace the programmer who designs the hospital's entire
+write a Python script to analyze patient data, it cannot replace the programmer who designs the hospital's entire
 electronic health record system with an understanding of security, data integrity, workflow,
-scalability, and regulatory compliance.
+scalability, and regulatory compliance, and the perhaps pessimistic understanding of the possibility of human
+error at every step of the way.
 
-If you're reading this book, you should think of yourself as a programmer (or a programmer-in-training),
+If you're reading this book, you should think of yourself as a programmer (or a programmer-in-training, if you want to),
 not just a coder. Abandon any imposter syndrome that might make you think otherwise. You are engaging
 with a discipline that requires creative thinking, problem-solving, and deep
 understanding – you're not just learning syntax.
 
 However, in claiming the title of programmer, hold yourself to the standards it implies. Make understanding
-your priority. Refine your thinking before you refine your code. Recognize that clear code comes from clear
+your priority. Refine your thinking before you refine your code. Think, Mark, think! Recognize that clear code comes from clear
 thought, and confused code usually reflects confused thinking. Be willing to restart when you realize
-your approach is fundamentally flawed – as painful as that can be.
+your approach is fundamentally flawed – as painful as that can be. In your hobby programming, you have a luxury
+of throwing things away, and trying different approaches, not being bound by severe time constraints which
+some fields of commercial programming otherwise have.
 
 Remember that programming is inherently creative. We build digital worlds from nothing but thought, giving
 form to ideas and solving problems that often have no precedent. In what other field can you create
-something so complex, yet so mutable and alive, with nothing more than a computer and your mind? There's
+something so complex, yet so mutable and alive, with nothing more than a computer and your mind?
+The barrier of entry into the world of programming is very low, and the sky is your limit. There's
 a particular joy in seeing your thoughts externalized and animated, in watching a computer dance
 to the tune you've composed. When we refer to "elegant" code, we're making an aesthetic judgment
-not unlike how we might evaluate a poem or a painting.
+not unlike how we might evaluate a poem or a painting. I sometimes say that elegant code "tastes good",
+it seems to be my particular form of synesthesia.
 
-Programming should be fun – not always in the moment (debugging can be frustrating), but in the
+Programming should be fun – not always in the moment (debugging can be frustrating,
+but when you figure it out feels great - Have you ever killed a difficult Dark Souls boss?), but in the
 larger sense of providing intellectual satisfaction and creative fulfillment. It should engage your
 curiosity, challenge your mind, and reward your efforts with the distinct pleasure of seeing abstract
 ideas become concrete reality.
 
 The distinction between coding and programming isn't about establishing a hierarchy where programmers
-look down on "mere coders." Rather, it's about recognizing the full scope of what programming entails
-and aspiring to practice it in its complete form. Coding is an essential component of programming, but
-programming is more than coding – it's a mode of thinking, a way of approaching problems, and a
-creative discipline that happens to produce code as its artifact.
+look down on "mere coders." After all, I call myself a teacher, it would be foolish to look down on people
+who know less than I do, or be hubristic enough to think poorly of people who know more than I do.
+Rather, it's about recognizing the full scope of what programming entails and aspiring to practice it
+in its complete form. Coding is an essential component of programming, but programming is more than
+coding – it's a mode of thinking, a way of approaching problems, and a creative discipline that happens
+to produce code as its artifact.
 
 As you progress through this book and your career, strive to be more than someone who writes code.
 Be someone who thinks clearly about problems, who designs elegant solutions, who communicates
@@ -1242,6 +1282,122 @@ effectively through code, and who finds joy in the creative process of programmi
 produce will be better for it, and so will your experience of creating it.
 
 == Programming should be fun
+I would like to now expand on one of the last thoughts from the previous section - that programming
+should be fun. I would like to paraphrase Gerald Jay Sussman, one of the creators of the Scheme programming
+language. A couple years ago, he had a talk called "Programming (is) should be fun" for the ACM SIGPLAN Scheme conference,
+which resonated with me deeply.#footnote[
+    Scheme is a very elegant language, in that for how minimalistic it is, it is quite powerful, and a lot of programming
+    ideas can be expressed quite clearly. The vast majority of its syntactic forms can be expressed in terms of only a
+    handful special forms. You can built up many control structures with macros and those forms. Particularly the idea of
+    a closure - a lambda/anonymous function that captures things from its environment is quite powerful - powerful enough
+    that it is present in Common Lisp too, which often practices dynamic scope unlike Scheme and most other languages,
+    as the _let over lambda_ pattern. An excellent, although a bit too enthusiastic,
+    and very hardcore (in the author's own words) book with this title has been written by Doug Hoyte.
+] I will therefore try to relay Gerald's ideas here and provide commentary on them.
+
+Sussman and his colleague Harold Abelson began their seminal book "Structure and Interpretation of Computer Programs" (commonly abbreviated as SICP)#footnote[
+    SICP is probably the seminal text for showcasing programming concept via Scheme. It is a fairly old book,
+    but a timeless classic. There is a newer version created by perverse minds that replaces Scheme with JavaScript.
+    It does make kinda sense that JS would be the one language flexible enough to replace Scheme, seeing as JavaScript
+    originally *was* essentially Scheme (business people, who famously hated all fun, told Brendan Eich to replace his
+    Scheme in browser with something that looks more like Java, which was a very marketable buzzword, given
+    Java's novelty and popularity at the time).
+] with a quote from Alan Perlis that sets the tone for their approach to computing:
+
+#quote[
+    I think that it's extraordinarily important that we in computer science keep fun in computing.
+    When it started out, it was an awful lot of fun. Of course, the paying customers got shafted
+    every now and then, and after a while we began to take their complaints seriously. We began to
+    feel as if we really were responsible for the successful, error-free perfect use of these machines.
+    I don't think we are. I think we're responsible for stretching them, setting them off in new directions,
+    and keeping fun in the house. I hope the field of computer science never loses its sense of fun.
+]
+
+In his talk, Sussman argues that programming has lost much of this original joy. It has become industrialized,
+over-complicated, and burdened with processes that strip away the creative aspects that make it intellectually
+stimulating. He observes that modern software development has morphed from an exploratory, creative endeavor
+into something resembling factory work - where programmers are expected to plug components together without
+necessarily understanding how they function.
+
+To me, seeing how things function is one of my favorite activities within the whole of IT. Computer Science,
+or IT at large, is a field that can be described as an infinite series of Plato's cave allegories. It is very
+foolish to stop at one point and think "I know enough about the nature and utilization of computers". In the
+parlance of my generation, we refer to this as "L take, bozo". Alternatively, IT could also be described as a
+rabbit hole that never ends, but I think the level design of Plato's caves is more telling.
+
+Sussman points to several developments that have contributed to this shift:
+
+First, the proliferation of massive, complex frameworks that nobody fully understands. Modern software is
+built on towering stacks of abstractions - operating systems, libraries, frameworks, middleware, virtual machines,
+and more. Each layer adds complexity that obscures the underlying principles. When something goes wrong, most
+programmers lack the deeper understanding required to diagnose and fix the issue meaningfully. Instead, they
+resort to workarounds and band-aid solutions.#footnote[
+    For an example of this, see any Microsoft source code leak ever.
+]
+
+Second, the changing nature of programming education. What was once a discipline focused on understanding computation
+from first principles has increasingly become vocational training. Students learn specific technologies and tools rather
+than fundamental concepts. They're taught to use frameworks and libraries without understanding how they work internally.
+This approach might produce programmers who can quickly build applications using current tools, but it fails
+to develop the deep thinking necessary for innovation.
+
+Third, the growing complexity of software ecosystems has made it nearly impossible for any single person to
+truly understand the entirety of a system. This compartmentalization leads to a sense of alienation - programmers
+become cogs in a machine rather than craftspeople who take pride in their work.
+
+As an antidote to these trends, Sussman advocates for a return to programming as intellectual exploration.
+He suggests we should build systems from first principles, understanding each component thoroughly.
+Rather than treating complex systems as black boxes, we should strive to understand them "all the way
+down" - from high-level abstractions to the hardware that executes our code.
+
+What is most interesting to me, Sussman takes a contrarian perspective on bugs and errors that many professional
+environments would find heretical. Instead of viewing bugs as failures to be eliminated, he frames them as
+opportunities for learning. When something goes wrong, it often reveals gaps in our understanding. These
+moments, while frustrating, provide chances to deepen our knowledge of systems.
+
+This view doesn't mean Sussman encourages sloppy programming. Rather, he suggests that the process of finding and fixing
+bugs can be intellectually rewarding. It's through this exploration - building something, seeing it fail, understanding
+why, and improving it - that we develop genuine expertise. The joy comes not just from creating something that works, but
+from truly understanding how and why it works.
+
+Sussman is particularly critical of the trend toward "programming by coincidence" - where developers copy-paste code from
+Stack Overflow or other sources without fully understanding it. This approach might produce working software in the short
+term, but it creates brittle systems that resist modification and improvement. True mastery comes from building
+a deep mental model of how systems work, which allows for creative problem-solving rather than rote application of patterns.
+
+He also laments the loss of playful experimentation in programming. In the early days of computing, programmers
+had more freedom to explore and create for the sake of learning. Today's focus on productivity metrics, deadlines,
+and commercial concerns has diminished this aspect of the discipline. Sussman argues that time spent in
+seemingly unproductive exploration often leads to insights that prove valuable later - but this process
+can't be easily quantified or scheduled.
+
+The diminishing role of elegance in programming particularly concerns Sussman. Elegant code - concise, clear,
+and powerful - emerges from deep understanding. Yet modern development processes often prioritize immediate
+functionality over thoughtful design. The result is bloated, complex systems that become increasingly
+difficult to maintain and extend.
+
+Sussman points to Lisp and its descendants (like his own Scheme) as languages that embody the principles he values.
+These languages are built on a small set of powerful abstractions that can be combined in countless ways.
+They encourage thinking about programming in terms of transformations and compositions rather than step-by-step
+procedures. This approach fosters the kind of deep understanding that makes programming both intellectually
+stimulating and personally rewarding.
+
+He also emphasizes the importance of building mental models when programming. Rather than memorizing
+libraries and APIs, programmers should develop frameworks for understanding how systems work. These
+mental models allow us to reason about code, predict its behavior, and design solutions that address
+fundamental issues rather than symptoms. The joy in programming comes partly from refining these mental
+models through experience.
+
+Another point Sussman makes is about the relationship between the programmer and the machine. He suggests we
+should view computers not as tools to be used, but as collaborators in the creative process. Programming
+isn't just about telling the computer what to do; it's about expressing ideas in a form that both humans
+and computers can understand. This dual nature of programming - as both a technical and communicative
+act - is what makes it uniquely challenging and rewarding.
+
+In essence, Sussman argues for a return to seeing programming as an intellectual adventure. It should involve
+exploration, discovery, and the joy of understanding complex systems. While acknowledging the practical realities
+of commercial software development, he suggests that by reconnecting with the fun and creativity of programming, we
+not only make our work more personally fulfilling but also become better problem-solvers.
 
 == It's not just the code
 
