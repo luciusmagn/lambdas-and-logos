@@ -968,11 +968,30 @@ of context and knowledge you are unlikely to have at this point, unless you have
 ```
 ]
 
-Macros are what make Lisp a language that can grow to meet your needs. Common Lisp was designed for the "programming in the large" era of the 1980s and 1990s, anticipating that programmers would build large systems over time. The ability to extend the language itself with new syntax constructs allows teams to build domain-specific languages tailored to their problem domains.
+Macros are what make Lisp a language that can grow to meet your needs. Common Lisp was designed for
+the "programming in the large" era of the 1980s and 1990s, anticipating that programmers would build
+large systems over time. The ability to extend the language itself with new syntax constructs allows
+teams to build domain-specific languages tailored to their problem domains.#footnote[
+    There is a tale of the two main Lisps - Common Lisp and Scheme - which has quite an interesting history.
+    Common Lisp was designed to unite the many competing implementations of Lisp that popped up in the previous
+    decades, whereas Scheme was designed as a small and tight language useful for illustrating concepts
+    related to lambda calculus in a practical manner. Scheme is unfortunately still too small to have
+    a widespread adoption, whereas Common Lisp is a large standardized language. The only language that's
+    larger that I can think of is C++. However, Common Lisp has an incredibly stable standard, there hasn't
+    been a new version since the final one published in 1994. This means that very old code works without
+    issue and that sometimes, you will find libraries that are just "done", having no major development
+    in 10+ years, but still being depended on regularly by new projects.
+]
 
-This is symbolic programming at its finest - treating code as data that can be manipulated, transformed, and reasoned about. While many modern languages have adopted functional programming features, few have embraced this level of syntactic flexibility.
+This is symbolic programming at its finest - treating code as data that can be manipulated, transformed,
+and reasoned about. While many modern languages have adopted functional programming features,
+few have embraced this level of syntactic flexibility. Typically, mainstream languages only see the
+inclusion of basic macros at most. However, time is a flat circle and we see inclusion of stronger
+metaprogramming facilities in modern up-and-coming programming languages such as Rust or Nim.
 
-The `define-sort-algorithm` macro allows us to describe sorting algorithms at a higher level of abstraction. Rather than focusing on implementation details, we express the essence of the algorithm as transformation rules. This approach makes the core logic more apparent:
+The `define-sort-algorithm` macro allows us to describe sorting algorithms at a higher level of abstraction.
+Rather than focusing on implementation details, we express the essence of the algorithm as transformation rules.
+This approach makes the core logic more apparent:
 
 1. If the sequence is empty, return empty
 2. Otherwise, take the first element as pivot
@@ -981,9 +1000,13 @@ The `define-sort-algorithm` macro allows us to describe sorting algorithms at a 
 5. Sort both partitions recursively
 6. Combine the results
 
-Different languages offer different tools for expressing these ideas. C lets us manipulate memory directly but requires explicit control flow. Python makes the algorithm more readable with list comprehensions. Haskell's pattern matching and type system enforce correctness. Rust combines safety with control. Lisp elevates the abstraction to manipulate the language itself.
+Different languages offer different tools for expressing these ideas. C lets us manipulate memory directly
+but requires explicit control flow. Python makes the algorithm more readable with list comprehensions.
+Haskell's pattern matching and type system enforce correctness. Rust combines safety with control.
+Lisp elevates the abstraction to manipulate the language itself.
 
-Each approach represents a different balance in the eternal tension between what the computer understands and what humans understand. This tension is at the heart of programming as communication.
+Each approach represents a different balance in the eternal tension between what the computer understands
+and what humans understand. This tension is at the heart of programming as communication.
 
 === On Lambdas and Logos, refined
 
@@ -998,12 +1021,23 @@ The λ (lambda) symbol has since become emblematic of functional programming, re
 idea of anonymous functions that can be passed around, composed, and applied. When John McCarthy
 created Lisp in 1958, he directly implemented lambda expressions, bringing Church's mathematical
 abstraction into the realm of practical programming.#footnote[
-    Lisp was first invented as a "useful notation", McCarthy did not expect that someone would go
-    and implement it.
+    Lisp was first invented as a "useful mathematical notation" for computer programs,
+    McCarthy did not expect that someone would go and implement it: #emph[
+        "Steve Russell said, look, why don't I program this eval ... and I said to him,
+        ho, ho, you're confusing theory with practice, this eval is intended for reading,
+        not for computing. But he went ahead and did it. That is, he compiled the eval
+        in my paper into IBM 704 machine code, fixing bugs, and then advertised this as
+        a Lisp interpreter, which it certainly was. So at that point Lisp had essentially
+        the form that it has today ..."
+    ]
 ]
 
-Meanwhile, "logos" comes to us from ancient Greek philosophy, where it represented discourse,
-reason, and the underlying principles that govern reality. Heraclitus spoke of the logos as
+Meanwhile, "logos"#footnote[
+    Conveniently written as λόγος, which is where I got the λς on the title page
+] comes to us from ancient Greek philosophy, where it represented discourse,
+reason, and the underlying principles that govern reality.#footnote[
+    And about a fifty other different things.
+] Heraclitus spoke of the logos as
 the universal principle according to which all things happen. For the Stoics, it was the divine
 reason that pervades everything. In the Gospel of John, "In the beginning was the Logos" - the
 Word, the fundamental ordering principle.
@@ -1021,10 +1055,12 @@ This brings us back to the Sapir-Whorf hypothesis. Just as human languages might
 perceive and categorize the world, programming languages influence how we decompose problems and construct
 solutions. A programmer fluent only in C sees the world in terms of procedures and memory management.
 A dedicated Haskell programmer sees it as type transformations and pure functions. A Lisp hacker
-sees code itself as just another data structure to manipulate.
+sees code itself as just another data structure to manipulate, and the language as a malleable
+medium of communication. Conlanger's paradise
 
-The true art of programming lies not in mastering any single language or paradigm, but in
-understanding the fundamental principles that underlie all of them.
+The true art of programming lies not in mastering any single language or paradigm#footnote[
+    Although mastering any of them certainly helps, the big idea is to never become narrow-minded in your approach
+], but in understanding the fundamental principles that underlie them.
 Each paradigm illuminates different aspects of computation:
 
 - Imperative programming gives us direct control over the machine's state
@@ -1041,21 +1077,48 @@ or programming linguists, able to choose the right language (or combination of l
 We can communicate more clearly, not just with the computer, but with other programmers
 who will read and maintain our code.
 
-The lambda gives us the formal tools to express computation. The logos gives us the purpose: to communicate ideas clearly and elegantly. Together, they represent the dual nature of programming as both science and art - a rigorous formal system that is also a medium of human expression.
+The lambda gives us the formal tools to express computation. The logos gives us the purpose:
+to communicate ideas clearly and elegantly. Together, they represent the dual nature of programming
+as both science and art - a rigorous formal system that is also a medium of human expression.
 
-In the chapters that follow, we'll explore how to put these principles into practice. We'll examine patterns of elegant code across paradigms, and we'll learn how to structure our programs to communicate their intent clearly. Whether you're writing a quicksort algorithm or a complex enterprise system, the fundamental challenge remains the same: to express your ideas in a way that both computers and humans can understand.
+In the chapters that follow, we'll explore how to put these principles into practice. We'll examine patterns
+of elegant code across paradigms, and we'll learn how to structure our programs to communicate their intent
+clearly. Whether you're writing a quicksort algorithm or a complex enterprise system, the fundamental
+challenge remains the same: to express your ideas in a way that both computers and humans can understand.
+
+That is, submit to no one, and bend the world to your will.
+
 == Coding != Programming
 
 In our modern technological landscape, the terms "coding" and "programming" are often used interchangeably,
-as if they were perfect synonyms. This linguistic laziness obscures an important distinction that lies
-at the heart of our discipline. While related, these terms represent fundamentally different activities
-and mindsets, a distinction worth exploring if we wish to elevate our craft.
+as if they were perfect synonyms. Maybe to some they are, but not to me. I view it as linguistic laziness of
+the highest degree.
+
+This linguistic laziness obscures an important distinction that lies
+at the heart of our discipline. While related, these terms represent
+fundamentally different activities and mindsets, a distinction worth
+exploring if we wish to elevate our craft.#footnote[
+    In the past, I have been more cynical and accused the mainstream
+    media and business people of using the word coding to devalue the
+    prestige of our discipline.
+]
+
+Let me present to you my conception of these terms.
 
 *Coding* refers to the mechanical process of writing instructions in a programming language. It's about syntax,
 about translating already-formed ideas into code that a machine can execute. At its most basic level, coding
 is a transcription task – taking a solution that exists in some form and rendering it in a formal language.
 This is not to diminish its difficulty; good coding requires attention to detail, knowledge of language
 features, and technical skill. But coding, in isolation, is merely implementation.
+
+Maybe, as a junior developer employed in a company, you will be doing a great deal of coding, because
+it takes a while to gain experience and penetrate both the domain the product you are working is situated
+in, and its implementation. This is fine, but you shouldn't have the false impression that this is all
+there is to it, and that you shouldn't be thinking when writing code, even if someone already did all
+the planning for you, and all you are presented with is a task in the form of "In class X, add method Y,
+taking parameters Z, which you will call in class A, method B".#footnote[
+    Feel free to reimagine this sentence in your favorite paradigm
+]
 
 *Programming*, on the other hand, encompasses a far broader intellectual territory. Programming is the
 art of computational thinking, of dissecting problems into their essential components, of discovering
@@ -1070,8 +1133,8 @@ or while falling asleep.#footnote[
 
 When I tell people I'm a programmer, they often imagine me sitting at a computer typing frantically for hours,
 producing line after line of obscure symbols. This Hollywood-perpetuated image misses the essence of what
-I actually do. Most of my time is spent thinking, reading, discussing, sketching, and understanding. The
-actual typing of code might represent only 20-30% of my workday. As the legendary computer scientist
+I actually do. Most of my time is spent thinking, reading, discussing, arguing with idiots on the internet,
+sketching, and understanding. The actual typing of code might represent only 20-30% of my workday. As the legendary computer scientist
 Donald Knuth once observed, "Programming is the art of telling another human what one wants the computer to do."
 
 Consider the evolution of our tools. Early programmers used punch cards, where each card represented a
@@ -1104,13 +1167,31 @@ medical software engineer needs to understand healthcare workflows. This cross-d
 what enables them to translate messy human systems into computational models that actually serve
 their intended purpose.
 
-Meanwhile, a *researcher* in programming explores the theoretical foundations, develops new paradigms,
+Meanwhile, a *researcher*#footnote[_Computer scientist_ also feels appropriate] in programming
+explores the theoretical foundations, develops new paradigms,
 creates programming languages, or investigates computational limits. They may work on problems that
 won't have practical applications for decades, if ever, but their work expands our understanding of
 what's possible and pushes the boundaries of our field.
 
-It's worth noting that many people who aren't programmers write code. Scientists use scripting languages
-to analyze data. Accountants create Excel formulas. System administrators write automation scripts. With
+In my free time, I like to guide my programming activities according to the following mantra:
+
+#quote[
+    _Program in such a way that any practical appliaction of your code is purely coincidental_
+]
+
+This is great for having fun, and for learning a lot. It is important to make a distinction, which
+a lot of programmers of all skill levels sometimes fail to make, and that is that free-time, open-source
+and commercial programming are all different disciplines#footnote[
+    And don't get me started on the needs and conventions of different fields. Commercial web-development
+    is a completely different world from programming in the automotive industry, and not just because
+    of the technologies used, but how they are used.
+]
+
+It is also worth noting that many people who aren't programmers write code.
+Scientists use scripting languages to analyze data.#footnote[
+    Or go the exact opposite directions and raw-dog Fortran, or alternatively use Julia.
+    Jupyter Notebooks are also very popular among scientists.
+] Accountants create Excel formulas. System administrators write automation scripts. With
 the advent of large language models and AI assistants, the number of people who can produce
 functional code without deep programming knowledge will increase dramatically.
 
