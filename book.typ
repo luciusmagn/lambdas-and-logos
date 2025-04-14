@@ -1529,8 +1529,28 @@ and had properties which make it even more different from the mainstream than Em
 #image("lispmacro-light.png")
 
 As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parenthesis.
-This is very important in Lisp, but may be less important other languages. In dark theme, the highlighting
-is quite similar:
+This is very important in Lisp, but may be less important other languages. In general, syntax highlighting
+is a good thing, however, some languages are better at revealing their structure than others. Typically,
+these are languages that use special characters and clear formatting and naming conventions to distinguish
+different elements in the source code. This is similar to how in German, nouns are written with a capital
+letter.
+
+Many programming language use the convention of naming types using a capital letter. This is the case in
+Rust:
+
+```rust
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+fn main() {
+    let origin = Point { x: 0.0, y: 0.0 };
+    let point = Point { x: 3.5, y: -2.1 };
+}
+```
+
+In dark theme, the highlighting I use for Lisp in my editor is quite similar:
 
 #image("lispmacro-dark.png")
 
