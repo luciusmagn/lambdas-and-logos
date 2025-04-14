@@ -1441,13 +1441,14 @@ And I couldn't have said it better myself.
 
 == It's not just the code
 
-A lot of the understanding of code is from how you write the actual lines of code, as in, the text
-in them. However, that is not all. There are other things that are important to help your understanding,
-and to proliferate the understanding of others.
+Understanding of code comes primarily from how you write the actual lines of code, as in, the text in them. However, that is not all.
+There are other things that are important to help your understanding, and to proliferate the understanding of others.
 
-For you, one thing that is important, and that may be often discounted is how you look at the code.
-Do you have an IDE, or a properly set up editor, that provides hints, Language Server Protocol actions,
-or REPL integration, editor that has nice colorful syntax highlighting that is appropriately smart#footnote[
+=== Your programming environment matters
+
+For you, one thing that is important, and that may be often discounted is how you look at the code. Do you have an IDE, or a properly
+set up editor, that provides hints, Language Server Protocol actions, or REPL integration, editor
+that has nice colorful syntax highlighting that is appropriately smart#footnote[
     One thing I do often in my Emacs setup is that I define additional highlighting for the programming
     languages I use extensively for things that are not distinguished by default. In Scheme, for instance
     I highlight different naming conventions with different colors - predicate functions typically end
@@ -1456,10 +1457,10 @@ or REPL integration, editor that has nice colorful syntax highlighting that is a
     functions often have an arrow in them `->`.
 ], and other bells and whistles that help navigating and understanding codebases.
 
-The Lisp language has a reputation for being unreadable. This is only partially true, but is very often
-an artefact from early days, where many unlucky students had to contend with Lisp that had no syntax
-highlighting, barely matching parentheses highlighting, and possibly improper formatting. Let's consider
-the macro I showed you for defining *quicksort* in terms of transformation rules.
+The Lisp language has a reputation for being unreadable. This is only partially true, but is very often an artefact from early days,
+where many unlucky students had to contend with Lisp that had no syntax highlighting, barely matching parentheses
+highlighting, and possibly improper formatting. Let's consider the macro I showed you for
+defining *quicksort* in terms of transformation rules.
 
 This is how it looked:
 
@@ -1487,8 +1488,8 @@ This is how it looked:
          (apply-rule 'sort sequence)))))
 ```
 
-This is very colorful, maybe too colorful depending on your tastes (and what color scheme I end up
-going with for the examples). Let's take a look at it completely deprived of colors:
+This is very colorful, maybe too colorful depending on your tastes (and what color scheme I end up going with
+for the examples). Let's take a look at it completely deprived of colors:
 
 #block(breakable: false)[
 ```
@@ -1516,27 +1517,23 @@ going with for the examples). Let's take a look at it completely deprived of col
 ```
 ]
 
-To me, this is far less readable. The syntax highlighting helped my brain visually distinguish different
-categories of elements. It is important that you find a good color scheme and level of syntax highlighting.
-This may mean you have to switch editor, if you are using something that is not very configurable. I use
-Emacs, which is the extreme when it comes to configurability, and it may be far too configurable for
-most people. However, even in VS Code, you should be able to affect how things are syntax highlighted.
+To me, this is far less readable. The syntax highlighting helped my brain visually distinguish different categories of elements.
+It is important that you find a good color scheme and level of syntax highlighting. This may mean you have to switch editor, if
+you are using something that is not very configurable. I use Emacs, which is the extreme when it comes to configurability,
+and it may be far too configurable for most people. However, even in VS Code, you should be able to affect how things are syntax highlighted.
 
-Let's see how the previous example looks in my editor in light mode. I use an amalgamation of themes
-related to the default colors of the Acme editor. The Acme editor famously had no syntax highlighting,
-and had properties which make it even more different from the mainstream than Emacs and Vim. Here's the picture:
+Let's see how the previous example looks in my editor in light mode. I use an amalgamation of themes related to the default colors
+of the Acme editor. The Acme editor famously had no syntax highlighting, and had properties which make it even more different
+from the mainstream than Emacs and Vim. Here's the picture:
 
 #image("lispmacro-light.png")
 
-As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parenthesis.
-This is very important in Lisp, but may be less important other languages. In general, syntax highlighting
-is a good thing, however, some languages are better at revealing their structure than others. Typically,
-these are languages that use special characters and clear formatting and naming conventions to distinguish
-different elements in the source code. This is similar to how in German, nouns are written with a capital
-letter.
+As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parenthesis. This is very important in
+Lisp, but may be less important other languages. In general, syntax highlighting is a good thing, however, some languages are better
+at revealing their structure than others. Typically, these are languages that use special characters and clear formatting and naming
+conventions to distinguish different elements in the source code. This is similar to how in German, nouns are written with a capital letter.
 
-Many programming language use the convention of naming types using a capital letter. This is the case in
-Rust:
+Many programming language use the convention of naming types using a capital letter. This is the case in Rust:
 
 ```rust
 struct Point {
@@ -1554,14 +1551,118 @@ In dark theme, the highlighting I use for Lisp in my editor is quite similar:
 
 #image("lispmacro-dark.png")
 
-On the "understanding of others" side, which may, once again, include a future you, we have documentation,
-tests (which happen to be useful small examples for things that may be unclear!), bigger examples, comments
-in the source code (however, keep in mind that too many comments reduce visual clarity), and so on.
+=== Investing in your tools
 
-The big idea is that for elegant programs and proper understanding, it helps to view the code in a way
-that helps you the most, and when distributing it, you should aid the understanding of others.
+You'll often hear people joke that "Linux is free if you don't value your time" – implying that the time spent configuring your system
+isn't worth it. I strongly disagree with this sentiment. A well-configured development environment is an investment that pays continuous
+dividends. Every minute shaved off your daily workflow, every eye strain prevented, every wrist pain avoided, is a return on that investment.
+
+Time spent understanding and optimizing your tools isn't wasted – it's multiplied across every hour you spend programming for the
+rest of your career. This is why professional mechanics own their own tools, why surgeons have preferences for specific instruments,
+and why programmers should care deeply about their environment.
+
+For example, learning keyboard shortcuts in your editor or IDE might take days to internalize but will save you weeks of cumulative
+time over years. Setting up snippets, templates, and custom macros might feel like procrastination, but these accelerators make the
+mechanics of coding disappear so you can focus on the problem-solving aspect.
+
+=== Ergonomics matter, too
+
+Physical comfort significantly impacts your ability to maintain focus and write elegant code. A good monitor reduces eye strain and
+lets you see more context at once. A comfortable chair prevents back pain during long coding sessions. And perhaps most importantly,
+a good keyboard can prevent repetitive strain injuries that plague many programmers.
+
+I personally use a Corne v3 split keyboard, which keeps my wrists at a natural angle and reduces the distance my fingers need to travel.
+Split keyboards look strange to the uninitiated, but they're designed around human anatomy rather than manufacturing convenience. Your
+tools should adapt to you, not the other way around.
+
+A decent computer is also an essential investment. Waiting for compilation, having your editor lag when opening large files, or
+experiencing freezes during debugging all break your concentration and cognitive flow. The mental context switch caused by these interruptions
+is far more costly than the seconds you actually wait.
+
+=== Eliminating distractions
+
+Perhaps the most insidious enemy of elegant code is the constant barrage of distractions we subject ourselves to.
+Our generation faces unprecedented challenges to sustained focus, and the same device we program on is usually
+connected to a world of interruptions.
+
+My productivity and concentration improved after I:
+- Disabled push notifications for most applications
+- Unsubscribed from dozens of email newsletters and promotional content
+- Stopped using Instagram entirely
+- Used browser extensions on desktop and alternative clients on Android to completely remove every mention of YouTube Shorts
+
+These attention-harvesting mechanisms are specifically engineered to hijack your focus. Each notification triggers a dopamine response
+that makes deep work more difficult. When writing elegant code requires deep thought about structure, relationships, and abstractions,
+these interruptions are poison to quality.
+
+=== Advanced editors are worth learning
+
+Learning a more sophisticated editor like Emacs, Vim, Neovim, or Helix seems daunting at first, but pays incredible dividends. These tools
+were designed by programmers for programmers, with the specific goal of making text manipulation (which is what programming is, at a
+mechanical level) as efficient as possible.
+
+The modal editing of Vim means you spend less time reaching for arrow keys or the mouse. The extensibility of Emacs means you can create
+custom workflows that match exactly how you think. The modern amenities of Neovim and Helix bring these powerful paradigms into the present
+with sensible defaults and better performance.
+
+Even if you stick with an IDE, learning its keyboard shortcuts and advanced features is worth your time. The goal is to reduce the friction
+between your thoughts and their expression in code.
+
+=== Working within your means
+
+Of course, not everyone can afford top-of-the-line equipment. Economic realities differ, and it's important to acknowledge that.
+If you're programming on a budget laptop with a basic keyboard, that doesn't make you any less of a programmer. Many brilliant systems
+were written on modest hardware.
+
+Focus first on the free aspects – learning your tools deeply, eliminating digital distractions, and creating the best environment possible
+within your constraints. A quiet room with decent lighting and a comfortable chair from a thrift store will serve you better than
+an expensive setup in a distracting environment.
+
+Second-hand ThinkPads, for instance, offer excellent keyboards and reliability at reasonable prices. Free software like Linux can breathe
+new life into aging hardware. Community-built mechanical keyboards can be more affordable than you might think. Prioritize
+what matters most for your specific work.
+
+=== Making your code presentable to others
+
+On the "understanding of others" side, which may, once again, include a future you, we have documentation, tests (which happen to be useful
+small examples for things that may be unclear!), bigger examples, comments in the source code (however, keep
+in mind that too many comments reduce visual clarity), and so on.
+
+Good code is about communication, not just computation. When others (or your future self) read your code, they should understand not
+just what it does, but why it does it that way. This requires thoughtful presentation:
+
+- Consistent formatting makes patterns more apparent
+- Meaningful variable and function names communicate purpose
+- Judicious comments explain the "why" when code can only show the "how"
+- Documentation provides context and user instructions
+- Tests demonstrate expected behavior in concrete terms
+- Version control messages explain the evolution of the code
+
+Remember that code is read far more often than it's written. The time you invest in making it presentable pays off every time someone
+needs to understand, modify, or build upon your work.
+
+The big idea is that for elegant programs and proper understanding, it helps to view the code in a way that helps you the most, and when
+distributing it, you should aid the understanding of others. The environment, both physical and digital, in which you write code is as important
+as the code itself. By optimizing this environment and presenting your code clearly, you make elegance more achievable.
+
 
 == Elegant code and the cost of inelegant code
+Elegant code provides tangible benefits that extend far beyond aesthetic satisfaction. Code that clearly communicates its intent
+requires less mental overhead to understand, modify, and debug. This translates directly to reduced maintenance costs, fewer bugs,
+and increased development velocity over time. When confronted with a complex problem or unexpected behavior, elegant code offers
+clarity where obscure implementations force developers to untangle nested logic and hidden assumptions.
+
+Conversely, inelegant code -- even in small, seemingly isolated components -- accumulates as technical debt. This debt compounds interest
+in the form of bugs that are difficult to isolate, features that become increasingly complex to implement, and onboarding processes that
+grow more painful with each new team member. What begins as a "temporary shortcut" or "just getting it working" often calcifies into
+permanent architecture that constrains future development. The cost of inelegance is rarely paid upfront but
+extracted slowly through countless hours of confusion and frustration.
+
+While programmers may disagree on specific elements that constitute elegant code, the pursuit of elegance itself should be universal.
+More important than any particular style choice is consistency throughout a codebase. A team that establishes and adheres to
+clear conventions, regardless of what those conventions are, will produce more maintainable software than one where each developer
+follows different practices. The most valuable patterns are those applied uniformly—they become the reliable grammar through which
+your code communicates its purpose to present and future maintainers.
 
 = Programming in the small
 
