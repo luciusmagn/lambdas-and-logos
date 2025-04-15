@@ -1890,7 +1890,9 @@ and export controls until C++20's module system. Headers are preprocessor-based 
 
 Modern languages have increasingly incorporated features to address the "programming in the large" challenges. Java has its package system, later
 enhanced with the module system in Java 9. ML and OCaml have sophisticated module systems with signatures. Rust has its crate and module system.
-Python has packages and imports. Common Lisp has packages and systems. R6RS Scheme has libraries that everybody hates. The list goes on.
+Python has packages and imports. Common Lisp has packages and systems. R6RS Scheme has libraries that everybody hates.#footnote[
+    And if you are curious, Emacs Lisp has nothing. Lmao.
+] The list goes on.
 
 The distinction between programming in the small and programming in the large remains profoundly relevant today. As systems grow more complex,
 the challenges of organizing and coordinating large codebases have only become more pressing. The growth of microservices architecture could even
