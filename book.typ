@@ -254,10 +254,11 @@ If you have used languages that utilize the following data types:
 Then you have used a monad. What is powerful about the idea of monads, from a theoretical standpoint is that
 now that we have defined something like this, we start seeing monads everywhere, and we can reason about operations
 in terms of monad.#footnote[
-    If you are curious about layman explanations of the other technical terms, then *monoid* means
+    If you are curious about _somewhat_ layman explanations of the other technical terms, then *monoid* means
     "something that has an identity element (like the empty list) and an associative binary operation (like list concatenation)".
     An *endofunctor* is something that can "map back to itself". If you know Rust or any other language with options,
-    you know that you can `.map()` an `Option<T>` into an `Option<U>`.
+    you know that you can `.map()` an `Option<T>` into an `Option<U>`. You will note that Either/Result does not have an
+    identity element (Can you think of a default value if, you know neither the Ok/Left type or the Err/Right type?)
 ]
 
 That is an example of how your horizon can be broadened by learning new concepts in one place (perhaps in the company of Haskellers),
