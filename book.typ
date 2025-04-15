@@ -180,6 +180,91 @@ that is more beautiful.
 Lukáš Hozda,#linebreak()
 rennaissance man
 
+== About how this book is written
+
+This book is written as a series of topics that, I hope, flow freely from to another. We will
+start with a couple practical points to elaborate what's going on with elegant code, then talk
+about the importance of elegent code (and writing code elegantly -- in a nice and ergonomic manner),
+and then we will explore both small scale and large scale practices that make programming more
+elegant. Naturally, we also explore what it being "elegant" means.
+
+I, Lukáš Hozda, write in a meandering, exploratory manner. I change my voice often, depending on the subject matter,
+sometimes more serious, sometimes less.#footnote[
+    Some parts of this book are also directly written by the co-author, Luukasa Pörtfors
+] Throughout the book, you will encounter
+a couple departures (that will always come back to the topic at hand), to provide you with additional
+context, either historical context, or context about alternatives that exist to what we are presenting.
+
+In some cases, these tangents were short enough to be contained into footnotes, and so they are there.
+I encourage you to read the footnotes to grasp the whole idea of what am I trying to communicate.
+
+#block(breakable: false)[
+This book also mentions and provides code examples in a number of programming languages and technologies, these include (in no particular order):
+
+- Python
+- C and C++
+- Rust
+- Common Lisp (including the Coalton language built on top of it by Robert Smith)
+- Scheme
+- Haskell
+- Prolog
+- Brainfuck
+- Smalltalk
+- Forth
+- whatever else we decide to think of
+]
+Many more will be briefly mentioned in passing.
+
+You are not expected to know all of these languages. Hell, you are not expect to know most of these languages.
+Not knowing them should not stop you from picking up this book. It would be almost impossible to find people
+who "speak" Smalltalk, Lisp, Forth and Haskell at the same time anyway.
+
+These languages to illustrate programming principles and open your eyes to new possibilites and
+philosophies that have shaped the history of programming and how we conceptualize what good programming is.
+We really want to broaden your horizons, and show you what's possible. That is, to see beyond the code and
+have basic understanding of the underlying ideas, so you can apply them elsewhere, too.
+
+There is a parable with the notion of *monads*, you have probably heard about it, especially in the context
+of Haskell programming. A Haskeller comes up to you and says:
+
+"A monad is just a monoid in the category of endofunctors, what's the problem?"
+
+And you look at him as if he were an alien from a different dimension. Well, that's because they are
+terms that are very theoretical, and you probably don't need to know them for most everyday activities.
+
+In reality, the concept of a monad isn't that difficult. It is just a wrapper over values that
+provides two actions:
+
+1. You can put any value into this wrapper
+2. You can chain operations that use wrapped values together
+
+If you have used languages that utilize the following data types:
+
+- Option or Maybe
+- Result or Either (or both in case of Rust via the very popular `either` crate)
+- Future or Promise
+- List and Array#footnote[
+    Some terms and conditions apply. A list is a monad if you have something like a `flat_map` operation,
+    meaning you can map a list into a list of lists, and then concatenate these lists into one long list:
+    1. *[1, 2, 3, 4]* (the original list)
+    2. *[[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]* (a list where we have *mapped* each element `N` into a list of integers from 1 to `N`)
+    3. *[1, 1, 2, 1, 2, 3, 1, 2, 3, 4]* (a list of lists that we have *flattened* into one contiguous list of integers)
+]
+
+Then you have used a monad. What is powerful about the idea of monads, from a theoretical standpoint is that
+now that we have defined something like this, we start seeing monads everywhere, and we can reason about operations
+in terms of monad.#footnote[
+    If you are curious about layman explanations of the other technical terms, then *monoid* means
+    "something that has an identity element (like the empty list) and an associative binary operation (like list concatenation)".
+    An *endofunctor* is something that can "map back to itself". If you know Rust or any other language with options,
+    you know that you can `.map()` an `Option<T>` into an `Option<U>`.
+]
+
+That is an example of how your horizon can be broadened by learning new concepts in one place (perhaps in the company of Haskellers),
+which you can recognize and deal with in other places then on.
+
+Without a further ado, let's get into it.
+
 = The Art of Programming
 Programming is a discipline that's almost a century old. Arguably much older if we count the
 efforts of Ada Lovelace, and much much older if we consider anything resembling an algorithm
