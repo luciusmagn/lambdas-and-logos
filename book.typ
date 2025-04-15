@@ -793,10 +793,10 @@ Control, explicitness and safety. Since different programming have different goa
 a language is bad because it does not have full features of paradigm A, if it never intended to do so
 in the first place.
 
-A programming language is good if its fulfills it goals effectively (or at all), if it is well implemented,#footnote[
+A programming language is good if it fulfills its goals effectively (or at all), if it is well implemented,#footnote[
     You would be surprised, but there have been times in history where we had struggled implementing grand ideas.
     PL/I was a fairly influential programming language created in 1966 by IBM, and it was about as massive
-    as you would expect things made by IBM to be. Many competing implementations were created, almost none of which
+    as you would expect anything made by IBM to be. Many competing implementations were created, almost none of which
     implemented the language fully. Very quickly, we had several incompatible dialects out in the wild.
 ]
 and if it is internally consistent.#footnote[
@@ -1239,7 +1239,12 @@ thinkers who understand problems deeply enough to model them effectively. While 
 write a Python script to analyze patient data, it cannot replace the programmer who designs the hospital's entire
 electronic health record system with an understanding of security, data integrity, workflow,
 scalability, and regulatory compliance, and the perhaps pessimistic understanding of the possibility of human
-error at every step of the way.
+error at every step of the way.#footnote[
+    At least at the time of this writing, the so-called vibe coding has been a path to hell,
+    and understanding code remains a neccessary skill. This also applies reflexively - the better
+    programmer you are, the better you can describe problems, and the better you can utilize AI
+    in a productive way.
+]
 
 If you're reading this book, you should think of yourself as a programmer (or a programmer-in-training, if you want to),
 not just a coder. Abandon any imposter syndrome that might make you think otherwise. You are engaging
@@ -1251,11 +1256,16 @@ your priority. Refine your thinking before you refine your code. Think, Mark, th
 thought, and confused code usually reflects confused thinking. Be willing to restart when you realize
 your approach is fundamentally flawed – as painful as that can be. In your hobby programming, you have a luxury
 of throwing things away, and trying different approaches, not being bound by severe time constraints which
-some fields of commercial programming otherwise have.
+some fields of commercial programming otherwise have.#footnote[
+    Of course, in commercial products, you just can't keep restarting, or even restart in the
+    first place. However, you should not feel guilty about trying to justify refactors, so long
+    as you still keep advancing the product
+]
 
-Remember that programming is inherently creative. We build digital worlds from nothing but thought, giving
+Programming is inherently creative. We, as programmers, build digital worlds from nothing but thought, giving
 form to ideas and solving problems that often have no precedent. In what other field can you create
-something so complex, yet so mutable and alive, with nothing more than a computer and your mind?
+something so complex, yet very mutable and alive, with nothing more than a computer and your mind?
+That's crazy, dude.
 The barrier of entry into the world of programming is very low, and the sky is your limit. There's
 a particular joy in seeing your thoughts externalized and animated, in watching a computer dance
 to the tune you've composed. When we refer to "elegant" code, we're making an aesthetic judgment
@@ -1272,14 +1282,19 @@ The distinction between coding and programming isn't about establishing a hierar
 look down on "mere coders." After all, I call myself a teacher, it would be foolish to look down on people
 who know less than I do, or be hubristic enough to think poorly of people who know more than I do.
 Rather, it's about recognizing the full scope of what programming entails and aspiring to practice it
-in its complete form. Coding is an essential component of programming, but programming is more than
+in its complete form.#footnote[
+    And ideally, share it!
+] Coding is an essential component of programming, but programming is more than
 coding – it's a mode of thinking, a way of approaching problems, and a creative discipline that happens
 to produce code as its artifact.
 
-As you progress through this book and your career, strive to be more than someone who writes code.
-Be someone who thinks clearly about problems, who designs elegant solutions, who communicates
-effectively through code, and who finds joy in the creative process of programming. The code you
-produce will be better for it, and so will your experience of creating it.
+As you progress through this book and your career, strive to be more than someone who writes code.#footnote[
+    And never thing there isn't any further milestone you can aim for!
+]
+Think clearly about problems, design elegant solutions, who communicate
+effectively through code, and find joy in the creative process of programming. The code you
+produce will be better for it, and so will your experience of creating it. And I suppose that's
+the gist of that
 
 == Programming should be fun
 I would like to now expand on one of the last thoughts from the previous section - that programming
@@ -1329,7 +1344,10 @@ Sussman points to several developments that have contributed to this shift:
 
 First, the proliferation of massive, complex frameworks that nobody fully understands. Modern software is
 built on towering stacks of abstractions - operating systems, libraries, frameworks, middleware, virtual machines,
-and more. Each layer adds complexity that obscures the underlying principles. When something goes wrong, most
+and more.#footnote[
+    The idea here is that you should know these things exist and how they work in principle. It is infeasible
+    that you would know how all of these things work in-depth in concrete terms.
+] Each layer adds complexity that obscures the underlying principles. When something goes wrong, most
 programmers lack the deeper understanding required to diagnose and fix the issue meaningfully. Instead, they
 resort to workarounds and band-aid solutions.#footnote[
     For an example of this, see any Microsoft source code leak ever.
@@ -1391,7 +1409,9 @@ Stack Overflow or other sources without fully understanding it.#footnote[
     I know many people who now have models integrated into their editors.
 ] This approach might produce working software in the short
 term, but it creates brittle systems that resist modification and improvement. True mastery comes from building
-a deep mental model of how systems work, which allows for creative problem-solving rather than rote application of patterns.
+a deep mental model of how systems work, which allows for creative problem-solving rather than rote application of patterns.#footnote[
+
+]
 
 He also laments the loss of playful experimentation in programming. In the early days of computing, programmers
 had more freedom to explore and create for the sake of learning. Today's focus on productivity metrics, deadlines,
@@ -1443,8 +1463,6 @@ And I couldn't have said it better myself.
 
 Understanding of code comes primarily from how you write the actual lines of code, as in, the text in them. However, that is not all.
 There are other things that are important to help your understanding, and to proliferate the understanding of others.
-
-=== Your programming environment matters
 
 For you, one thing that is important, and that may be often discounted is how you look at the code. Do you have an IDE, or a properly
 set up editor, that provides hints, Language Server Protocol actions, or REPL integration, editor
@@ -1518,9 +1536,12 @@ for the examples). Let's take a look at it completely deprived of colors:
 ]
 
 To me, this is far less readable. The syntax highlighting helped my brain visually distinguish different categories of elements.
-It is important that you find a good color scheme and level of syntax highlighting. This may mean you have to switch editor, if
+It is important that you find a good color scheme and level of syntax highlighting.#footnote[
+    There is just so many of them that you can be sure that there is something that will speak to you.
+] This may mean you have to switch editor, if
 you are using something that is not very configurable. I use Emacs, which is the extreme when it comes to configurability,
-and it may be far too configurable for most people. However, even in VS Code, you should be able to affect how things are syntax highlighted.
+and it may be far too configurable for most people. However, even in VS Code, you should be able to affect how things
+are syntax highlighted by, for instance, installing better language extensions (like *Rust Analyzer* for Rust).
 
 Let's see how the previous example looks in my editor in light mode. I use an amalgamation of themes related to the default colors
 of the Acme editor. The Acme editor famously had no syntax highlighting, and had properties which make it even more different
@@ -1528,10 +1549,12 @@ from the mainstream than Emacs and Vim. Here's the picture:
 
 #image("lispmacro-light.png")
 
-As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parenthesis. This is very important in
-Lisp, but may be less important other languages. In general, syntax highlighting is a good thing, however, some languages are better
+As you can see, I am highlighting a whole bunch of stuff, and most importantly the matching parentheses that my cursor is next to. This
+is very important in Lisp, but may be less important other languages. In general, syntax highlighting is a good thing, however, some languages are better
 at revealing their structure than others. Typically, these are languages that use special characters and clear formatting and naming
-conventions to distinguish different elements in the source code. This is similar to how in German, nouns are written with a capital letter.
+conventions to distinguish different elements in the source code. This is similar to how in German, nouns are written with a capital letter.#footnote[
+    For instance, many C-like languages use semicolons and different brace types, []{}()<>
+]
 
 Many programming language use the convention of naming types using a capital letter. This is the case in Rust:
 
@@ -1551,9 +1574,7 @@ In dark theme, the highlighting I use for Lisp in my editor is quite similar:
 
 #image("lispmacro-dark.png")
 
-=== Investing in your tools
-
-You'll often hear people joke that "Linux is free if you don't value your time" – implying that the time spent configuring your system
+To further the configuration point: You'll often hear people joke that "Linux is free if you don't value your time" – implying that the time spent configuring your system
 isn't worth it. I strongly disagree with this sentiment. A well-configured development environment is an investment that pays continuous
 dividends. Every minute shaved off your daily workflow, every eye strain prevented, every wrist pain avoided, is a return on that investment.
 
@@ -1565,21 +1586,17 @@ For example, learning keyboard shortcuts in your editor or IDE might take days t
 time over years. Setting up snippets, templates, and custom macros might feel like procrastination, but these accelerators make the
 mechanics of coding disappear so you can focus on the problem-solving aspect.
 
-=== Ergonomics matter, too
-
-Physical comfort significantly impacts your ability to maintain focus and write elegant code. A good monitor reduces eye strain and
+Let's broaden the scope. Physical comfort significantly impacts your ability to maintain focus and write elegant code. A good monitor reduces eye strain and
 lets you see more context at once. A comfortable chair prevents back pain during long coding sessions. And perhaps most importantly,
 a good keyboard can prevent repetitive strain injuries that plague many programmers.
 
-I personally use a Corne v3 split keyboard, which keeps my wrists at a natural angle and reduces the distance my fingers need to travel.
+I personally use a Corne v3 split keyboard, which keeps my wrists at a comortable angle and reduces the distance my fingers need to travel.
 Split keyboards look strange to the uninitiated, but they're designed around human anatomy rather than manufacturing convenience. Your
 tools should adapt to you, not the other way around.
 
 A decent computer is also an essential investment. Waiting for compilation, having your editor lag when opening large files, or
 experiencing freezes during debugging all break your concentration and cognitive flow. The mental context switch caused by these interruptions
 is far more costly than the seconds you actually wait.
-
-=== Eliminating distractions
 
 Perhaps the most insidious enemy of elegant code is the constant barrage of distractions we subject ourselves to.
 Our generation faces unprecedented challenges to sustained focus, and the same device we program on is usually
@@ -1595,48 +1612,71 @@ These attention-harvesting mechanisms are specifically engineered to hijack your
 that makes deep work more difficult. When writing elegant code requires deep thought about structure, relationships, and abstractions,
 these interruptions are poison to quality.
 
-=== Advanced editors are worth learning
-
-Learning a more sophisticated editor like Emacs, Vim, Neovim, or Helix seems daunting at first, but pays incredible dividends. These tools
-were designed by programmers for programmers, with the specific goal of making text manipulation (which is what programming is, at a
-mechanical level) as efficient as possible.
+Learning a more advanced editor like Emacs, Vim, Neovim, or Helix may seem difficult or pointless at first, but in my opinion, it pays incredible dividends.
+These tools were designed by programmers for programmers, with the specific goal of making text manipulation (which is what programming is, at a
+mechanical level) as efficient as possible.#footnote[
+    There has been a very interesting editing model, apart from the aforementioned editors called *structural editing*. The idea of
+    structural editing is that the editor is able to build a syntactic tree out of the source code (which is very difficult, since most of
+    the time, when you are actively editing code, you have invalid syntax issues -- "of course there's a missing semicolon and unclosed parenthesis! I didn't finish writing it yet!"),
+    and let's you maniputa the syntactic tree directly. This can be extremely effective, since the editor truly understands the source code.
+    However, it is hard to implement and get used to. Structural editing is fairly popular in the Lisp world because of how easy it is to parse.
+    Check out the packages/functionality of *paredit* and *parinfer*.
+]
 
 The modal editing of Vim means you spend less time reaching for arrow keys or the mouse. The extensibility of Emacs means you can create
-custom workflows that match exactly how you think. The modern amenities of Neovim and Helix bring these powerful paradigms into the present
+custom workflows that match exactly how you think.#footnote[
+    I have a modal editing setup in my Emacs that's fairly similar to Kakoune's/Helix's modal editing model. Emacs let's you override
+    completely everything. You could make it behave like VS Code, if you wanted to. This book was written in Emacs, too.
+] The modern amenities of Neovim and Helix bring these powerful paradigms into the present
 with sensible defaults and better performance.
 
-Even if you stick with an IDE, learning its keyboard shortcuts and advanced features is worth your time. The goal is to reduce the friction
+Even if you stick with an IDE, learning its keyboard shortcuts and advanced features is worth your time.#footnote[
+    Just imagine how much time you waste navigating context menus when you could press a 3-key shortcut.
+] The goal is to reduce the friction
 between your thoughts and their expression in code.
 
-=== Working within your means
-
-Of course, not everyone can afford top-of-the-line equipment. Economic realities differ, and it's important to acknowledge that.
+Of course, not everyone can afford top-of-the-line equipment.#footnote[
+    As a matter of fact, I learned a lot when I was a child precisely because I didn't have proper equipment, and have to make do with
+    what I had.
+] Economic realities differ, and it's important to acknowledge that.
 If you're programming on a budget laptop with a basic keyboard, that doesn't make you any less of a programmer. Many brilliant systems
-were written on modest hardware.
+were written on modest hardware.#footnote[
+    There is an argument to be made. Some people advocate for development on poor hardware because it will encourage you to make faster
+    and leaner programs (so that you can comfortably run them on what you have). This is a fair point, however, I think that thinking about
+    making your programs effective is enough, and not wasting time is more important.
+]
 
-Focus first on the free aspects – learning your tools deeply, eliminating digital distractions, and creating the best environment possible
+So, focus on the things you can do for free: learning your tools deeply, eliminating digital distractions, and creating the best environment possible
 within your constraints. A quiet room with decent lighting and a comfortable chair from a thrift store will serve you better than
 an expensive setup in a distracting environment.
 
-Second-hand ThinkPads, for instance, offer excellent keyboards and reliability at reasonable prices. Free software like Linux can breathe
-new life into aging hardware. Community-built mechanical keyboards can be more affordable than you might think. Prioritize
+Second-hand ThinkPads, for instance, offer excellent keyboards and reliability at reasonable prices.#footnote[
+    They are also durable and spare parts are readily available. Look for the P or T series. Avoid the X1 Carbons, if you
+    want user serviceability, anything with Yoga in the name, and especially avoid the E series (cheaply made).
+] Free software like Linux can breathe
+new life into aging hardware.#footnote[
+    I have been using an ancient Dell workstation as a home server for many years. I only stopped because I gave it away to a student.
+] Community-built mechanical keyboards can be more affordable than you might think. Prioritize
 what matters most for your specific work.
 
-=== Making your code presentable to others
-
-On the "understanding of others" side, which may, once again, include a future you, we have documentation, tests (which happen to be useful
+Let's now go to the "understanding of others" side, which may, once again, include a future you, we have documentation, tests (which happen to be useful
 small examples for things that may be unclear!), bigger examples, comments in the source code (however, keep
 in mind that too many comments reduce visual clarity), and so on.
 
-Good code is about communication, not just computation. When others (or your future self) read your code, they should understand not
-just what it does, but why it does it that way. This requires thoughtful presentation:
+Good code is about communication, as I have said before and will say again. When others (or your future self) read your code,
+they should understand not just what it does, but why it does it that way. This requires thoughtful presentation:
 
 - Consistent formatting makes patterns more apparent
 - Meaningful variable and function names communicate purpose
 - Judicious comments explain the "why" when code can only show the "how"
 - Documentation provides context and user instructions
 - Tests demonstrate expected behavior in concrete terms
-- Version control messages explain the evolution of the code
+- Version control messages explain the evolution of the code#footnote[
+    I wouldn't actually consider version control to be that important as a medium of communication for users of a library, framework, program, whatever.
+    However, I have had some instances, where a library changed unexpectedly (and the author didn't use proper semantig versioning !!!!), and being
+    able to track down changes with their justification has been immensely helpful. Version control is also a good record of how work has evolved,
+    when you need to get back in the groove after returning to a project you have not actively developed for a long while.
+]
 
 Remember that code is read far more often than it's written. The time you invest in making it presentable pays off every time someone
 needs to understand, modify, or build upon your work.
@@ -1645,8 +1685,10 @@ The big idea is that for elegant programs and proper understanding, it helps to 
 distributing it, you should aid the understanding of others. The environment, both physical and digital, in which you write code is as important
 as the code itself. By optimizing this environment and presenting your code clearly, you make elegance more achievable.
 
-
 == Elegant code and the cost of inelegant code
+
+Let's reiterate the main idea:
+
 Elegant code provides tangible benefits that extend far beyond aesthetic satisfaction. Code that clearly communicates its intent
 requires less mental overhead to understand, modify, and debug. This translates directly to reduced maintenance costs, fewer bugs,
 and increased development velocity over time. When confronted with a complex problem or unexpected behavior, elegant code offers
