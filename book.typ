@@ -1883,8 +1883,11 @@ components, establishing interfaces, and controlling dependencies. The focus shi
 parts of the system interact and communicate. The paper argued that these concerns required different tools and approaches.
 
 You can see attempts to address these concerns in languages like C and C++, with their header files and implementation files. The idea was to separate
-interfaces from implementations, allowing programmers to understand how to use a module without delving into its internal workings. But the C/C++ approach
-falls short of DeRemer and Kron's vision of MILs in several ways. Headers are merely textual inclusions rather than formal module boundaries. They
+interfaces from implementations, allowing programmers to understand how to use a module without delving into its internal workings.
+
+
+
+But the C/C++ approach falls short of DeRemer and Kron's vision of MILs in several ways. Headers are merely textual inclusions rather than formal module boundaries. They
 don't provide true namespace isolation (C++ namespaces came much later and are still not perfect). There's no formal mechanism for explicit import
 and export controls until C++20's module system. Headers are preprocessor-based rather than being a fundamental language-level concept.
 
@@ -1894,10 +1897,11 @@ Python has packages and imports. Common Lisp has packages and systems. R6RS Sche
     And if you are curious, Emacs Lisp has nothing. Lmao.
 ] The list goes on.
 
-The distinction between programming in the small and programming in the large remains profoundly relevant today. As systems grow more complex,
+The distinction between programming in the small and programming in the large remains very relevant today. As systems grow more complex,
 the challenges of organizing and coordinating large codebases have only become more pressing. The growth of microservices architecture could even
 be seen as another approach to managing the complexity of programming in the large - decomposing systems into smaller, more manageable pieces
-that can be developed and deployed independently.
+that can be developed and deployed independently. However, using microservices adds complexity that is not justified for the scale of most projects.
+As with everything else, we need to think, and figure out the least wasteful way to tackle a problem.
 
 In the chapters that follow, we'll explore both programming in the small and programming in the large. We'll start with the small - how to write clear,
 efficient, and elegant code at the level of individual functions, classes, and modules. Then we'll expand to the large - how to organize these
@@ -1905,12 +1909,20 @@ components into coherent systems that can grow and evolve over time. But even as
 intimately connected. The decisions you make at the small scale affect what's possible at the large scale, and the structures you establish at the
 large scale influence how you approach the small.
 
+Keep in mind, this book will not give you complete solutions, we will discuss issues that are faced by developers all the damn time, and what we
+can do to ameliorate them. We will give you context, a lot of context, that will help you figure out where to go next, if you want to explore any
+solution in-depth. A book about the merits of object oriented programming will probably not give you fair and unbiased overview, of how you could
+alternatively model applications under a functional paradigm, that approaches programming under a completely different philosophy.
+
 For now, let's focus on the fundamentals of programming in the small - the practices that lead to clear, maintainable code at the level of individual
 components. After all, even the largest cathedrals are built one stone at a time.#footnote[
     If you have suggestions for any cathedrals or churches I should visit in Europe, please let me know at *me\@mag.wiki*. I like taking pictures of them.
 ]
 
 == Line lengths and whitespace
+
+Let's start with something very small, and manageable, line lengths and whitespace. I have already previously mentioned the recommended line
+length limit of 80.
 
 == Source code files
 
