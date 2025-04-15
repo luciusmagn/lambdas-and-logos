@@ -1885,17 +1885,147 @@ parts of the system interact and communicate. The paper argued that these concer
 You can see attempts to address these concerns in languages like C and C++, with their header files and implementation files. The idea was to separate
 interfaces from implementations, allowing programmers to understand how to use a module without delving into its internal workings.
 
+Consider the following example of a simple linked list implementation in C. We have a header representing the user-facing functionality:
 
+```c
+#ifndef LINKED_LIST_H
+#define LINKED_LIST_H
 
-But the C/C++ approach falls short of DeRemer and Kron's vision of MILs in several ways. Headers are merely textual inclusions rather than formal module boundaries. They
-don't provide true namespace isolation (C++ namespaces came much later and are still not perfect). There's no formal mechanism for explicit import
-and export controls until C++20's module system. Headers are preprocessor-based rather than being a fundamental language-level concept.
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    Node* head;
+    int size;
+} LinkedList;
+
+void list_init(LinkedList* list);
+
+int list_prepend(LinkedList* list, int value);
+
+int list_append(LinkedList* list, int value);
+
+int list_remove(LinkedList* list, int value);
+
+int list_contains(const LinkedList* list, int value);
+
+int list_size(const LinkedList* list);
+
+void list_clear(LinkedList* list);
+
+#endif /* LINKED_LIST_H */
+```
+
+The C compiler actually does not really understand the notion of a header. The preprocessor, which resolves the directives starting
+with the `#` character does understand the `#include` statement has two possible sources for where a header might come from. We also
+have to wrap the whole file in a `#ifndef`, otherwise, the file could get duplicated in the long source for when all headers are finally
+resolved#footnote[
+    The preprocessor is a bit smarter to ensure that diagnostics from your C/C++ compiler remain useful, but we can still consider it
+    essentially text copy-pasta.
+].
+
+What ends up happening is that all the headers you reference in your `.c` file are pasted into that file, creating one very long file
+that the compiler can then process as a whole, going through it top to bottom. This was a very pragmatic solution at the time, since
+it was very cheap to implement, was very simple, fairly flexible and worked quite fast.
+
+The syntax of the headers also isn't special in any way, and only represents forward declarations for the actual functions in the
+implementation file:
+
+```c
+
+#include "linked_list.h"
+#include <stdlib.h>
+#include <assert.h>
+
+// a private helper function to create a new node
+static Node* create_node(int value) {
+    // you can try implementing the data structure on your own :)
+}
+
+void list_init(LinkedList* list) {
+    // implementation omitted..
+}
+
+int list_prepend(LinkedList* list, int value) {
+    // implementation omitted..
+}
+
+int list_append(LinkedList* list, int value) {
+    // implementation omitted..
+}
+
+int list_remove(LinkedList* list, int value) {
+    // implementation omitted..
+}
+
+int list_contains(const LinkedList* list, int value) {
+    // implementation omitted..
+}
+
+int list_size(const LinkedList* list) {
+    // implementation omitted..
+}
+
+void list_clear(LinkedList* list) {
+    // implementation omitted..
+}
+```
+
+The C/C++ approach falls short of DeRemer and Kron's vision of MILs in several ways. Headers are merely textual inclusions
+rather than formal module boundaries. They don't provide true namespace isolation (C++ namespaces came much later and are still not perfect).
+There's no formal mechanism for explicit import and export controls until C++20's module system. Headers are preprocessor-based
+rather than being a fundamental language-level concept.
 
 Modern languages have increasingly incorporated features to address the "programming in the large" challenges. Java has its package system, later
 enhanced with the module system in Java 9. ML and OCaml have sophisticated module systems with signatures. Rust has its crate and module system.
 Python has packages and imports. Common Lisp has packages and systems. R6RS Scheme has libraries that everybody hates.#footnote[
     And if you are curious, Emacs Lisp has nothing. Lmao.
 ] The list goes on.
+
+Interestingly, the idea of having separate interface files did not really catch on. Apart from C/C++, there is only a couple
+programming languages that do something like that#footnote[
+    Typically better than C/C++'s minimalistic solution.
+], for instance Ada or OCaml. Here is an example in Ada:
+
+```ada
+-- stack.ads
+package Stack is
+   procedure Push (Item : in Integer);
+   function Pop return Integer;
+   Stack_Empty : exception;
+end Stack;
+```
+
+For modules in Ada programs and libraries, you have a specification file, as shown above (the *s* in *ads* stands for *specification*),
+which only contains the signatures, and a body file, which contains the actual implementation:
+
+```ada
+-- stack.adb (body)
+package body Stack is
+   type Table is array (Positive range <>) of Integer;
+   Space : Table (1 .. 100);
+   Index : Natural := 0;
+
+   procedure Push (Item : in Integer) is
+   begin
+      Index := Index + 1;
+      Space (Index) := Item;
+   end Push;
+
+   function Pop return Integer is
+      Result : Integer;
+   begin
+      if Index = 0 then
+         raise Stack_Empty;
+      end if;
+      Result := Space (Index);
+      Index := Index - 1;
+      return Result;
+   end Pop;
+end Stack;
+```
 
 The distinction between programming in the small and programming in the large remains very relevant today. As systems grow more complex,
 the challenges of organizing and coordinating large codebases have only become more pressing. The growth of microservices architecture could even
@@ -1921,8 +2051,7 @@ components. After all, even the largest cathedrals are built one stone at a time
 
 == Line lengths and whitespace
 
-Let's start with something very small, and manageable, line lengths and whitespace. I have already previously mentioned the recommended line
-length limit of 80.
+Let's start with something very small, and manageable, line lengths and whitespace. I have already previously mentioned the recommended line length limit of 80.
 
 == Source code files
 
