@@ -778,7 +778,12 @@ def quicksort(arr):
 
 In comparison to the previous examples, this one is written in Python. Python is about as readable, as
 programming languages of the C (or broadly speaking, imperative) pedigree can get. Recursion is often
-discouraged, because most languages don't have tail-call optimizations, and even if they do, the most
+discouraged, because most languages don't have tail-call optimizations#footnote[
+    TCO is when the compiler/interpreter rewrites your recursion into machine code that essentially corresponds
+    to a loop. If you can resolve all expressions from the previous level of recursion, you don't pay for the
+    nested recursive call. For example `return this_function(n - 1)` is a proper tail call. But `return 1 + this_function(x)`
+    isn't, since the addition `(+)` operation remains unresolved until we finish recursing to the bottom-most call.
+], and even if they do, the most
 elegant representation of a particular problem recursively is not a tail call.
 
 Quicksort is fine if we choose the appropriate pivot point. Usually, we go about `log2(N)` calls deep, and
