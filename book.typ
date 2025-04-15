@@ -9,7 +9,7 @@
     width: 7in,
     height: 9in,
     footer: context [
-        #if here().page() > 2 [
+        #if here().page() > 3 [
             #set text(weight: "black", size: 15pt)
             #if calc.even(here().page()) [
                 #set align(right)
@@ -88,7 +88,46 @@
   [#pagebreak()#it #v(0.75em)]
 }]
 #set quote(block: true)
-
+#pagebreak()
+#align(center + horizon)[
+    #align(center)[
+        #emph[
+            #block[
+                "haskal"
+                #linebreak()
+                -- Alcuin \@scheminglunatic
+            ]
+            #linebreak()
+            #v(2.75em)
+            #block[
+                "The art of programming is the art of organizing complexity."
+                #linebreak()
+                -- Edsger Dijkstra
+            ]
+            #linebreak()
+            #v(2.75em)
+            #block[
+                "Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it."
+                #linebreak()
+                -- Alan Perlis
+            ]
+            #linebreak()
+            #v(2.75em)
+            #block[
+                "A language that doesn't affect the way you think about programming is not worth knowing."
+                #linebreak()
+                -- also Alan Perlis
+            ]
+            #linebreak()
+            #v(2.75em)
+            #block[
+                "Less is sometimes more"
+                #linebreak()
+                -- my grandma
+            ]
+        ]
+    ]
+]
 #outline()
 
 = Preface
@@ -1793,6 +1832,74 @@ follows different practices. The most valuable patterns are those applied unifor
 your code communicates its purpose to present and future maintainers.
 
 = Programming in the small
+It is very easy to take the features of modern programming language for granted and as essential. You couldn't imagine a programming language
+not having these features. I am talking about features like proper if statements, functions, recursion, proper loops (of all shapes and sizes),
+access visibility modiifiers (so you can decide what is public, what is private and everything in-between), proper module systems, so that whole
+programs don't share a single namespace with their libraries, user-definable data structures, so that you can assign more meaning to the data
+you are working with, and so on.
+
+All of these things are concepts that did not exist in programming languages, at some point. Better yet, we have been doing programming
+for decades before each of them has been introduced. We are introducing more more and more concepts all the time, some of them are user-facing,
+some of them simplify or improve the implementation of programming languages themselves. They are either born of theory, or of necesssity.
+
+At one moment in history, we had to start thinking about how to organize programs. This was at both a small scale, and a large scale.
+The large scale has previously had much less attention because truth to be told, our programs just weren't that big. And there weren't as
+many engineers working on them. And the programs did not have to deal with interactions with many other things. Very often, they did not
+have to deal with interactions with operating systems and other programs running on the same machine. And if they did, the situation was
+far simpler because we often only had a single-core CPU, and the CPU was far more stupid and less magic about the way it executed code.#footnote[
+    You think the code that you write makes it into the binary? And that the operating system will not be creative about scheduling it?
+    And that the CPU will not do dynamic reordering, speculations and branch predictions, and do black magic with its caches to run it
+    as fast as possible? Parallel programming is quite difficult, when you get down to it.
+]
+
+A pivotal moment, which inspired the name of the two main parts of the book was when we formally started talking about "programming in the small",
+and "programming in the large". This breakthrough of recognizing the two distinct scales of programming came with the publication of a seminal
+paper by Frank DeRemer and Hans Kron in 1976, titled *"Programming-in-the-Large Versus Programming-in-the-Small"* in IEEE Transactions on Software Engineering.#footnote[
+    You should pirate this paper if you don't have institutional acccess. IEEE wants like 45\$ for it.
+] This paper explicitly distinguished between the concerns of writing individual modules and algorithms (programming in the small) versus the
+challenges of organizing complete systems composed of many interconnected modules (programming in the large).
+
+DeRemer and Kron observed that the programming languages of their era were primarily designed for the "small" - they excelled at expressing algorithms,
+control structures, and local data manipulations. But they were woefully inadequate when it came to expressing the structure of large systems.
+Their thesis was that we needed specialized "Module Interconnection Languages" (MILs) that would focus exclusively on describing how components fit together.
+
+Perhaps what's most interesting about this paper is that it was published in 1976, when software systems were minuscule by today's
+standards. If DeRemer and Kron were concerned about programming in the large in the 1970s, imagine what they would think of modern
+systems with millions of lines of code, distributed across thousands of modules, running on multiple machines, written by hundreds of engineers!
+
+Their paper described *programming in the small* as the activity we were all familiar with - writing the individual components that perform
+specific tasks. It's about local reasoning, algorithms, and data structures. It's when we focus on the implementation details and behaviors
+within a single module. The tools we use for this are programming languages, algorithms, and data structures, and our main concerns are correctness, efficiency, and readability.
+
+*Programming in the large*, on the other hand, deals with organizing systems composed of many modules. It's about managing relationships between
+components, establishing interfaces, and controlling dependencies. The focus shifts from how a specific computation is performed to how different
+parts of the system interact and communicate. The paper argued that these concerns required different tools and approaches.
+
+You can see attempts to address these concerns in languages like C and C++, with their header files and implementation files. The idea was to separate
+interfaces from implementations, allowing programmers to understand how to use a module without delving into its internal workings. But the C/C++ approach
+falls short of DeRemer and Kron's vision of MILs in several ways. Headers are merely textual inclusions rather than formal module boundaries. They
+don't provide true namespace isolation (C++ namespaces came much later and are still not perfect). There's no formal mechanism for explicit import
+and export controls until C++20's module system. Headers are preprocessor-based rather than being a fundamental language-level concept.
+
+Modern languages have increasingly incorporated features to address the "programming in the large" challenges. Java has its package system, later
+enhanced with the module system in Java 9. ML and OCaml have sophisticated module systems with signatures. Rust has its crate and module system.
+Python has packages and imports. Common Lisp has packages and systems. R6RS Scheme has libraries that everybody hates. The list goes on.
+
+The distinction between programming in the small and programming in the large remains profoundly relevant today. As systems grow more complex,
+the challenges of organizing and coordinating large codebases have only become more pressing. The growth of microservices architecture could even
+be seen as another approach to managing the complexity of programming in the large - decomposing systems into smaller, more manageable pieces
+that can be developed and deployed independently.
+
+In the chapters that follow, we'll explore both programming in the small and programming in the large. We'll start with the small - how to write clear,
+efficient, and elegant code at the level of individual functions, classes, and modules. Then we'll expand to the large - how to organize these
+components into coherent systems that can grow and evolve over time. But even as we examine these concepts separately, remember that they are
+intimately connected. The decisions you make at the small scale affect what's possible at the large scale, and the structures you establish at the
+large scale influence how you approach the small.
+
+For now, let's focus on the fundamentals of programming in the small - the practices that lead to clear, maintainable code at the level of individual
+components. After all, even the largest cathedrals are built one stone at a time.#footnote[
+    If you have suggestions for any cathedrals or churches I should visit in Europe, please let me know at *me\@mag.wiki*. I like taking pictures of them.
+]
 
 == Line lengths and whitespace
 
