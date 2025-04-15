@@ -107,6 +107,13 @@
             #linebreak()
             #v(2.75em)
             #block[
+                "Humanity is impure yet contains the seeds of perfection"
+                #linebreak()
+                -- Dank Herbert \@dank_herbert
+            ]
+            #linebreak()
+            #v(2.75em)
+            #block[
                 "Fools ignore complexity. Pragmatists suffer it. Some can avoid it. Geniuses remove it."
                 #linebreak()
                 -- Alan Perlis
