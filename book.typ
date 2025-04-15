@@ -61,7 +61,7 @@
 )
 #show heading: set text(font: "TTLivretText-DmBd", size: 1.2em)
 
-#show raw: set text(font: "Berkeley Mono", size: 8pt)
+#show raw: set text(font: "Berkeley Mono", ligatures: false, size: 8pt, features: (calt: 0))
 #set raw(theme: "calydon.tmTheme")
 
 #align(center + horizon)[
@@ -222,6 +222,10 @@ In other words, I am on an eternal quest of finding the best ideas, and finding 
 tailored to my opinions, and striving to write the most elegant code possible. And I am a teacher,
 and I want to share what I have learned to you, dear reader, so that you may write code
 that is more beautiful.
+
+This book is also a love letter to the many incredible programmers from the past, and their
+ideas. Ideas, which should be preserved and remain in working memory even today, which may
+be decades since their initial inception.
 
 Lukáš Hozda,#linebreak()
 rennaissance man
@@ -943,7 +947,7 @@ expensive for the general programmer population, which hampers the adoption of a
 Let's take a look at one last `quicksort` implementation, this time in Common Lisp, solved in the style
 of symbolic programming:
 
-#show raw: set text(font: "Berkeley Mono", size: 7pt)
+#show raw: set text(font: "Berkeley Mono", ligatures: false, size: 7pt, features: (calt: 0))
 ```lisp
 (define-sort-algorithm quicksort
   (sort (sequence)
@@ -965,7 +969,7 @@ of symbolic programming:
   (combine (smaller pivot bigger)
            (append smaller (list pivot) bigger)))
 ```
-#show raw: set text(font: "Berkeley Mono", size: 8pt)
+#show raw: set text(font: "Berkeley Mono", ligatures: false, size: 8pt, features: (calt: 0))
 
 If you haven't done any Lisp, you probably can't read what's going on. Lisp's syntax is incredibly simple,
 it only has two#footnote[If you are a fellow experienced Lisper, shut the fuck up for now :)] syntactic elements:
@@ -1027,7 +1031,7 @@ And you call this function like this:
 Therefore, the form `(define-sort-algorithm)` takes five arguments:
 - The name of the algorithm -> `quicksort`
 - #block[Four transformation rules that describe the algorithm - `sort`, `smaller`, `bigger`, and `combine`:
-    #show raw: set text(font: "Berkeley Mono", size: 7pt)
+    #show raw: set text(font: "Berkeley Mono", ligatures: false, size: 7pt, features: (calt: 0))
     ```lisp
     (sort (sequence)
         (if (null sequence)
@@ -1045,7 +1049,7 @@ Therefore, the form `(define-sort-algorithm)` takes five arguments:
     (combine (smaller pivot bigger)
              (append smaller (list pivot) bigger))
     ```
-    #show raw: set text(font: "Berkeley Mono", size: 7pt)
+    #show raw: set text(font: "Berkeley Mono", ligatures: false, size: 7pt, features: (calt: 0))
 ]
 
 The rules can apply each other using the `(apply-rule ...)` form. So you ask me: "Common Lisp has a built-in syntax
@@ -1987,7 +1991,8 @@ Python has packages and imports. Common Lisp has packages and systems. R6RS Sche
 Interestingly, the idea of having separate interface files did not really catch on. Apart from C/C++, there is only a couple
 programming languages that do something like that#footnote[
     Typically better than C/C++'s minimalistic solution.
-], for instance Ada or OCaml. Here is an example in Ada:
+], for instance Ada, or OCaml. The rest of the languages typically does not utilize two separate file types. And the compilers
+decide what is the interface and what isn't based on the contents of the one implementation file. Here is an example in Ada:
 
 ```ada
 -- stack.ads
@@ -2027,17 +2032,61 @@ package body Stack is
 end Stack;
 ```
 
+The Ada tangent is a very interesting one, and worthy of exploring. Ada is a significant programming language developed in the late 1970s at the
+direction of the U.S. Department of Defense for mission-critical systems. Unlike many languages that evolved through academic
+research or community development, Ada was created through a formal requirements process focused on reliability and safety.
+
+The language incorporated features that were considered advanced for its time: strong typing, comprehensive modularity
+through packages, built-in concurrency, generics, and exception handling. At the moment, a lot of these features are considered
+essential for modern programming languages.
+
+What distinguishes Ada is its design philosophy that emphasizes catching errors at compile time rather than runtime.
+It has a very strict type system,#footnote[
+    Strong strict typing is pretty much essential in mission-critical code as it helps catch type errors at compile time
+    rather than runtime.
+] a clear separation between interface and implementation in its package system, and a robust concurrency model through tasks.
+Ada uses a somewhat verbose syntax that reduces ambiguity and includes features like preconditions and postconditions for functions.#footnote[
+    The pre- and post-conditions were a relatively late addition to Ada (2012), and they represent form of a development pattern
+    called *Design by Contract*. Design by Contract is a programming approach where components interact based on formal agreements:
+    preconditions specify what a function requires to work correctly, postconditions declare what it guarantees upon completion,
+    and invariants define conditions that must always hold true. It establishes clear responsibilities:
+
+    - callers must satisfy preconditions,
+    - implementations must ensure postconditions
+    This creates a framework that treats software interfaces like legal contracts with mutual obligations. Design by contracct
+    was invented several decades earlier by Bertrand Meyer with his Eiffel programming language. Eiffel is mostly just
+    a research language, but very interesting to check out!
+]
+
+The language continues to be used in domains where software failures could have severe consequences: air traffic control,
+railway systems, spacecraft, defense systems, and medical devices. This demonstrates that while some programmers might
+find Ada's strict rules limiting, these same constraints provide necessary safeguards in safety-critical applications.
+
+Unfortunately, Ada didn't end up taking the programming world by a storm, and never reached a mainstream status. Its
+ideas however influenced an emphasis on safety in later languages, such as Rust.
+
 The distinction between programming in the small and programming in the large remains very relevant today. As systems grow more complex,
-the challenges of organizing and coordinating large codebases have only become more pressing. The growth of microservices architecture could even
+the challenges of organizing and coordinating large codebases have only become more pressing.
+
+The growth of microservices architecture could even
 be seen as another approach to managing the complexity of programming in the large - decomposing systems into smaller, more manageable pieces
 that can be developed and deployed independently. However, using microservices adds complexity that is not justified for the scale of most projects.
-As with everything else, we need to think, and figure out the least wasteful way to tackle a problem.
+As with everything else, we need to think, and figure out the least wasteful way to tackle a problem.#footnote[
+    Microservices were quite the fad a few years ago, but now, most experienced programmers take a more measure approach.
+    If you don't need to scale horizontally using microservices, then they are a lot of extra work. Microservices are, however,
+    useful when you are combining several different technologies, and are more malleable if you decide to make a rewrite from
+    one language into another (or other major refactors), since it is _relatively easy_ to rewrite services one by one, incerementally
+    replacing the old ones with new ones in a living system.
+]
 
 In the chapters that follow, we'll explore both programming in the small and programming in the large. We'll start with the small - how to write clear,
 efficient, and elegant code at the level of individual functions, classes, and modules. Then we'll expand to the large - how to organize these
 components into coherent systems that can grow and evolve over time. But even as we examine these concepts separately, remember that they are
 intimately connected. The decisions you make at the small scale affect what's possible at the large scale, and the structures you establish at the
-large scale influence how you approach the small.
+large scale influence how you approach the small.#footnote[
+    Another way to think about is that if you create an intractable mess at the smallest scale, you don't have the clarity of mind to
+    think about the highest level abstractions and architectural decisions you could make.
+]
 
 Keep in mind, this book will not give you complete solutions, we will discuss issues that are faced by developers all the damn time, and what we
 can do to ameliorate them. We will give you context, a lot of context, that will help you figure out where to go next, if you want to explore any
@@ -2051,7 +2100,390 @@ components. After all, even the largest cathedrals are built one stone at a time
 
 == Line lengths and whitespace
 
-Let's start with something very small, and manageable, line lengths and whitespace. I have already previously mentioned the recommended line length limit of 80.
+Let's start with something very small, and manageable, line lengths and whitespace. I have already previously mentioned the
+recommended line length limit of 80 characters.
+
+This specific limitation of 80 characters comes from the early days of computing. IBM punch cards, introduced
+in the late 19th century and widely used until the 1970s, could hold exactly 80 characters per card. Later,
+when text terminals replaced punch cards, manufacturers naturally adopted the same 80-column width as the standard.
+VT100 terminals, which became a de facto standard, displayed 80 columns by 24 rows of text. Early programmers grew
+accustomed to this constraint, and it's remarkable how this technological limitation from the era of physical media
+continues to influence our digital practices today.
+
+Now, obviously, we aren't limited by punch cards or VT100 terminals anymore. Our modern monitors can display far more
+than 80 characters horizontally, especially with the prevalence of widescreen and ultra-wide displays. I personally
+work on a 28-inch 4K monitor on the right side and a UW-WQHD 34 inch curved monitor on the left side#footnote[
+    Both ThinkVision, both a little more expensive than they should have been, both, however, gentle to my eyes.
+] most days, which could theoretically display hundreds of characters per line at a readable size.
+So why do we still care about line length?
+
+While the 80-character limit might seem arbitrary and outdated, keeping lines of reasonable length serves several
+practical purposes beyond tradition. For my own code, I generally try to stay under 120 characters, though I'm not
+militantly strict about it. This provides a good balance between using available screen space and maintaining readability.
+It is also something you get a feel for naturally, and you don't even have to worry about it
+
+Long lines are simply harder to read -- our eyes have to travel farther, and it becomes easier to lose track of where we are.
+This is the same reason why newspapers and magazines use columns instead of stretching text across the entire page width.
+The typographical principle that 60-70 characters per line is optimal for reading prose applies similarly to code.
+
+We don't have to aim for such a small limit because we count whitespace into that limit, so it can be way more than 80
+even, just not an extreme amount.
+
+But there's a deeper reason why many style guides, linters, and programmers with strong opinions (such as myself) enforce
+line length limits. Long lines often indicate problematic code structure. Consider this example:
+
+```js
+if (user.isAuthenticated() && user.hasPermission("edit") && !document.isLocked() && document.owner == user.id && document.status != "archived" && system.allowsEditing()) {
+    // Allow editing
+    document.makeEditable();
+}
+```
+
+This sprawling condition is difficult to understand at a glance and adds cognitive load. It could be improved in several ways. One approach is simply breaking it into multiple lines with proper indentation:
+
+```c
+if (user.isAuthenticated() &&
+    user.hasPermission("edit") &&
+    !document.isLocked() &&
+    document.owner == user.id &&
+    document.status != "archived" &&
+    system.allowsEditing()) {
+    // Allow editing
+    document.makeEditable();
+}
+```
+
+Where you put the *&&* is up to you, some people prefer to do the opposite way:
+
+```js
+if (user.isAuthenticated()
+    && user.hasPermission("edit")
+    && !document.isLocked()
+    && document.owner == user.id
+    && document.status != "archived"
+    && system.allowsEditing()) {
+    // Allow editing
+    document.makeEditable();
+}
+```
+
+For very long conditions, where indentation of the condition is the same as the body, you may opt
+to place the opening brace of the condition on the next line, to visually separate the body of the
+control structure from its condition:
+
+```js
+if (user.isAuthenticated()
+    && user.hasPermission("edit")
+    && !document.isLocked()
+    && document.owner == user.id
+    && document.status != "archived"
+    && system.allowsEditing())
+{
+    // Allow editing
+    document.makeEditable();
+}
+```
+
+
+If you are using a language that has a strong opinion about it,
+just follow whatever is the suggestion. Your formatting shouldn't stand out.
+
+Better, but still complex. A more elegant approach might be inverting conditions for early termination:
+
+```c
+if (!user.isAuthenticated()) return;
+if (!user.hasPermission("edit")) return;
+if (document.isLocked()) return;
+if (document.owner != user.id) return;
+if (document.status == "archived") return;
+if (!system.allowsEditing()) return;
+
+// If we got here, all conditions are met
+document.makeEditable();
+```
+
+Or abstracting the complex condition into a well-named function:
+
+```c
+if (canUserEditDocument(user, document)) {
+    document.makeEditable();
+}
+```
+
+
+If you don't want to create a function, you can assign the test of the conditions to a variable.
+
+Each of these transformations was essentially forced by a line length constraint. Without such a constraint,
+it's tempting to just keep adding conditions to a single line, creating what some call "freight train" code
+that's difficult to modify or debug.
+
+Similarly, deeply nested blocks often produce lines that exceed reasonable length limits:
+
+```c
+function processOrder(order) {
+    if (order.isValid()) {
+        if (order.items.length > 0) {
+            if (checkInventory(order.items)) {
+                if (order.paymentMethod) {
+                    if (processPayment(order.paymentMethod, order.totalAmount)) {
+                        if (updateInventory(order.items)) {
+                            return generateOrderConfirmation(order);
+                        } else {
+                            return "Error updating inventory";
+                        }
+                    } else {
+                        return "Payment processing failed";
+                    }
+                } else {
+                    return "No payment method specified";
+                }
+            } else {
+                return "Items out of stock";
+            }
+        } else {
+            return "Order contains no items";
+        }
+    } else {
+        return "Invalid order";
+    }
+}
+```
+
+This "pyramid of doom"#footnote[
+    Which may even overflow on the pages of the book.
+] is a maintenance nightmare. Line length limits would force you to refactor into something more manageable:
+
+```c
+function processOrder(order) {
+    if (!order.isValid()) {
+        return "Invalid order";
+    }
+
+    if (order.items.length === 0) {
+        return "Order contains no items";
+    }
+
+    if (!checkInventory(order.items)) {
+        return "Items out of stock";
+    }
+
+    if (!order.paymentMethod) {
+        return "No payment method specified";
+    }
+
+    if (!processPayment(order.paymentMethod, order.totalAmount)) {
+        return "Payment processing failed";
+    }
+
+    if (!updateInventory(order.items)) {
+        return "Error updating inventory";
+    }
+
+    return generateOrderConfirmation(order);
+}
+```
+
+When it comes to formatting and whitespace more broadly, you should generally follow the established conventions
+of your language community. Some languages have very clear formatting expectations -- Go has gofmt, Rust has rustfmt,
+Python has PEP 8. Others like C and C++ have multiple competing styles. If you're working on a team or an
+open-source project, conform to their existing style. If you're starting from scratch, pick a style that's common
+in the ecosystem, document it, and be consistent.
+
+I strongly recommend using an automated formatter to enforce whatever style you choose. We humans are remarkably
+bad at maintaining perfect consistency, and discussions about code formatting are perhaps the least productive debates
+programmers can have. Let the machines handle it so you can focus on the substance of your code.
+
+One particular issue that deserves special mention: never mix tabs and spaces for indentation. This creates code that
+looks properly aligned in your editor but breaks in any editor with different tab width settings. Most modern editors
+can be configured to automatically convert tabs to spaces or vice versa, and many do this by default based on language.
+Some editors also offer the option to make whitespace visible -- showing dots for spaces and arrows for tabs -- which
+can be helpful for identifying inconsistencies.#footnote[
+    Ideally your color scheme or editor highlights the whitespace visualizing characters in a subdued manner,
+    you don't want whitespace in bright colors.
+]
+
+That said, there is one situation where mixing tabs and spaces makes sense: using tabs for indentation and spaces for alignment.
+This approach lets each developer set their preferred indentation width while maintaining proper alignment of code elements:
+
+```c
+// Using tabs for indentation, spaces for alignment
+function calculateTotal(items) {
+→   let total     = 0;
+→   let taxRate   = 0.07;
+→   let shipping  = 5.99;
+→
+→   for (const item of items) {
+→   →   total += item.price * item.quantity;
+→   }
+→
+→   return total + (total * taxRate) + shipping;
+}
+```
+
+This strategy is particularly useful in languages where alignment can significantly enhance readability, which wasn't
+the case the previous example. In Common Lisp, for instance, aligning the names and values in a `let` form makes the
+structure clearer:
+
+```lisp
+(defun process-customer (customer)
+  (let ((name      (customer-name customer))
+        (address   (customer-address customer))
+        (orders    (customer-orders customer))
+        (balance   (customer-balance customer)))
+    (process-the-data ...)
+    (and-return-something ...)))
+```
+
+The `let` form creates a lexical scope where variables are bound to specific values, making
+those bindings available only within the body of the expression, allowing for local variable definitions
+that don't affect the surrounding environment.
+
+If you are unfamiliar with this term *lexical scope*, then hear ye, hear ye.
+
+There are multiple ways that languages deal with scope. Lexical scope is the option
+that you are probably used to. Common Lisp also supports dynamic scope, where variables are pushed on a stack,
+and whatever is bound to that name closest to the top of the stack is what is used.
+
+Here is an example:
+
+```lisp
+;; define a special (dynamically scoped) variable
+(defvar *multiplier* 10)
+
+;; function that uses the dynamic variable
+(defun multiply (n)
+  (* n *multiplier*))
+
+;; normal call uses the global value
+(multiply 5)  ; => 50 (5 * 10)
+
+;; temporarily override the dynamic variable
+;; the *multiplier* on the top of the stack is now 2
+(let ((*multiplier* 2))
+  (multiply 5))  ; => 10 (5 * 2)
+
+;; back to using the global value
+(multiply 5)  ; => 50 again
+```
+
+This is a double-edged sword. Improper usage of dynamic scope can lead to very confusing errors. More you know :)
+
+Now, the same alignment applies for keyword arguments and class slot definitions:
+
+```lisp
+(defclass product ()
+  ((name        :initarg :name        :accessor product-name)
+   (price       :initarg :price       :accessor product-price)
+   (stock       :initarg :stock       :accessor product-stock)
+   (category    :initarg :category    :accessor product-category))
+  (:documentation "Represents a product in the inventory system."))
+```
+
+This is how you define a class in Common Lisp. The *slot* is just the lisp slang for a class field. If you are curious,
+this is how you can make an instance of it:
+
+```lisp
+(make-instance 'product :name     "A really old thinkpad"
+                        :price    "Priceless, bro"
+                        :stock    "One and only, homie"
+                        :category "Bitchin")
+```
+
+Finally, use blank lines judiciously to separate logical sections of code. Always put an empty line between function
+definitions -- this is standard practice in virtually every language. Within functions, use blank lines to separate
+logical groups of operations. There's no rigid rule for this -- it's about making the structure of your code visually apparent.
+
+For instance, you might group variable declarations together, followed by a blank line, then the main processing logic,
+another blank line, and finally the return statement:
+
+```python
+def analyze_data(raw_data):
+    # Initialize variables
+    processed_data = []
+    error_count = 0
+    total_items = len(raw_data)
+
+    # Process each data point
+    for item in raw_data:
+        try:
+            result = transform_item(item)
+            processed_data.append(result)
+        except ValueError:
+            error_count += 1
+
+    # Return analysis results
+    return {
+        "processed": processed_data,
+        "err_rate": error_count / total_items if total_items > 0 else 0,
+        "total_processed": total_items - error_count
+    }
+```
+
+Or you might add a blank line after a complex operation that uses several temporary variables that aren't needed later:
+
+```c
+int calculateOptimalRoute(Graph* graph, Node* start, Node* end) {
+    // Initialize data structures
+    PriorityQueue* queue = createPriorityQueue();
+    HashMap* distances = createHashMap();
+
+    // Populate initial distances
+    for (int i = 0; i < graph->nodeCount; i++) {
+        setHashMap(distances, graph->nodes[i], INT_MAX);
+    }
+    setHashMap(distances, start, 0);
+
+    // Run Dijkstra's algorithm
+    insertPriorityQueue(queue, start, 0);
+    while (!isEmptyPriorityQueue(queue)) {
+        Node* current = extractMinPriorityQueue(queue);
+        int currentDist = getHashMap(distances, current);
+
+        // Process all neighbors
+        for (int i = 0; i < current->neighborCount; i++) {
+            Node* neighbor = current->neighbors[i];
+            int weight = current->weights[i];
+            int tentative = currentDist + weight;
+
+            if (tentative < getHashMap(distances, neighbor)) {
+                setHashMap(distances, neighbor, tentative);
+                insertPriorityQueue(queue, neighbor, tentative);
+            }
+        }
+    }
+
+    // Clean up and return result
+    int result = getHashMap(distances, end);
+    destroyPriorityQueue(queue);
+    destroyHashMap(distances);
+
+    return result;
+}
+```
+
+This is a good compromise. However, I tend to be even more liberal with my whitespace usage, and flank all control structures,
+unless it is the last one in a block, with an empty line. So I would put an empty line here too:
+
+```c
+    for (int i = 0; i < graph->nodeCount; i++) {
+        setHashMap(distances, graph->nodes[i], INT_MAX);
+    }
+                                                    // <- new empty line
+    setHashMap(distances, start, 0);
+```
+
+These blank lines aren't just arbitrary -- they reflect the logical structure of the algorithm and help readers understand
+the code's organization at a glance.
+
+Ultimately, line length limits and whitespace usage are small details, but programming is an activity where small details
+accumulate to create either clarity or confusion. By being thoughtful about these aspects of your code, you reduce friction
+for everyone who needs to read, understand, and modify it -- including your future self.
+
+One final note is that my recommendation also goes against the pursuit of making solution in the least amount of lines.
+You may have heard people say things like: "This window manager only has 2000 lines of code (LOC)!"
+
+Well, my suggestions go against that. If you want a similar, yet still useful metric, either count non-empty lines, or semicolons,
+in the languages that have them.
 
 == Source code files
 
