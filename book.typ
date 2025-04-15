@@ -1447,7 +1447,7 @@ which resonated with me deeply.#footnote[
 ] I will therefore try to relay Gerald's ideas here and provide commentary on them.
 
 Sussman and his colleague Harold Abelson began their seminal book "Structure and Interpretation of Computer Programs" (commonly abbreviated as SICP)#footnote[
-    SICP is probably the seminal text for showcasing programming concept via Scheme. It is a fairly old book,
+    SICP is probably the seminal text for showcasing programming concepts via Scheme. It is a fairly old book,
     but a timeless classic. There is a newer version created by perverse minds that replaces Scheme with JavaScript.
     It does make kinda sense that JS would be the one language flexible enough to replace Scheme, seeing as JavaScript
     originally *was* essentially Scheme (business people, who famously hated all fun, told Brendan Eich to replace his
