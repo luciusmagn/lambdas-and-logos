@@ -692,7 +692,7 @@ that they let you design smarter abstractions that simplify programs effectively
 languages presume that programmers are stupid#footnote[One such language's name rhymes with "No"], and take the
 power of creating generalized abstractions away from them.
 
-This leads us to a very important point: *Programming languages matter.*#footnote[From a certain point]
+This leads us to a very important point: *Programming languages matter.*#footnote[From a certain point of view, that is.]
 
 Programming languages matter because they significantly influence how we model problems and design solutions.
 Different languages aren't just different syntaxes for expressing the same ideas - they embody different philosophies,
@@ -940,7 +940,13 @@ and if it is internally consistent.#footnote[
     fine, since it has justification, although it may not be your (or my) cup of tea. On the other hand
     PHP is internally inconsistent because it is a patchwork language of dubious heritage.
 ]. These are fairly difficult requirements, and generally, one can point out flaws in the design of any
-programming language.
+programming language. A lot of time, a programmer may reject a programming language as "bad" because
+its goals either aren't noble enough, or mean nothing to him. One may reject Python, because it is
+not functional enough, somebody else may reject Rust, because they never had a memory safety incident,
+or programmed in a language where such issues show up. A Lisp enjoyer may reject everything that does
+not have metaprogramming and S-expressions.#footnote[
+    Although in my experience, contemporary Lisp programmers have been exceptionally nice people.
+]
 
 Sometimes, programming language make intentional sacrifices in their design that prove to be far too
 expensive for the general programmer population, which hampers the adoption of a programming language.
