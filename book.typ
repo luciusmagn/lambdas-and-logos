@@ -2498,6 +2498,308 @@ in the languages that have them.
 
 == Source code files
 
+Now that we've discussed line lengths and whitespace within the code, let's take a broader view and consider the organization
+of entire source files. A source file, much like a chapter in a book, should have a clear purpose and structure.
+
+Long source files can be problematic. When a file grows beyond a few hundred lines, it becomes difficult to navigate and understand
+as a cohesive unit. The upper limit depends somewhat on the language and the nature of the code, but I generally get uncomfortable
+when files approach 1,000 lines. There are exceptions, of course -- generated code, certain types of data-heavy files, or code
+in languages where the class-per-file convention doesn't apply might legitimately be longer. But if you're regularly creating
+multi-thousand-line source files by hand, it's worth considering whether they could be split into more focused, single-responsibility components.
+
+The history of file size limitations is interesting. In early computing, physical constraints like memory limited file sizes. The CP/M operating
+system, popular in the late 1970s, limited files to 8 megabytes, which seemed enormous at the time. Today, while our computers can handle
+massive files, our human cognitive limitations remain unchanged. We simply can't hold thousands of lines of code in our working memory at once.
+
+Let's start at the top of a file. After any language-required headers (like the shebang line in shell scripts or the package declaration in Java),
+imports or includes typically come first. These statements declare dependencies and establish the context for the rest of the file. It's
+good practice to organize them logically, usually in groups separated by blank lines:
+
+```python
+# Standard library imports
+import os
+import sys
+import json
+from datetime import datetime
+
+# Third-party library imports
+import numpy as np
+import pandas as pd
+import requests
+
+# Local application imports
+from myapp.models import User
+from myapp.utils.formatting import format_currency
+```
+
+This organization immediately communicates the file's dependencies to readers. They can see at a glance what standard facilities are being used,
+what external libraries are required, and what local components are involved.
+
+Avoid using wildcard or asterisk imports when possible. Instead of `from numpy import *`, which pulls all symbols from numpy into your namespace
+potentially causing naming conflicts, prefer explicit imports like `import numpy as np`. This makes it clear where each function or class is coming from:
+
+```python
+# Poor practice - wildcard import
+from numpy import *
+result = sqrt(array([1, 2, 3]))  # Where do sqrt and array come from?
+
+# Better practice - explicit import
+import numpy as np
+result = np.sqrt(np.array([1, 2, 3]))  # Clear source
+```
+
+There are exceptions to this rule. Some libraries are specifically designed to be imported with wildcards. Parser combinator libraries in functional
+languages often work this way, as do many ORM query builders. Rust acknowledges this pattern formally with "prelude" modules
+specifically designed for wildcard importing:
+
+```rust
+// Importing a prelude is an accepted practice in Rust
+use sqlx::prelude::*;
+```
+
+After imports, it's customary to place constants and global variables. These definitions establish the foundational values that the rest of the file will work with:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_BUFFER_SIZE 1024
+#define DEFAULT_TIMEOUT 30000  // milliseconds
+
+static const char* CONFIG_FILE_PATH = "/etc/myapp/config.json";
+static int global_error_count = 0;
+
+// Functions follow...
+```
+
+The rest of the file should follow a logical flow, generally defining building blocks before they're used. While modern compilers and
+interpreters don't typically require this ordering (C and C++ have forward declarations, and many languages do multiple passes), it makes the
+code more readable for humans who process information sequentially.
+
+This leads to a natural organization where helper functions come before the functions that use them, and the main entry
+point (if applicable) comes toward the end of the file:
+
+```c
+// First, define utility functions
+static void log_error(const char* message) {
+    fprintf(stderr, "ERROR: %s\n", message);
+    global_error_count++;
+}
+
+static char* read_file_contents(const char* path) {
+    FILE* file = fopen(path, "r");
+    if (!file) {
+        log_error("Could not open file");
+        return NULL;
+    }
+
+    // File reading implementation...
+    fclose(file);
+    return buffer;
+}
+
+// Then define main business logic functions
+void process_config() {
+    char* config = read_file_contents(CONFIG_FILE_PATH);
+    if (!config) {
+        log_error("Failed to read configuration");
+        return;
+    }
+
+    // Process configuration...
+    free(config);
+}
+
+// Finally, the main function
+int main(int argc, char* argv[]) {
+    process_config();
+
+    if (global_error_count > 0) {
+        printf("Completed with %d errors\n", global_error_count);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+```
+
+Within class definitions, similar principles apply. In object-oriented languages, it's common to place fields and properties at the top of the class, followed
+by methods. Constructors and destructors often either come first (showing initialization) or last (showing the full lifecycle):
+
+```cpp
+class Customer {
+private:
+    // Fields first
+    std::string name_;
+    std::string email_;
+    int customer_id_;
+    std::vector<Order> orders_;
+
+public:
+    // Constructor
+    Customer(std::string name, std::string email)
+        : name_(std::move(name)), email_(std::move(email)), customer_id_(0) {}
+
+    // Destructor
+    ~Customer() {
+        // Cleanup if needed
+    }
+
+    // Accessors
+    const std::string& name() const { return name_; }
+    const std::string& email() const { return email_; }
+    int customer_id() const { return customer_id_; }
+
+    // Business logic methods
+    void place_order(const Order& order) {
+        orders_.push_back(order);
+    }
+
+    double calculate_total_spend() const {
+        double total = 0.0;
+        for (const auto& order : orders_) {
+            total += order.total_amount();
+        }
+        return total;
+    }
+};
+```
+
+In C++, where access modifiers create distinct sections within a class, the conventional order is often public members first (showing the interface),
+followed by protected members (for inheritance), and finally private implementation details. Some coding standards reverse this, putting private members
+first to emphasize data hiding. Either approach is fine, but be consistent within a project.
+
+Smalltalk, one of the earliest object-oriented languages, had an interesting approach to file organization. Instead of text files, Smalltalk code lived in
+an "image" -- a snapshot of the entire system state. Classes and methods were organized in a browser that showed hierarchical relationships, making the
+concept of "file organization" quite different. Modern environments have returned to some of these ideas with sophisticated IDE navigation tools.
+
+Beyond these general principles, place related items near each other. If two functions work closely together or one calls the other, keep them adjacent
+in the file. This proximity creates a cohesive narrative flow through the code:
+
+```lisp
+;; Group related functions together
+(defun parse-customer-record (record)
+  (let ((fields (split-string record ",")))
+    (make-customer :name (first fields)
+                   :email (second fields)
+                   :id (parse-integer (third fields)))))
+
+(defun validate-customer (customer)
+  (and (valid-name-p (customer-name customer))
+       (valid-email-p (customer-email customer))
+       (positive-integer-p (customer-id customer))))
+
+;; These functions operate on different entities, so they're separated
+(defun parse-product-record (record)
+  (let ((fields (split-string record ",")))
+    (make-product :name (first fields)
+                  :price (parse-float (second fields))
+                  :stock (parse-integer (third fields)))))
+```
+
+For files that grow larger despite your best efforts at decomposition, code folding becomes invaluable. This feature, available in most modern editors,
+allows you to collapse sections of code to focus on what's relevant. Some languages provide explicit support for this with region markers:
+
+```cs
+// In C#, you can use #region to define foldable sections
+#region Customer Management Functions
+
+public Customer CreateCustomer(string name, string email) {
+    // Implementation...
+}
+
+public bool UpdateCustomer(int id, Customer updatedInfo) {
+    // Implementation...
+}
+
+public bool DeleteCustomer(int id) {
+    // Implementation...
+}
+
+#endregion
+
+#region Order Processing Functions
+
+public Order CreateOrder(int customerId, List<OrderItem> items) {
+    // Implementation...
+}
+
+// More order functions...
+
+#endregion
+```
+
+Even in languages without built-in folding support, you can usually achieve similar results with comments that your editor recognizes. Emacs users like me often
+employ `outline-minor-mode`, which can fold sections based on comment patterns or indentation. Vim, Neovim, Helix, and Kakoune all offer folding
+capabilities that can be configured to work with your language of choice.
+
+Speaking of Forth, an interesting stack-based language from the 1970s, it took a unique approach to file organization. Forth's philosophy was extreme
+simplicity and directness, with a focus on small, composable "words" (functions). A well-written Forth file resembles a progressive revealing of a vocabulary,
+with each new word building on previously defined ones in an explicit bottom-up fashion. This approach naturally leads to good file organization.
+
+Always separate top-level items (functions, classes, type definitions) with empty lines. This visual breathing room helps
+readers identify the boundaries between major components:
+
+```rust
+struct Customer {
+    name: String,
+    email: String,
+    id: u32,
+}
+
+impl Customer {
+    fn new(name: String, email: String) -> Self {
+        Self {
+            name,
+            email,
+            id: 0,
+        }
+    }
+
+    fn validate(&self) -> bool {
+        // Validation logic...
+        true
+    }
+}
+
+struct Order {
+    items: Vec<OrderItem>,
+    customer_id: u32,
+    total: f64,
+}
+
+// Functions continue...
+```
+
+Finally, it's helpful to occasionally view your file from a "bird's eye view" to assess its organization. Many editors offer a command to collapse all
+foldable sections, giving you a structural overview. In VS Code, you might use "Fold All" (Ctrl+K Ctrl+0); in Emacs, `outline-hide-body`; in Vim, `zM`.
+Alternatively, tools like *ctags* can generate an index of all definitions in a file, providing a similar overview.
+
+Prolog, a logic programming language, illustrates the importance of file organization in a unique way. In Prolog, the order of clauses can affect program
+behavior due to its backtracking search strategy. A well-organized Prolog file groups related predicates and orders clauses to minimize backtracking,
+showing how even the structure of a source file can impact program efficiency. We will discuss Prolog more later on in this book, but this is how
+a file might look, where ordering matters:
+
+```prolog
+% base case first - immediately handles terminating condition
+factorial(0, 1) :- !.
+
+% recursive case second - only tried when base case doesn't match
+factorial(N, Result) :-
+    N > 0,
+    N1 is N - 1,
+    factorial(N1, SubResult),
+    Result is N * SubResult.
+```
+
+If we reversed the order of the clauses, Prolog would needlessly try the recursive clause first.
+
+All these considerations may seem like minutiae, but they compound to significantly affect readability and maintainability. A well-organized source file
+reduces the cognitive load on readers, allowing them to find what they need quickly and understand the code's structure without unnecessary effort. Just
+as a well-organized book with clear chapter divisions and a logical progression helps readers navigate complex topics, thoughtfully structured source
+files help programmers navigate complex codebases.
+
 == Naming things
 
 == Documenting code
