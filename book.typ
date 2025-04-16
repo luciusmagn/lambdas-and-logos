@@ -2499,20 +2499,26 @@ in the languages that have them.
 == Source code files
 
 Now that we've discussed line lengths and whitespace within the code, let's take a broader view and consider the organization
-of entire source files. A source file, much like a chapter in a book, should have a clear purpose and structure.
+of whole source files. Every file in your project, should have a clear purpose and structure.
 
-Long source files can be problematic. When a file grows beyond a few hundred lines, it becomes difficult to navigate and understand
-as a cohesive unit. The upper limit depends somewhat on the language and the nature of the code, but I generally get uncomfortable
-when files approach 1,000 lines. There are exceptions, of course -- generated code, certain types of data-heavy files, or code
-in languages where the class-per-file convention doesn't apply might legitimately be longer. But if you're regularly creating
-multi-thousand-line source files by hand, it's worth considering whether they could be split into more focused, single-responsibility components.
+Long source files can be problematic. When a file grows beyond a few hundred lines (or, let's arbitrarily say, more than 1500),
+it becomes difficult to navigate and understand as a cohesive unit. The upper limit depends somewhat on the language and the
+nature of the code, but I think you can develop a feel for it. There are exceptions, of course -- generated code, certain types
+of data-heavy files, or code in languages where the class-per-file convention doesn't apply might legitimately be longer.#footnote[
+    There is utility a whole projects being in the same file. This makes it more portable/practical, since a single file
+    is easier to distribute. Particularly in C, there is a trend of single file (usually single header) libraries.
+]
+But if you're regularly creating multi-thousand-line source files by hand, it's worth considering whether they could be split
+into more focused, single-responsibility components.
 
 The history of file size limitations is interesting. In early computing, physical constraints like memory limited file sizes. The CP/M operating
 system, popular in the late 1970s, limited files to 8 megabytes, which seemed enormous at the time. Today, while our computers can handle
 massive files, our human cognitive limitations remain unchanged. We simply can't hold thousands of lines of code in our working memory at once.
+If you ever manage to reach a source file that has more than a megabyte, and isn't generated from anything, please email me.
 
-Let's start at the top of a file. After any language-required headers (like the shebang line in shell scripts or the package declaration in Java),
-imports or includes typically come first. These statements declare dependencies and establish the context for the rest of the file. It's
+Anyways, now that we have the file length down, let's consider the actual contents.
+After any language-required headers (like the shebang line in shell scripts or the package declaration in Java),
+imports or includes typically come first. We declare dependencies and establish the context for the rest of the file. It's
 good practice to organize them logically, usually in groups separated by blank lines:
 
 ```python
@@ -2532,32 +2538,40 @@ from myapp.models import User
 from myapp.utils.formatting import format_currency
 ```
 
-This organization immediately communicates the file's dependencies to readers. They can see at a glance what standard facilities are being used,
-what external libraries are required, and what local components are involved.
+(I wouldn't add these comments, this is just to illustrate the logical grouping)
+
+This organization immediately communicates the file's dependencies to readers. They can see at a glance what standard facilities
+are being used, what external libraries are required, and what local components are involved.
 
 Avoid using wildcard or asterisk imports when possible. Instead of `from numpy import *`, which pulls all symbols from numpy into your namespace
-potentially causing naming conflicts, prefer explicit imports like `import numpy as np`. This makes it clear where each function or class is coming from:
+potentially causing naming conflicts,#footnote[
+    By doing reckless asterisk imports, you are making your code more fragile to changes of the libraries you are importing from.
+    A symbol that could have been previously disambiguated can be in a conflict, because now two libraries may be exporting it.
+] prefer explicit imports like `import numpy as np`. This makes it clear where
+each function or class is coming from:
 
 ```python
-# Poor practice - wildcard import
+# wildcard import
 from numpy import *
-result = sqrt(array([1, 2, 3]))  # Where do sqrt and array come from?
+result = sqrt(array([1, 2, 3]))
 
-# Better practice - explicit import
+# explicit import
 import numpy as np
-result = np.sqrt(np.array([1, 2, 3]))  # Clear source
+result = np.sqrt(np.array([1, 2, 3]))
 ```
 
-There are exceptions to this rule. Some libraries are specifically designed to be imported with wildcards. Parser combinator libraries in functional
-languages often work this way, as do many ORM query builders. Rust acknowledges this pattern formally with "prelude" modules
-specifically designed for wildcard importing:
+There are exceptions to this rule. Maybe this file is `numpy` heavy, and it does not depend on much beyond that, and typing `np.`
+everywhere would be much too redundant. Some libraries are also specifically designed to be imported with wildcards. Parser combinator
+libraries in functional languages often work this way, as do many ORM query builders. Rust acknowledges this pattern
+formally with "prelude" modules specifically designed for wildcard importing:
 
 ```rust
 // Importing a prelude is an accepted practice in Rust
 use sqlx::prelude::*;
 ```
 
-After imports, it's customary to place constants and global variables. These definitions establish the foundational values that the rest of the file will work with:
+After imports, it's a fairly good practice to place constants and global variables. These definitions establish the bindings
+that the rest of the file will work with, and that may be exported as public API:
 
 ```c
 #include <stdio.h>
@@ -2574,8 +2588,13 @@ static int global_error_count = 0;
 ```
 
 The rest of the file should follow a logical flow, generally defining building blocks before they're used. While modern compilers and
-interpreters don't typically require this ordering (C and C++ have forward declarations, and many languages do multiple passes), it makes the
-code more readable for humans who process information sequentially.
+interpreters don't typically require this ordering (C and C++ have forward declarations, and many languages do multiple passes)#footnote[
+    Forward declarations are an interesting concept as well. They are often present in languages that were at one point single-pass.
+    Meaning that the compiler essentially only went through the file once, and it wouldn't do any cross-referencing after the fact.
+    In practice, all contemporary C and C++ compilers are multi-pass, but we need to preserve the original semantics, or far too much
+    would break.
+],
+it makes the code more readable for humans who process information sequentially.
 
 This leads to a natural organization where helper functions come before the functions that use them, and the main entry
 point (if applicable) comes toward the end of the file:
@@ -2624,8 +2643,11 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-Within class definitions, similar principles apply. In object-oriented languages, it's common to place fields and properties at the top of the class, followed
-by methods. Constructors and destructors often either come first (showing initialization) or last (showing the full lifecycle):
+Within class definitions, similar principles apply. In object-oriented languages, it's common to place fields and properties
+at the top of the class, followed by methods. Constructors and destructors often either come first (showing initialization)
+or last (showing the full lifecycle):#footnote[
+    Whichever way you prefer, just be consistent
+]
 
 ```cpp
 class Customer {
@@ -2666,40 +2688,50 @@ public:
 };
 ```
 
-In C++, where access modifiers create distinct sections within a class, the conventional order is often public members first (showing the interface),
-followed by protected members (for inheritance), and finally private implementation details. Some coding standards reverse this, putting private members
-first to emphasize data hiding. Either approach is fine, but be consistent within a project.
+In C++, where access modifiers create distinct sections within a class, the conventional order is often
+public members first (showing the interface), followed by protected members (for inheritance), and finally private
+implementation details. Some coding standards reverse this, putting private members first to emphasize data hiding.
+Either approach is fine, but be consistent within a project.
 
-Smalltalk, one of the earliest object-oriented languages, had an interesting approach to file organization. Instead of text files, Smalltalk code lived in
-an "image" -- a snapshot of the entire system state. Classes and methods were organized in a browser that showed hierarchical relationships, making the
-concept of "file organization" quite different. Modern environments have returned to some of these ideas with sophisticated IDE navigation tools.
+Smalltalk, one of the earliest object-oriented languages, had an interesting approach to file organization.
+Instead of text files, Smalltalk code lived in an "image" -- a snapshot of the entire system state. Classes and
+methods were organized in a browser that showed hierarchical relationships, making the concept of "file organization"
+quite different. Modern environments have returned to some of these ideas with sophisticated IDE navigation tools.
 
-Beyond these general principles, place related items near each other. If two functions work closely together or one calls the other, keep them adjacent
-in the file. This proximity creates a cohesive narrative flow through the code:
+We will focus on Smalltalk a bit more when we discuss Object-Oriented Programming, as Smalltalk is both its purest
+form, and simultaneously what appears to be a genetic dead-end. I suppose, in some way, it was too good for us.
+
+Beyond these general principles, place related items near each other. If two functions work closely together or one
+calls the other, keep them adjacent in the file. This proximity creates a cohesive narrative flow through the code:#footnote[
+    This is another important point of what I am trying to convey. Our programs are best served as narratives.
+    Humans are wired for narratives. We frame almost everything all the time into narratives. Mnemonic tools often
+    involve creating narratives for the things you want to remember.
+]
 
 ```lisp
 ;; Group related functions together
 (defun parse-customer-record (record)
   (let ((fields (split-string record ",")))
-    (make-customer :name (first fields)
+    (make-customer :name  (first fields)
                    :email (second fields)
-                   :id (parse-integer (third fields)))))
+                   :id    (parse-integer (third fields)))))
 
 (defun validate-customer (customer)
-  (and (valid-name-p (customer-name customer))
-       (valid-email-p (customer-email customer))
+  (and (valid-name-p       (customer-name customer))
+       (valid-email-p      (customer-email customer))
        (positive-integer-p (customer-id customer))))
 
 ;; These functions operate on different entities, so they're separated
 (defun parse-product-record (record)
   (let ((fields (split-string record ",")))
-    (make-product :name (first fields)
+    (make-product :name  (first fields)
                   :price (parse-float (second fields))
                   :stock (parse-integer (third fields)))))
 ```
 
-For files that grow larger despite your best efforts at decomposition, code folding becomes invaluable. This feature, available in most modern editors,
-allows you to collapse sections of code to focus on what's relevant. Some languages provide explicit support for this with region markers:
+For files that grow larger despite your best efforts at decomposition, code folding becomes invaluable. Code folding is
+available in most modern editors, and it allows you to collapse sections of code to focus on what's relevant.
+Some languages provide explicit support for this with region markers, as does C\#, for instance:
 
 ```cs
 // In C#, you can use #region to define foldable sections
@@ -2730,9 +2762,10 @@ public Order CreateOrder(int customerId, List<OrderItem> items) {
 #endregion
 ```
 
-Even in languages without built-in folding support, you can usually achieve similar results with comments that your editor recognizes. Emacs users like me often
-employ `outline-minor-mode`, which can fold sections based on comment patterns or indentation. Vim, Neovim, Helix, and Kakoune all offer folding
-capabilities that can be configured to work with your language of choice.
+Even in languages without built-in folding support, you can usually achieve similar results with comments that your
+editor recognizes. Emacs users like me often employ `outline-minor-mode`, which can fold sections based on comment
+patterns or indentation. Vim, Neovim, Helix, and Kakoune all offer folding capabilities that can be configured to work
+with your language of choice. Every single IDE you can think of has it.
 
 Speaking of Forth, an interesting stack-based language from the 1970s, it took a unique approach to file organization. Forth's philosophy was extreme
 simplicity and directness, with a focus on small, composable "words" (functions). A well-written Forth file resembles a progressive revealing of a vocabulary,
