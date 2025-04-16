@@ -2767,12 +2767,8 @@ editor recognizes. Emacs users like me often employ `outline-minor-mode`, which 
 patterns or indentation. Vim, Neovim, Helix, and Kakoune all offer folding capabilities that can be configured to work
 with your language of choice. Every single IDE you can think of has it.
 
-Speaking of Forth, an interesting stack-based language from the 1970s, it took a unique approach to file organization. Forth's philosophy was extreme
-simplicity and directness, with a focus on small, composable "words" (functions). A well-written Forth file resembles a progressive revealing of a vocabulary,
-with each new word building on previously defined ones in an explicit bottom-up fashion. This approach naturally leads to good file organization.
-
-Always separate top-level items (functions, classes, type definitions) with empty lines. This visual breathing room helps
-readers identify the boundaries between major components:
+Another good practice is to always separate top-level items (functions, classes, type definitions) with empty lines.
+This visual breathing room helps readers identify the boundaries between major components:
 
 ```rust
 struct Customer {
@@ -2805,14 +2801,21 @@ struct Order {
 // Functions continue...
 ```
 
-Finally, it's helpful to occasionally view your file from a "bird's eye view" to assess its organization. Many editors offer a command to collapse all
-foldable sections, giving you a structural overview. In VS Code, you might use "Fold All" (Ctrl+K Ctrl+0); in Emacs, `outline-hide-body`; in Vim, `zM`.
-Alternatively, tools like *ctags* can generate an index of all definitions in a file, providing a similar overview.
+Finally, it's helpful to occasionally view your file from a "bird's eye view" to assess its organization. Many editors
+offer a command to collapse all foldable sections, giving you a structural overview. In VS Code, you might use "Fold All"
+(Ctrl+K Ctrl+0); in Emacs, `outline-hide-body`; in Vim, `zM`. Alternatively, tools like *ctags* can generate an index
+of all definitions in a file, providing a similar overview.
 
-Prolog, a logic programming language, illustrates the importance of file organization in a unique way. In Prolog, the order of clauses can affect program
-behavior due to its backtracking search strategy. A well-organized Prolog file groups related predicates and orders clauses to minimize backtracking,
-showing how even the structure of a source file can impact program efficiency. We will discuss Prolog more later on in this book, but this is how
-a file might look, where ordering matters:
+As one last example for this section, let's consider Prolog, a logic programming language, where file organization is fairly
+critical.#footnote[
+    Prolog is a very interesting and extremely influential language, although often, there is a lot of intermediary languages
+    between "a language you know" and Prolog. You are probably familiar with *SQL*, the lingua franca of relational databases.
+    The *SQL* language is heavily inspired by *datalog*. And *datalog* is a language heavily, heavily inspired by Prolog.
+    It just has a different evaluation model.
+] In Prolog, the order of clauses can affect program behavior due to its backtracking search strategy. A well-organized
+Prolog file groups related predicates and orders clauses to minimize backtracking, showing how even the structure of a source
+file can impact program efficiency. We will discuss Prolog more later on in this book, but this is how a file might look,
+where ordering matters:
 
 ```prolog
 % base case first - immediately handles terminating condition
@@ -2828,10 +2831,9 @@ factorial(N, Result) :-
 
 If we reversed the order of the clauses, Prolog would needlessly try the recursive clause first.
 
-All these considerations may seem like minutiae, but they compound to significantly affect readability and maintainability. A well-organized source file
-reduces the cognitive load on readers, allowing them to find what they need quickly and understand the code's structure without unnecessary effort. Just
-as a well-organized book with clear chapter divisions and a logical progression helps readers navigate complex topics, thoughtfully structured source
-files help programmers navigate complex codebases.
+All these considerations may seem like tinny details, but they compound to significantly affect readability and maintainability.
+A well-organized source file reduces the mental load on readers, allowing them to find what they need quickly and
+understand the code's structure without unnecessary effort. And once again, you are a reader too! So make your job easier, too.
 
 == Naming things
 
