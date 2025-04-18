@@ -3348,7 +3348,7 @@ it without having to dig through `git blame`. For example:
  * Using a bubble sort here because the data set is guaranteed to be
  * small (<10 elements) and nearly sorted already. Benchmarking showed
  * no benefit from more complex algorithms in this specific case.
- * - LH, 2023-06-15
+ * - LH, 1989-06-15
  */
 ```
 
