@@ -2837,6 +2837,367 @@ understand the code's structure without unnecessary effort. And once again, you 
 
 == Naming things
 
+Naming things is one of the genuinely difficult problems in programming. As Phil Karlton famously quipped, "There
+are only two hard things in Computer Science: cache invalidation and naming things." A good name communicates
+the purpose of a variable, function, or type, making code more readable and maintainable. Poor naming, on the other hand,
+can mislead readers and introduce subtle bugs.#footnote[
+    The "Safe Code in C" subject at the Czech Technical University actually lists misleading naming among security issues.
+    However, they have hungarian notation in their examples (explained later on in this chapter), which still makes them
+    moderately deplorable.
+]
+
+The primary goal of a name is to communicate the purpose of the symbol it represents.#footnote[
+    By symbol I mean class, variable, struct, constant, function, method, macro, module name, package name,
+    interface, trait, typeclass and whatever else you can think of a as a logical named unit in a given
+    programming language.
+] When someone reads your function
+name along with its parameters and return type, they should be able to make a reasonable guess about what the
+function does, even if they don't see the implementation.#footnote[
+    It is generally a sign of a badly executed library if its users have to constantly refer to its implementation,
+    as opposed to being good with what the LSP/Editor suggests in autocomplete plus documentation.
+] Consider this function signature:
+
+```c
+int calculate(int a, int b);
+```
+
+This tells us almost nothing. Compare it to:
+
+```c
+int add_integers(int first_number, int second_number);
+```
+
+The latter immediately communicates its purpose. We would be shocked if this function did anything other than
+return the sum of the two parameters.#footnote[
+    This function could have been called just `add`, and in many languages, it would have been. However,
+    C generics are a bit problematic and bordering on functionally non-existent, and C also has no notion
+    of methods, or modules, so `add()` is very likely to polute the namespace of bigger projects. Remember
+    that `add()` can stand for adding up to numbers (and here we have the problem of numerous number tupes),
+    but also for adding an element to a collection (e.g. a vector or a linked list -- although semantically,
+    you could have a different names for it -- `push` or `append`)
+]
+
+One of the first considerations when naming things is to follow the existing conventions of the language you're using.
+Each programming language has developed its own naming traditions over time. C++ uses camelCase for methods, snake_case
+for variables,#footnote[
+    Often, but not always. C and C++ are both very inconsistent in naming conventions. There are many style guides
+    with different ideas about how you should do things. Generally, the style guides are at their core the reflection
+    of the time and culture they were created in. For C++, I used to generally try and follow the LLVM project style
+    guide, since if someone is a deeply-knowledgeable authority on that language, its probably the guys developing
+    a major compiler for it.
+] and PascalCase for classes. Java uses camelCase for methods and variables, and PascalCase for classes.
+Python generally uses snake_case for almost everything except classes, which use PascalCase.
+
+If you're contributing to an existing project that has established naming conventions, follow them even if they differ
+from the language norms or your personal preferences. Consistency is more valuable than personal expression when it
+comes to code readability. If you believe the project's conventions need improvement, that's a discussion to have with
+the team rather than a unilateral decision to make in your next commit.#footnote[
+    I don't think this is really neccessary to say, but it helps to have justification for the changes you suggest.
+    Just barging in and saying "your naming conventions are shit" probably won't garner you much support in your
+    endeavor.
+]
+
+The history of naming conventions includes some interesting diversions. Hungarian notation,#footnote[
+    It is called "hungarian" because it was invented by Charles Simonyi, who is hungarian. He was a programmer
+    at Xerox PARC, one of the legendary places where major advances in computing were being made in the last
+    century. He later joined Microsoft. There is a an alleged second justification for "hungarian", and that is
+    "because it made programs look like they were written in some inscrutable foreign language".
+] popularized at Microsoft
+in the 1980s, prefixed variable names with information about their type. For example, `szName` indicated a zero-terminated string,
+while `iCount` indicated an integer.#footnote[
+    There are actually two types of the hungarian notation, Systems hungarian and Apps hungarian.
+    In the first variant, we prefix with the actual data type, in the latter, we prefix with a more
+    logical data type. `iCount` is Systems, `szName` is Apps -- because there is no zero-terminated string type
+    present in the language.
+] This made sense in early programming environments where type information wasn't
+easily available and using the wrong type could lead to subtle bugs.#footnote[
+    And when we also had shittier editors, and very often, didn't even write code on a computer.
+]
+
+Today, Hungarian notation should be avoided at all costs. Modern languages have strong type systems, and development
+environments can show you the type of any variable on demand. Hungarian notation now just adds visual clutter without
+providing value. The original form was actually about semantic information (what the variable is for) rather than
+just the type, but most people implemented it incorrectly anyway.#footnote[
+     vUsing adjHungarian nnotation vmakes nreading ncode adjdifficult. --Mark Stock
+]
+
+I also consider problematic is the "C" prefix some C++ programmers use for class names, like `CProduct` or `CCustomer`.
+This convention emerged from early Windows programming and Microsoft's MFC library, but it really adds no value.
+The "C" merely indicates that the symbol is a class, which is already obvious from context
+and potentially from PascalCase naming. Modern C++ code has abandoned this practice in favor of cleaner
+names like simply `Product` or `Customer`.#footnote[
+    Of all the bad naming conventions, I hate this one the most.
+]
+
+That said, some prefixes remain useful in certain contexts. In C++, using an underscore prefix (`_name`) or suffix (`name_`) for
+class member variables can help distinguish them from local variables in methods, particularly in languages that
+don't require explicit `this.` or `self.` references. The `m_` prefix (like `m_name`) is less elegant but serves the
+same purpose.#footnote[
+    I don't like the `m_` prefix, since it stands for *member*, which registers the same way as the `C` prefix
+    for *class*, but I am willing to begrudgingly accept its existence.
+] In Rust, an underscore prefix is used to mark variables that are intentionally unused, suppressing
+compiler warnings. For example:
+
+```rust
+fn process_result(result: Result<String, Error>) {
+    let _unused = result.expect("This just asserts, we don't use the value");
+    // or:
+    let _ = some_function_with_side_effects();
+}
+```
+
+It's important that a name communicates the purpose of what it's naming, not redundant information about what kind of
+symbol it is. Don't add `Class` to class names, `function` to function names, or `var` to variable names. This
+is stating the obvious and adds noise without value. A class representing a user should be `User`, not `UserClass`.
+A class storing configuration should be called `Configuration`, not `ConfigurationManager`.#footnote[
+    I think I stole this from Mark Rendle, but I am not sure which of his talks it was. He is a great guy,
+    always on the verge of mental breakdown.
+]
+
+The importance of a name scales with the scope of the symbol. Variables used across an entire class or module deserve
+descriptive names. Conversely, variables with tiny scopes can be shorter without losing clarity. In a small closure/lambda
+function in Rust, short parameter names are perfectly clear:
+
+```rust
+let parsed_values = raw_data.iter()
+    .filter_map(|s| s.parse::<i32>().ok())
+    .collect::<Vec<_>>();
+```
+
+Here, `s` is fine because its scope is just a few characters long and the context makes its purpose obvious.
+
+Some languages have developed distinctive naming conventions. Scheme, a Lisp dialect, has particularly well-thought-out
+conventions. Predicates (functions that return true/false) end with a question mark, like `string?` or `null?`. Mutating
+functions that change their arguments end with an exclamation mark, like `set!` or `vector-set!`. Type conversion
+functions often contain an arrow, like `string->number`. Here's how these conventions look in actual Scheme code:
+
+```lisp
+;; Predicate functions with ? suffix
+(define (empty? lst)
+  (null? lst))
+
+;; Mutation functions with ! suffix
+(define (reverse-in-place! vec)
+  (let ((len (vector-length vec)))
+    (do ((i 0 (+ i 1))
+         (j (- len 1) (- j 1)))
+        ((>= i j))
+      (let ((temp (vector-ref vec i)))
+        (vector-set! vec i (vector-ref vec j))
+        (vector-set! vec j temp)))))
+
+;; Conversion with -> notation
+(define (string->integer str)
+  (call-with-input-string str read))
+```
+
+These conventions make Scheme code quite self-documenting. Just by looking at a function name, you can tell if it's
+a predicate, if it mutates its arguments, or if it's performing a type conversion. It is very helpful, since readability
+in the Lisps largely depends on the identifiers and formatting, we have very little punctuation to help us out.
+
+Common Lisp, interestingly, doesn't follow these conventions as strictly. Its predicates are less consistent, sometimes
+using `-p` suffixes (like `stringp`)#footnote[
+    There are also some rules about whether the suffix should be `p` or `-p`. If the identifier is a single word
+    with no dashes in it, then `p` like `stringp`, if it is multiple, like `user-subscribed`, then `user-subscribed-p`.
+    You will find things that break this convention.
+] and sometimes using other patterns. However, it does have some unique conventions.
+"Earmuffs" (asterisks surrounding a name) mark special variables with dynamic scope, warning programmers about their
+unusual binding behavior:
+
+```lisp
+(defvar *global-database* nil)
+
+(let ((*global-database* (connect-to-database)))
+  ;; Code using the temporarily bound special variable
+  )
+```
+
+Constants in Common Lisp often use "plusmuffs" (plus signs around a name):
+
+```lisp
+(defconstant +max-connections+ 100)
+```
+
+The Lisp family is somewhat unusual in allowing characters like `-`, `?`, `!`, and `+` in identifiers. Most languages
+restrict identifiers to alphanumeric characters and underscores to simplify parsing, especially when using infix
+operators. This is a fundamental distinction that's worth understanding.
+
+In languages with infix operators, the parser needs to disambiguate between operators and identifiers. If `-` can
+be both a subtraction operator (as in `a - b`) and part of an identifier (as in `user-name`), the parser needs
+complex rules to determine which is which in any context. This is why most infix languages prohibit symbols
+like `-` in identifiers.
+
+Lisp's prefix notation elegantly sidesteps this problem. Since operators are just functions in the first position of
+a list, like `(+ a b)`, there's never ambiguity about whether a symbol is an operator or part of an identifier. This
+allows Lisp dialects to use a much richer character set for identifiers, enabling the expressive naming conventions
+we see in Scheme and Common Lisp.
+
+This explains why most mainstream languages have more restrictive naming rules - it's a direct consequence of their
+infix syntax, not an arbitrary limitation.
+
+The language Nim takes a unique approach to naming flexibility. Nim is case-insensitive and underscore-insensitive,
+meaning these identifiers are all considered identical:
+
+```nim
+proc addTwoNumbers(a, b: int): int =
+  return a + b
+
+# These calls are all identical to Nim
+echo add_two_numbers(3, 4)  # Works
+echo addTwoNumbers(5, 6)    # Also works
+echo addtwoNUMBERS(7, 8)    # Still works
+```
+
+This eliminates whole categories of naming debates but might be confusing to programmers coming from other languages.#footnote[
+    Nim has an interesting heritage, drawing inspiration from several languages considered somewhat obscure today, including Oberon,
+    Modula-2, and Modula-3, all from the Pascal family. These languages were designed by Niklaus Wirth and his colleagues with a
+    focus on simplicity, safety, and efficiency. Nim also takes ideas from Python's syntax and Ada's type system, creating a unique
+    blend of influences from both mainstream and academic languages.
+]
+
+In the early days of computing, when memory and display space were limited, there was pressure to keep identifiers short. C's standard
+library reflects this history with functions like `strcpy` (string copy) and `printf` (print formatted). There's no honor in continuing
+this tradition of omitting vowels or creating cryptic acronyms. Modern computers have no practical limit on identifier length,
+and modern editors have autocompletion.
+
+This C code from the 1970s:
+
+```c
+char *strcpy(char *dst, const char *src);
+```
+
+Would be more readable today as:
+
+```c
+char *string_copy(char *destination, const char *source);
+```
+
+Unfortunately, we can't change C's standard library without breaking millions of programs,
+but we shouldn't perpetuate this style in new code.
+
+When choosing a casing convention in a language without strong norms, I like to use PascalCase (also called UpperCamelCase) for types,
+traits, interfaces, and similar constructs, while using snake_case for functions, methods, and variables. This visually distinguishes
+types from values, making code easier to parse at a glance. Many languages use ALL_CAPS for constants, which is another useful visual distinction.
+
+These clear conventions can be leveraged by syntax highlighting to provide additional visual cues. When your editor
+can identify types, functions, and variables based partly on their naming patterns, it can color them differently,
+further enhancing readability.#footnote[
+    Some languages, like Haskell, actually require this distinction - types must start with an uppercase letter, while values and functions must start with lowercase.
+]
+
+Since we're discussing C idioms, it's worth mentioning a common mistake: adding the suffix `_t` to type names. This suffix is reserved
+by POSIX for standard type definitions. If you create your own type like `my_struct_t`, you risk conflicts with future standards.
+Instead, use no suffix at all.
+
+Modern programming languages have features that allow more concise naming without sacrificing clarity. With methods, generics, or
+typeclasses, we can have a single `.length()` method that works on vectors, arrays, strings, or any other collection, rather than
+needing specific names like `vector_length()`, `array_length()`, and so on. This is part of why object-oriented and functional
+programming can lead to more readable code:#footnote[
+    In C, we cannot really do this. This is partly what makes it incredibly verbose, and part of the original appeal of C++,
+    and also of Object Oriented Programming at large.
+]
+
+```rust
+// Each collection type has its own .len() method
+let string_length = my_string.len();
+let vector_length = my_vector.len();
+let map_length = my_hashmap.len();
+```
+
+Many languages have semantic naming conventions that go beyond syntax. In Rust, there's a strong convention that constructors are named `new`:#footnote[
+    Rust actually doesn't have constructor methods. We are simply using functions that return a new instance, and are functionally no different
+    from other functions.
+]
+
+```rust
+let my_string = String::new();
+let my_vector = Vec::new();
+```
+
+If you're creating a new type in Rust, using any other name for the basic constructor like `create()` or `make_instance()` would violate
+user expectations. Similarly, conversion functions often use `from` and `into`:
+
+```rust
+let s = String::from("hello");
+let v: Vec<u8> = s.into();
+```
+
+Following these semantic conventions makes your code more predictable for others. The most common operations should
+have the most conventional names.
+
+Sometimes context affects naming priorities. Consider this Python code from my friend Kaden Bilyeu (aka Bikatr7), written for the Advent
+of Code programming competition:
+
+```python
+from aocd import get_data,submit
+
+def is_saf(lvl):
+    for i in range(len(lvl)-1):
+        if(lvl[i] == lvl[i+1]):
+            return False
+
+    dif = [lvl[i+1]-lvl[i] for i in range(len(lvl)-1)]
+    inc = all(d > 0 for d in dif)
+    dec = all(d < 0 for d in dif)
+
+    if(not (inc or dec)):
+        return False
+
+    return all(1 <= abs(d) <= 3 for d in dif)
+
+def chk_damp(lvl):
+    if(is_saf(lvl)):
+        return True
+
+    for i in range(len(lvl)):
+        tmp = lvl[:i] + lvl[i+1:]
+        if(is_saf(tmp)):
+            return True
+    return False
+```
+
+By normal standards, this naming is terrible. `is_saf` presumably means "is safe," `chk_damp` might be "check damping,"
+and `lvl` is likely "level." In production code, this would be unacceptable. But in a programming competition where typing speed matters,
+these shortcuts can make sense. The code was written to be produced quickly, not maintained for years. Context matters.
+
+Single-letter variable names do have legitimate uses. In mathematical code, using `x`, `y`, and `z` for coordinates or `i`, `j`, and `k`
+for loop indices is often clearer than longer names because they match established mathematical conventions. For example:
+
+```python
+def quadratic_formula(a, b, c):
+    discriminant = b**2 - 4*a*c
+    if discriminant < 0:
+        return None  # No real solutions
+    x1 = (-b + math.sqrt(discriminant)) / (2*a)
+    x2 = (-b - math.sqrt(discriminant)) / (2*a)
+    return (x1, x2)
+```
+
+Here, `a`, `b`, and `c` are more appropriate than `coefficient_a`, `coefficient_b`, and `coefficient_c` because they directly reference the
+standard form of a quadratic equation: `ax² + bx + c = 0`.
+
+In Haskell, single-letter variables are common in function definitions, but for a different reason. Haskell's focus on composition and partial
+application means many functions are written in a point-free style where the arguments aren't explicitly named:
+
+```haskell
+-- Double every element and keep only the even results
+processNumbers :: [Int] -> [Int]
+processNumbers = filter even . map (*2)
+```
+
+This style treats functions as transformations to be composed rather than operations on explicit variables. When variables are needed,
+they're often given meaningful names for complex values but single letters for simple parameters, following mathematical tradition.
+
+The essence of good naming is that it makes code easier to understand for humans. A computer doesn't care what you call your
+variables -- you could name everything `x1`, `x2`, `x3` and the program would run the same. But you and your collaborators need to
+read, understand, and modify that code. Good names serve as documentation, explaining the purpose and intent of each piece of code.
+
+In any case, be consistent. Consistency within a codebase is more important than following any particular naming convention. If half
+your functions use `snake_case` and half use `camelCase`, readers will be constantly distracted by the inconsistency.#footnote[
+    I actually get physically annoyed at inconsistent code.
+] Pick conventions
+that work for your project and stick to them religiously.
+
 == Documenting code
 
 == Taming your hubris
