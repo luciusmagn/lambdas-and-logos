@@ -2841,7 +2841,7 @@ Naming things is one of the genuinely difficult problems in programming. As Phil
 are only two hard things in Computer Science: cache invalidation and naming things." A good name communicates
 the purpose of a variable, function, or type, making code more readable and maintainable. Poor naming, on the other hand,
 can mislead readers and introduce subtle bugs.#footnote[
-    The "Safe Code in C" subject at the Czech Technical University actually lists misleading naming among security issues.
+    The "Safe Code" subject at the Czech Technical University actually lists misleading naming among issues (documentation).
     However, they have hungarian notation in their examples (explained later on in this chapter), which still makes them
     moderately deplorable.
 ]
@@ -3408,6 +3408,224 @@ Documentation is an important part of elegant code, so don't skimp out on it. Id
 the project. Just like writing integration tests, it helps you get some insight into whatever it is that you are doing.
 
 == Taming your hubris
+
+If you've spent any time in the programming world, you've likely encountered what I call the "hubris problem." Many programmers,
+especially those early in their career, suffer from an overabundance of confidence that manifests in various ways. They
+believe their chosen solution is unquestionably the best, that their preferred technologies are superior to all alternatives,
+that they can build incredibly ambitious systems without breaking a sweat, and most dangerously, that they never make mistakes.
+
+This hubris isn't entirely negative. The belief that you can build something grand and ambitious is actually essential for innovation.
+Without it, we wouldn't have many of the software systems we rely on today. Nobody would start building an operating system,
+a web browser, or a new programming language if they had a completely realistic assessment of the challenges involved. Sometimes
+a healthy dose of overconfidence is necessary to begin ambitious projects that change the world.
+
+The problem arises when this confidence isn't tempered with appropriate caution and humility. At the small scale, this often
+manifests as overly clever code. We've all seen it - dense, cryptic one-liners that the author was clearly proud of, but
+that make maintenance a nightmare, or the opposite, a hundred lines that could have been 10 lines.
+
+Consider this scenario: you need to find all prime numbers up to a certain limit. Here's an overly clever
+solution using the Sieve of Atkin:
+
+```python
+def sieve_of_atkin(limit):
+    # Initialize sieve
+    sieve = [False] * (limit + 1)
+    # Put in candidate primes based on quadratic forms
+    for x in range(1, int(limit**0.5) + 1):
+        for y in range(1, int(limit**0.5) + 1):
+            # First quadratic form: 4x² + y² = n
+            n = 4 * x**2 + y**2
+            if n <= limit and (n % 12 == 1 or n % 12 == 5):
+                sieve[n] = not sieve[n]
+
+            # Second quadratic form: 3x² + y² = n
+            n = 3 * x**2 + y**2
+            if n <= limit and n % 12 == 7:
+                sieve[n] = not sieve[n]
+
+            # Third quadratic form: 3x² - y² = n (when x > y)
+            n = 3 * x**2 - y**2
+            if x > y and n <= limit and n % 12 == 11:
+                sieve[n] = not sieve[n]
+
+    # Eliminate composites by sieving
+    for x in range(5, int(limit**0.5) + 1):
+        if sieve[x]:
+            for y in range(x**2, limit + 1, x**2):
+                sieve[y] = False
+
+    # Generate primes
+    primes = [2, 3]
+    primes.extend([x for x in range(5, limit + 1) if sieve[x]])
+    return primes
+```
+
+Versus a more straightforward approach using the Sieve of Eratosthenes:
+
+```python
+def sieve_of_eratosthenes(limit):
+    # Create a boolean array and initialize all entries as true
+    prime = [True for i in range(limit + 1)]
+    p = 2
+
+    while p * p <= limit:
+        # If prime[p] is not changed, then it is a prime
+        if prime[p]:
+            # Update all multiples of p
+            for i in range(p * p, limit + 1, p):
+                prime[i] = False
+        p += 1
+
+    # Generate primes
+    primes = [p for p in range(2, limit + 1) if prime[p]]
+    return primes
+```
+
+And for truly small limits, sometimes the simplest solution is just a hardcoded table:
+
+```python
+def small_primes(limit):
+    # Hardcoded list of first few primes
+    all_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+    # Return only primes up to the limit
+    return [p for p in all_primes if p <= limit]
+```
+
+The Sieve of Atkin is theoretically more efficient for very large numbers, but it's complex, difficult to understand
+at a glance, and easy to implement incorrectly. The Sieve of Eratosthenes is straightforward, well-understood, and
+sufficient for most practical applications. And for small ranges, a simple lookup table might be the most readable and efficient solution of all.
+
+This exemplifies the KISS principle - Keep It Simple, Stupid. Often attributed to Kelly Johnson of Lockheed Skunk Works,
+this principle reminds us that simplicity should be a key goal in design. Systems work best when they're simple rather than complex.
+
+Complex code is more prone to bugs, harder to test, and creates a higher cognitive load for everyone who has to work
+with it. There's a time and place for clever solutions, but it's usually when performance constraints genuinely demand
+it, not when you're trying to impress your colleagues or future readers of your code.
+
+The history of programming languages offers interesting case studies in hubris and its interaction with ambition.
+Let's look at two contrasting examples: Rust and Lisp.
+
+Rust emerged partly as a response to a particular kind of hubris - the belief that it was feasible for large teams to
+write safe, secure software in C++. Many talented programmers held this belief, including those at Mozilla working
+on the Firefox browser. They implemented best practices, used static analyzers, conducted code reviews, and followed
+all the established advice for writing secure C++. Yet memory safety bugs continued to plague their codebase.
+
+This wasn't because the Mozilla engineers were incompetent - quite the opposite. They were among the best in
+the industry. The problem was systemic. C++ gives you tremendous power and flexibility, but it puts the entire burden of
+memory safety on the programmer. You might enforce rigorous standards on your own code, but what about your
+dependencies? What about code written by team members who joined recently? What happens when deadline pressure forces shortcuts?
+
+The Mozilla engineers who conceived Rust realized that a different approach was needed. Instead of making safety
+opt-in through careful coding practices, they designed a language where safety was the default and unsafety required
+explicit opt-out. This was an ambitious goal, and there was certainly hubris in thinking they could create a systems
+programming language that was both safe and fast. But in this case, the ambition was justified, and Rust has successfully
+carved out a niche as a language for systems programming where safety is paramount.
+
+We shouldn't criticize C++ too harshly for its safety issues. It was designed in a different era, with different
+constraints and priorities. Compatibility with C was a primary goal, which necessarily limited how safe it could be.
+Every language makes trade-offs, and C++ prioritized backward compatibility and performance over safety guarantees.
+
+Lisp represents a different kind of ambitious hubris. When John McCarthy created Lisp in the late 1950s, most programming
+was done in assembly language or early compiled languages like FORTRAN. These languages were closely tied to the machine
+architecture - the Turing machine model of computation. McCarthy was working on artificial intelligence and needed
+a language that could manipulate symbolic expressions more naturally.
+
+Rather than starting from the Turing machine model, McCarthy based Lisp on lambda calculus, a mathematical formalism for
+describing computation developed by Alonzo Church in the 1930s.#footnote[
+    This is partly what inspired the title of this book, "Lambdas and Logos." Lambda represents this alternative model of computation based on functions rather than state machines, while Logos represents the idea of programming as a form of communication and reasoning.
+]
+
+Lambda calculus offers a completely different way of thinking about computation, focusing on functions and their applications
+rather than state machines. It treats functions as first-class values that can be passed around, returned from other functions,
+and created dynamically. This was an extremely abstract concept for a programming language in 1958.
+
+Lambda calculus and Turing machines represent two fundamentally different but equally powerful models of computation that
+emerged in the 1930s. While both can compute the same set of functions (as demonstrated by the Church-Turing thesis), they
+offer radically different perspectives on what computation is.
+
+Turing machines model computation as a sequence of state changes on a memory tape - a mechanical process of reading, writing,
+and moving according to a finite table of rules. This naturally maps to imperative programming languages where you explicitly
+manipulate state. Lambda calculus, by contrast, models computation as a process of function application and substitution, with
+no concept of state or time - just pure transformation of expressions according to simple rules. This corresponds more
+naturally to functional programming, where you think in terms of transformations rather than steps. Most mainstream programming
+languages are built on the Turing machine model, with their assignment statements, loops, and mutable data structures.
+This isn't because the Turing model is inherently superior, but because early computers were physical machines with
+explicit state, making the Turing approach a more intuitive fit for hardware. As we've moved toward higher-level
+abstractions and parallel computing, many of lambda calculus's ideas have proven increasingly valuable.#footnote[
+    There is another, third model of computation rearing its head in recent years -- interaction nets and
+    interaction combinators. Introduced by Yves Lafont in the early 1990s, interaction nets provide a graph-based
+    model of computation where transformations occur through local interactions between nodes in a network. Interaction
+    combinators distill this model to just three primitive operations (typically called gamma, delta, and epsilon)
+    that together form a complete computational system. What makes this approach particularly compelling is its inherent
+    parallelism and optimal reduction properties - computations naturally share results and can execute concurrently without
+    complex coordination. These theoretical advantages have remained largely academic until recently, when Victor Taelin
+    began implementing them in practical systems. His Higher-Order Virtual Machine (HVM) and the newer HVM2, along with
+    the Bend programming language built on these principles, represent one of the first serious attempts to bring interaction
+    combinators from mathematical theory into practical programming. While still experimental, this approach promises a
+    computing model that might better utilize the massively parallel hardware we're increasingly building, potentially offering
+    significant efficiency gains for certain problems compared to both imperative and traditional functional approaches.
+    Bend is particularly interesting because it looks and feels like a normal functional language (well it looks like Python),
+    despite its radically different underlying execution model.
+]
+
+The hubris of McCarthy and the early Lisp pioneers was thinking they could create a practical programming language based
+on these abstract mathematical principles. Yet they succeeded, and Lisp became not just a usable language but an extraordinarily
+influential one. The concepts pioneered in Lisp - garbage collection, dynamic typing, first-class functions, and
+homoiconicity (code as data) - have influenced virtually every modern programming language.#footnote[
+    Lisp actually introduced even more fundamental things, such as the `if` statement, where each branch had
+    a body. Before, all we would have are conditional jumps in the note of `IF CONDITION GO TO SOMEWHERE`
+]
+
+Common Lisp, which emerged in the 1980s as a standardization of various Lisp dialects, took this ambition even further. It
+aimed to be the ultimate programmable programming language, with a powerful macro system that allowed programmers to extend
+the language itself. This quote from Kent Pitman captures the philosophical difference:
+
+```lisp
+;; C programmers say:
+(printf "Hello, world!\n")
+
+;; Pascal programmers say:
+(writeln '|Hello, world!|)
+
+;; Lisp programmers say:
+(defun hello-world ()
+  (format t "Hello, world!~%"))
+
+;; And then they say:
+(defmacro greet (name)
+  `(format t "Hello, ~A!~%" ,name))
+```
+
+In most languages, you adapt your problem to the language. In Lisp, you can adapt the language to your problem.
+
+Both Rust and Lisp represent cases where ambitious hubris led to genuine innovation. But for every such success story, there
+are countless projects where hubris led to failure - overengineered solutions that collapsed under their own complexity,
+reinvented wheels that turned out lopsided, or clever hacks that became maintenance nightmares.
+
+Learning to program is a never-ending series of what we might call, borrowing from Plato, cave experiences. You start in darkness,
+seeing only shadows. You learn a language, a framework, a paradigm, and think "Now I understand programming." Then you
+step outside and realize you were just seeing shadows on the wall of a much larger cave. This process repeats endlessly.
+
+It's foolish to believe you've reached the end of this journey - that you know all there is to know about programming
+and have nothing more to learn. Even programmers with decades of experience continue to encounter new ideas, techniques,
+and paradigms that change how they think about code. You can learn from programmers less experienced than you, who might
+see problems from fresh perspectives. You can learn from languages and tools you've never used, which might
+approach problems in ways you never considered.
+
+The Smalltalk community has a saying that captures this: "Simple things should be simple, complex things should be possible."
+This philosophy led them to create one of the first object-oriented languages and the first modern IDE with a graphical
+user interface in the 1970s. Despite Smalltalk's influence on modern programming, many programmers have never used it or
+studied its ideas directly. This is just one example of how limiting yourself to what you already know can prevent you
+from discovering valuable insights.
+
+To wrap up, it's perfectly fine - even necessary - to have big ideas and ambitious goals. Don't let imposter syndrome or
+lack of confidence hold you back from attempting significant projects. But approach your craft with humility and an awareness
+of your own limitations. Recognize that you will make mistakes, that your first solution might not be optimal, and that
+there's always more to learn. Balance your ambition with a willingness to question your assumptions and listen to feedback.
+
+The best programmers aren't those who never make mistakes or always choose the perfect solution on the first try. They're
+those who can recognize their mistakes, adapt their thinking, and continually improve their craft through a
+combination of ambition and humility.
 
 == Paradigms
 
