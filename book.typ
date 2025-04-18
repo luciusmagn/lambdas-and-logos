@@ -3204,7 +3204,163 @@ And since we mentioned the word documentation, let's look at it more broadly.
 
 == Documenting code
 
+
+The importance of documentation in software development is something I'll assume you already know. If you've ever had to work with an undocumented library or tried to modify code that has no documentation, you know the pain of trying to decipher what the original author was thinking. Documentation is critical for both programming in the small -- helping understand individual functions and classes -- and programming in the large -- providing a roadmap for navigating complex systems.
+
+Documentation exists in several forms. There's user-facing documentation, which explains how to use a product from a business perspective. This is what most people think of when they hear "documentation" -- manuals, help files, or knowledge bases. But there's also programmer-facing documentation, which itself splits into two categories: documentation for those using your code as a library or API, and documentation for those contributing to your codebase.
+
+Let's talk about documentation for library users first. This typically lives outside the source code itself, often in dedicated documentation files, websites, or READMEs. However, some languages have integrated documentation systems that extract documentation directly from source code. Rust is particularly good at this, with its documentation comments that can include executable code examples:
+
+```rust
+/// Adds two numbers together.
+///
+/// # Examples
+///
+/// \`\`\`
+/// let result = my_crate::add(2, 3);
+/// assert_eq!(result, 5);
+/// \`\`\`
+pub fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+```
+
+When you run `cargo doc`, Rust generates beautiful HTML documentation that includes these examples. But more importantly, when you run `cargo test`, Rust will actually execute the code in your documentation examples as tests. These "doctests" ensure that your documentation stays in sync with your code. If you change the behavior of a function without updating its documentation, the tests will fail.
+
+This is a brilliant solution to the age-old problem of documentation drift, where documentation becomes increasingly inaccurate as code evolves. If your language doesn't have built-in support for this, it's worth investigating if there are third-party tools that offer similar functionality.
+
+Not that many languages are as tightly integrated with documentation as Rust is, but many of them have tools in
+their ecosystem that can parse and generate documentation from specially formatted comments. Let's consider this
+completelely undocummented example of Scala:
+
+#show raw: set text(font: "Berkeley Mono", ligatures: false, size: 7pt, features: (calt: 0))
+```scala
+def calculateDiscount(items: List[Map[String, Any]]): Map[String, Double] = {
+  val eligibleItems = items.filter(item =>
+    item.contains("price") &&
+    item.contains("category") &&
+    item("price").toString.toDouble >= 20.0
+  )
+
+  val categoryTotals = eligibleItems.groupBy(item => item("category"))
+    .map { case (category, items) =>
+      val total = items.map(i => i("price").toString.toDouble).sum
+      (category.toString, total * (if (total > 100) 0.15 else 0.1))
+    }
+
+  categoryTotals
+}
+```
+
+We can add a comment that is parsed by the *scaladoc* tools that will document this function:
+
+```scala
+/**
+ * Calculates category-based discounts for items meeting price thresholds.
+ *
+ * @param items List of items with their details
+ * @return Map of category names to calculated discount amounts
+ */
+def calculateDiscount(items: List[Map[String, Any]]): Map[String, Double] = {
+  val eligibleItems = items.filter(item =>
+    item.contains("price") &&
+    item.contains("category") &&
+    item("price").toString.toDouble >= 20.0
+  )
+
+  val categoryTotals = eligibleItems.groupBy(item => item("category"))
+    .map { case (category, items) =>
+      val total = items.map(i => i("price").toString.toDouble).sum
+      val discountRate = if (total > 100) 0.15 else 0.1
+      (category.toString, total * discountRate)
+    }
+
+  categoryTotals
+}
+```
+#show raw: set text(font: "Berkeley Mono", ligatures: false, size: 8pt, features: (calt: 0))
+
+Documentation for library users should primarily explain what things do, not how they're implemented internally. Users of your API typically don't
+care about the clever algorithm you used#footnote[
+    Unless what you are providing *is* some general purpose algorithm.
+] -- they just want to know what your function does, what inputs it accepts, what outputs it produces, and
+what errors might occur. There are exceptions to this rule, of course. If there's something about the implementation that users should
+know -- like the choice of hashing algorithm in a security library -- that should be included. It's often also worthwhile to include
+performance characteristics if they might affect how users should use your API.
+
+On the other side of the fence is documentation for contributors to your project. This consists of several layers. First is the code itself,
+which should be clear and self-documenting as we've discussed in previous chapters. Second is the user documentation -- contributors need
+to understand what the code is supposed to do from a user's perspective. Third is special documentation specifically for contributors.
+
+This contributor-specific documentation should help new people orient themselves in your codebase. Where should they start looking?
+What are the main components and how do they fit together? It should also justify any unusual design decisions. If you've done something
+in a non-standard way, explain why. Finally, it should document conventions specific to your project -- coding style, branch naming
+conventions, testing requirements, and so on.
+
+The fourth layer of contributor documentation is comments within the code. These shouldn't be excessive, but should explain things that
+might not be immediately clear or obvious from the code itself. The fifth layer is often overlooked but quite valuable: the history of
+the code as recorded in version control systems like Git.
+
+Git commits serve as documentation of how and why the code has evolved over time. For this reason, it's important to write good
+commit messages. If you name your commit "Update file", I will kill you. That tells future developers nothing about what changed
+or why. Commits should be focused on a single logical change -- it's generally a bad idea to have one commit changing two distinct
+components for unrelated reasons. They shouldn't contain sneaky unrelated changes that aren't mentioned in the commit message.
+
+A good commit message follows conventions. Many projects use prefixes like `feat:`, `fix:`, or `chore:` to categorize changes. The message
+should be written in the imperative mood -- "Add feature" rather than "Added feature" or "Adds feature". It should have a title
+line of less than 72 characters, which is the maximum length before Git will insert a line break when displaying messages. If your
+project is already wrangled into some agile framework with Jira or another instrument of pain, it's helpful to cross-reference the
+relevant ticket in your commit message. This creates a link between business decisions and technical implementations, giving context to changes.
+
+When it comes to comments in the code itself, finding the right balance is tricky. Too many comments can clutter the code and make
+it harder to read, while too few can leave important context unexplained. Comments should explain things that may be less clear,
+may seem odd, or otherwise require justification.
+
+Overcommenting is a common newbie mistake. You don't need comments like this:
+
+```python
+# Increment counter by one
+counter += 1
+```
+
+The code already clearly states what's happening. The code examples I provide in this book are probably often overcommented compared to
+what production code would have -- but that's fine for educational purposes.
+
+Undercommenting is also a mistake, particularly for complex algorithms or business logic. If a piece of code implements a specific business
+rule or edge case, a comment explaining the requirement can save future developers from mistakenly "fixing" what appears to be a strange
+implementation but is actually a deliberate design choice.
+
+```python
+# Orders over $100 get free shipping, but this doesn't apply to
+# international orders due to regulatory requirements as of 2023
+if order_total > 100 and order.country in DOMESTIC_COUNTRIES:
+    order.shipping_cost = 0
+```
+
+Striking a good balance with comments is a matter of taste and experience. It takes time to develop a sense for what needs explanation and what doesn't.
+
+In a collaborative company situation with proprietary code, when you're working as a team, or if you have a similarly tightly knit open-source project,
+it can be a good idea to sign comments that might be questioned. This allows a colleague looking at the code to know who to ask about
+it without having to dig through `git blame`. For example:
+
+```c
+/*
+ * Using a bubble sort here because the data set is guaranteed to be
+ * small (<10 elements) and nearly sorted already. Benchmarking showed
+ * no benefit from more complex algorithms in this specific case.
+ * - LH, 2023-06-15
+ */
+```
+
+This practice isn't universally followed, and whether you do it depends on your team's preferences and workflow.
+
+Documentation, like code, is a form of communication. Good documentation anticipates questions and provides answers before they're asked. It
+respects the reader's time by being concise yet complete. And just like code, it requires maintenance as the software evolves. A codebase with
+clear, accurate documentation is a joy to work with. A codebase without it is a series of archaeological expeditions waiting to happen.
+
 == Taming your hubris
+
+== Paradigms
 
 == Object-Oriented Programming
 
