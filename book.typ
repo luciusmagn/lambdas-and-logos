@@ -3204,34 +3204,58 @@ And since we mentioned the word documentation, let's look at it more broadly.
 
 == Documenting code
 
+The importance of documentation in software development is something I'll assume you already know.
 
-The importance of documentation in software development is something I'll assume you already know. If you've ever had to work with an undocumented library or tried to modify code that has no documentation, you know the pain of trying to decipher what the original author was thinking. Documentation is critical for both programming in the small -- helping understand individual functions and classes -- and programming in the large -- providing a roadmap for navigating complex systems.
+If you've ever had to work with an undocumented library or tried to modify code that has no documentation, you know
+the pain of trying to decipher what the original author was thinking.#footnote[
+    And the shame if the original author is you.
+] Documentation is critical for both programming in the small (helping understand individual functions, types etc.),
+and programming in the large (providing a roadmap for navigating larger systems).
 
-Documentation exists in several forms. There's user-facing documentation, which explains how to use a product from a business perspective. This is what most people think of when they hear "documentation" -- manuals, help files, or knowledge bases. But there's also programmer-facing documentation, which itself splits into two categories: documentation for those using your code as a library or API, and documentation for those contributing to your codebase.
+Documentation exists in several forms. There's *user-facing documentation*, which explains how to use a product from a business
+perspective. This is what most people think of when they hear "documentation": manuals, help files, or knowledge bases.
+But there's also *programmer-facing documentation*, which itself splits into two categories: documentation for those *using your
+code* as a library or API, and documentation for those *contributing to your codebase*.
 
-Let's talk about documentation for library users first. This typically lives outside the source code itself, often in dedicated documentation files, websites, or READMEs. However, some languages have integrated documentation systems that extract documentation directly from source code. Rust is particularly good at this, with its documentation comments that can include executable code examples:
+In this chapter, we will concern ourselves with the programmer-facing documentation. User documentation is beyond the scope
+of this book.
 
-```rust
+Let's talk about documentation for library users first. This typically lives outside the source code itself, often in dedicated
+documentation files, websites, or READMEs. However, some languages have integrated documentation systems that extract documentation
+directly from source code. Rust is particularly good at this, with its documentation comments that can include executable code examples:
+
+#raw(lang: "rust",
+    "
 /// Adds two numbers together.
 ///
 /// # Examples
 ///
-/// \`\`\`
+/// ```
 /// let result = my_crate::add(2, 3);
 /// assert_eq!(result, 5);
-/// \`\`\`
+/// ```
 pub fn add(a: i32, b: i32) -> i32 {
     a + b
 }
-```
+    "
+)
 
-When you run `cargo doc`, Rust generates beautiful HTML documentation that includes these examples. But more importantly, when you run `cargo test`, Rust will actually execute the code in your documentation examples as tests. These "doctests" ensure that your documentation stays in sync with your code. If you change the behavior of a function without updating its documentation, the tests will fail.
+When you run `cargo doc`, Rust generates beautiful HTML documentation that includes these examples. But more importantly, when you
+run `cargo test`, Rust will actually execute the code in your documentation examples as tests. These "doctests" ensure that your
+documentation stays in sync with your code. If you change the behavior of a function without updating its documentation, the tests will fail.
 
-This is a brilliant solution to the age-old problem of documentation drift, where documentation becomes increasingly inaccurate as code evolves. If your language doesn't have built-in support for this, it's worth investigating if there are third-party tools that offer similar functionality.
+This is a brilliant solution to the age-old problem of *documentation drift*, where documentation becomes increasingly inaccurate as code
+evolves. If your language doesn't have built-in support for this, it's worth investigating if there are third-party
+tools that offer similar functionality.
 
 Not that many languages are as tightly integrated with documentation as Rust is, but many of them have tools in
-their ecosystem that can parse and generate documentation from specially formatted comments. Let's consider this
-completelely undocummented example of Scala:
+their ecosystems that can parse and generate documentation from specially formatted comments. Let's consider this
+completelely undocummented example of Scala:#footnote[
+    Scala is one of the two languages for the JVM that I respect, the other being Clojure. Scala is a
+    language with a very difficult job - it has to be able to integrate with the JVM ecosystem at large,
+    it has to be functional, but because it interacts with Java, there has to be some Object Oriented
+    Programming features going on. It is not as pure a language as Haskell, but it is a step above Kotlin.
+]
 
 #show raw: set text(font: "Berkeley Mono", ligatures: false, size: 7pt, features: (calt: 0))
 ```scala
@@ -3280,17 +3304,24 @@ def calculateDiscount(items: List[Map[String, Any]]): Map[String, Double] = {
 ```
 #show raw: set text(font: "Berkeley Mono", ligatures: false, size: 8pt, features: (calt: 0))
 
-Documentation for library users should primarily explain what things do, not how they're implemented internally. Users of your API typically don't
-care about the clever algorithm you used#footnote[
+Documentation for library users should primarily explain what things do, not how they're implemented internally.
+Users of your API typically don't care about the clever algorithm you used,#footnote[
     Unless what you are providing *is* some general purpose algorithm.
-] -- they just want to know what your function does, what inputs it accepts, what outputs it produces, and
+] they just want to know what your function does, what inputs it accepts, what outputs it produces, and
 what errors might occur. There are exceptions to this rule, of course. If there's something about the implementation that users should
-know -- like the choice of hashing algorithm in a security library -- that should be included. It's often also worthwhile to include
-performance characteristics if they might affect how users should use your API.
+know, like the choice of hashing algorithm in a security library -- that should be included. It's often also worthwhile to include
+performance characteristics if they might affect how users should use your API.#footnote[
+    What I mean is that some operations provided by your library may be very costly, and you want to let the users
+    know that they should not be using them often, and maybe utilize some buffering, batching.
+]
 
 On the other side of the fence is documentation for contributors to your project. This consists of several layers. First is the code itself,
-which should be clear and self-documenting as we've discussed in previous chapters. Second is the user documentation -- contributors need
-to understand what the code is supposed to do from a user's perspective. Third is special documentation specifically for contributors.
+which should be clear and self-documenting as we've discussed in previous chapters, and will discuss in future chapters.
+Second is the user documentation -- contributors need to understand what the code is supposed to do from a user's perspective.
+Third is special documentation specifically for contributors.#footnote[
+    For instance, us Rust bros have the *rustc book*, which provides some hints into how the Rust compiler looks internally,
+    and how to develop it.
+]
 
 This contributor-specific documentation should help new people orient themselves in your codebase. Where should they start looking?
 What are the main components and how do they fit together? It should also justify any unusual design decisions. If you've done something
@@ -3299,9 +3330,17 @@ conventions, testing requirements, and so on.
 
 The fourth layer of contributor documentation is comments within the code. These shouldn't be excessive, but should explain things that
 might not be immediately clear or obvious from the code itself. The fifth layer is often overlooked but quite valuable: the history of
-the code as recorded in version control systems like Git.
+the code as recorded in version control systems like Git.#footnote[
+    At the moment, Git is the version control system with the biggest market share. The things we describe here generally
+    are applicable to all the versioning systems, such as Mercurial, pijul or fossil.
+]
 
-Git commits serve as documentation of how and why the code has evolved over time. For this reason, it's important to write good
+Git commits serve as documentation of how and why the code has evolved over time.#footnote[
+    This book is in a git repository. And because I am literally only using it as a file storage,
+    I don't follow any of the commit message suggestions that I offer in this chapter. I just
+    proverbially punch the keyboard every time, hehe. Probably don't do this for programming
+    projects.
+] For this reason, it's important to write good
 commit messages. If you name your commit "Update file", I will kill you. That tells future developers nothing about what changed
 or why. Commits should be focused on a single logical change -- it's generally a bad idea to have one commit changing two distinct
 components for unrelated reasons. They shouldn't contain sneaky unrelated changes that aren't mentioned in the commit message.
@@ -3309,8 +3348,14 @@ components for unrelated reasons. They shouldn't contain sneaky unrelated change
 A good commit message follows conventions. Many projects use prefixes like `feat:`, `fix:`, or `chore:` to categorize changes. The message
 should be written in the imperative mood -- "Add feature" rather than "Added feature" or "Adds feature". It should have a title
 line of less than 72 characters, which is the maximum length before Git will insert a line break when displaying messages. If your
-project is already wrangled into some agile framework with Jira or another instrument of pain, it's helpful to cross-reference the
-relevant ticket in your commit message. This creates a link between business decisions and technical implementations, giving context to changes.
+project is already wrangled into some agile framework with Jira or another instrument of pain,#footnote[
+    I have a hate-hate relationship with Jira, where I hate it for being a buggy and sluggish software, and I hate that there
+    isn't really much alternative to it.
+] it's helpful to cross-reference the
+relevant ticket in your commit message. This creates a link between business decisions and technical implementations,
+giving context to changes.#footnote[
+    It is also helpful to have this information when you are tracking down where an issue was introduced.
+]
 
 When it comes to comments in the code itself, finding the right balance is tricky. Too many comments can clutter the code and make
 it harder to read, while too few can leave important context unexplained. Comments should explain things that may be less clear,
@@ -3328,7 +3373,12 @@ what production code would have -- but that's fine for educational purposes.
 
 Undercommenting is also a mistake, particularly for complex algorithms or business logic. If a piece of code implements a specific business
 rule or edge case, a comment explaining the requirement can save future developers from mistakenly "fixing" what appears to be a strange
-implementation but is actually a deliberate design choice.
+implementation but is actually a deliberate design choice.#footnote[
+    There is a bit of discussion to be had here. If there is a piece of code that looks wrong, and fixing it would break
+    something else, doesn't that seem kind of weird? It seems like an improperly designed system, or in more general terms,
+    an instance of technical debt. Clearly, there are two components of your system here interacting in an unintentional way.
+    If it is within your reach and power, consider redesigning the implementation such that neither component "looks odd".
+]
 
 ```python
 # Orders over $100 get free shipping, but this doesn't apply to
@@ -3354,9 +3404,8 @@ it without having to dig through `git blame`. For example:
 
 This practice isn't universally followed, and whether you do it depends on your team's preferences and workflow.
 
-Documentation, like code, is a form of communication. Good documentation anticipates questions and provides answers before they're asked. It
-respects the reader's time by being concise yet complete. And just like code, it requires maintenance as the software evolves. A codebase with
-clear, accurate documentation is a joy to work with. A codebase without it is a series of archaeological expeditions waiting to happen.
+Documentation is an important part of elegant code, so don't skimp out on it. Ideally, you should be creating is you are creating
+the project. Just like writing integration tests, it helps you get some insight into whatever it is that you are doing.
 
 == Taming your hubris
 
