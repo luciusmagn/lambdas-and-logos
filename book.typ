@@ -3189,7 +3189,10 @@ This style treats functions as transformations to be composed rather than operat
 they're often given meaningful names for complex values but single letters for simple parameters, following mathematical tradition.
 
 The essence of good naming is that it makes code easier to understand for humans. A computer doesn't care what you call your
-variables -- you could name everything `x1`, `x2`, `x3` and the program would run the same. But you and your collaborators need to
+variables -- you could name everything `x1`, `x2`, `x3` and the program would run the same.#footnote[
+    Have you seend YandereDev's code? You would be surprised what people are capable of creating that somehow still kinda
+    runs.
+] But you and your collaborators need to
 read, understand, and modify that code. Good names serve as documentation, explaining the purpose and intent of each piece of code.
 
 In any case, be consistent. Consistency within a codebase is more important than following any particular naming convention. If half
