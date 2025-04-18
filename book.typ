@@ -3193,13 +3193,14 @@ variables -- you could name everything `x1`, `x2`, `x3` and the program would ru
     Have you seend YandereDev's code? You would be surprised what people are capable of creating that somehow still kinda
     runs.
 ] But you and your collaborators need to
-read, understand, and modify that code. Good names serve as documentation, explaining the purpose and intent of each piece of code.
+read, understand, and modify that code. Good names are documentation, explaining the purpose and intent of each piece of code.
 
 In any case, be consistent. Consistency within a codebase is more important than following any particular naming convention. If half
 your functions use `snake_case` and half use `camelCase`, readers will be constantly distracted by the inconsistency.#footnote[
     I actually get physically annoyed at inconsistent code.
-] Pick conventions
-that work for your project and stick to them religiously.
+] Pick conventions that work for your project and stick to them religiously.
+
+And since we mentioned the word documentation, let's look at it more broadly.
 
 == Documenting code
 
