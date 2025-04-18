@@ -3545,9 +3545,13 @@ offer radically different perspectives on what computation is.
 
 Turing machines model computation as a sequence of state changes on a memory tape - a mechanical process of reading, writing,
 and moving according to a finite table of rules. This naturally maps to imperative programming languages where you explicitly
-manipulate state. Lambda calculus, by contrast, models computation as a process of function application and substitution, with
+manipulate state.
+
+Lambda calculus, by contrast, models computation as a process of function application and substitution, with
 no concept of state or time - just pure transformation of expressions according to simple rules. This corresponds more
-naturally to functional programming, where you think in terms of transformations rather than steps. Most mainstream programming
+naturally to functional programming, where you think in terms of transformations rather than steps.
+
+Most mainstream programming
 languages are built on the Turing machine model, with their assignment statements, loops, and mutable data structures.
 This isn't because the Turing model is inherently superior, but because early computers were physical machines with
 explicit state, making the Turing approach a more intuitive fit for hardware. As we've moved toward higher-level
