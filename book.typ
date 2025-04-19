@@ -46,6 +46,7 @@
                 ""
             }
         } else {
+            /*
             let onPageHeading = query(heading.where(level: 1)).filter(h => h.location().page() == here().page())
             if calc.even(here().page()) {
                 let ht = rotate(90deg, origin: bottom + right, reflow: true, upper(onPageHeading.first().body))
@@ -55,7 +56,7 @@
                 let ht = rotate(270deg, origin: bottom + right, reflow: true, upper(onPageHeading.first().body))
                 let m = measure(ht)
                 place(top + left, dx: 1.1cm, dy: 1.5cm, float: false, ht)
-            }
+            }*/
         }
 },
 )
@@ -82,10 +83,17 @@
 #pagebreak()
 #set page(numbering: "1")
 #set heading(numbering: "1.1")
+#let word_num(num) = {
+    return ("Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten").at(num)
+}
+// TODO: Left-align level one heading
 #show heading: it => [#if it.level != 1 [
-  #it #v(0.75em)
+    #pagebreak()#it#v(0.75em)
 ] else {
-  [#pagebreak()#it #v(0.75em)]
+    align(bottom + left)[
+        #pagebreak()#text(size: 10pt, font: "TTLivretText-It", "Chapter " + word_num(counter(heading.where(level: 1)).get().at(0)))#line(length: 100%)#text(size: 35pt, font: "TTLivretText-It")[#it.body]#v(7em)
+    ]
+    pagebreak()
 }]
 #set quote(block: true)
 #pagebreak()
@@ -3632,6 +3640,355 @@ those who can recognize their mistakes, adapt their thinking, and continually im
 combination of ambition and humility.
 
 == Paradigms
+
+So far, we have been mentioning a lot of languages under a lot of programming paradigms. Most of these languages are
+multiparadigmatic, meaning that they support multiple paradigms. Often, we can put together a fairly extensive list
+because some paradigms are subsets of others.#footnote[
+    I suppose the actual relationship can be a bit confusing. If we think of paradigms as imposing
+    constraints and making sacrifices, which is an idea I present in a couple chapters, then it
+    would make sense to say that e.g. OOP is more constrained than pure procedural programming.
+    It would then make sense to say that OOP is a subset of procedural. If we however consider
+    OOP as being a paradigm where more named concepts are available than in procedural programming,
+    then we would say that procedural is a subset of OOP. I prefer the first approach.
+]
+
+The introduction of concretely defined programming paradigms aim to solve both problems of programming in the small
+and programming in the large. We will talk about them here, although their implications reach into the scope of
+programming in the large as well.
+
+In this book, we will talk about object-oriented programming, since that is the paradigm that most people are familiar
+with, about functional programming, since that is the other paradigm most mentioned, and then symbolic programming,
+which is a transcendental paradigm, that rears its (not ugly, beautiful) head in all languages that have a notion of
+meta-programming, and is the best description for what Lisp aims for.
+
+The concept of programming paradigms wasn't formally articulated until 1978, when Robert Floyd used the term "paradigms
+of programming" in his Turing Award lecture. Floyd borrowed the term from Thomas Kuhn's influential book "The Structure
+of Scientific Revolutions," which described how scientific fields evolve through paradigm shifts. Floyd argued that
+programming was undergoing similar transformations as new approaches to problem-solving emerged.
+
+Prior to this formal recognition, programmers had already developed distinct approaches to programming, largely influenced
+by the hardware and theoretical models available to them. The earliest electronic computers were programmed in machine
+code or assembly language, where the focus was necessarily on manipulating the machine's state through sequences of
+instructions. This approach naturally led to what we now call imperative programming - giving the computer explicit
+commands to execute in sequence.
+
+Each programming paradigm represents a set of voluntary constraints that programmers impose upon themselves.
+You may ask me: why would limiting our options be beneficial? Well because when we choose and name a set of
+axioms and approaches to follow, we can design a language that can model them effectively. Many C programmers
+have prior to C++#footnote[
+    And still after it... one instance being the GObject library. GObject provides a portable object system
+    for C, and is the cornerstone of the GNOME project. You interact with programs that use this library all
+    the time (GTK, Pango, gstreamer, and many other tools and libraries spawned by GNOME use it). There was
+    an idea to build a programming language on top of GOBject - Vala. It looks somewhere between Java and C\#
+    and never reached widespread adoption.
+] manually implemented an object system, but it isn't fun. You want a programming language that has one for
+you.
+
+The most fundamental division in programming paradigms is between imperative and declarative approaches. This split
+emerged gradually as computing evolved from its origins toward more abstract models. We can blame Fortran and Lisp.
+
+Imperative programming, which includes procedural programming and object-oriented programming, focuses on describing
+how a program operates step by step. It's characterized by statements that change a program's state, with the programmer
+explicitly specifying the exact sequence of operations. This approach directly reflects the Von Neumann architecture of
+most computers, where instructions execute sequentially and operate on memory.
+
+Early languages like FORTRAN (1957), ALGOL (1958), and COBOL (1959) were primarily imperative. They provided abstractions
+above assembly language but still required thinking in terms of sequential operations and state changes. Here's a
+simple example in FORTRAN:
+
+```fortran
+C Calculate the sum of numbers from 1 to 10
+      INTEGER SUM, I
+      SUM = 0
+      DO 10 I = 1, 10
+        SUM = SUM + I
+10    CONTINUE
+      PRINT *, 'The sum is:', SUM
+      END
+```
+
+Declarative programming, which emerged almost simultaneously but took longer to gain mainstream adoption, focuses instead
+on what a program should accomplish without specifying the exact steps. The programmer describes the desired result,
+and the implementation details are handled by the language runtime. This approach creates a higher level of abstraction
+that can be easier to reason about for certain problems.
+
+A pivotal moment in the evolution of programming paradigms came with the structured programming movement of the late 1960s
+and early 1970s. Edsger Dijkstra's 1968 letter "Go To Statement Considered Harmful" criticized the unrestricted use of goto
+statements, arguing they made programs difficult to understand and analyze:
+
+"The go to statement as it stands is just too primitive; it is too much an invitation to make a mess of one's program.
+It is like the match: useful in skilled hands, disastrous in the hands of a child."
+
+This critique sparked a movement toward structured control flow using if-then-else constructs, loops, and subroutines.
+Languages like ALGOL 68 and later Pascal embraced these principles, demonstrating how deliberately constraining programmer
+freedom (by discouraging or eliminating goto) could lead to more reliable and maintainable code.
+
+This period also saw the development of several major paradigms that would shape programming for decades to come:
+
+Object-oriented programming emerged from Simula 67 and gained prominence with Smalltalk in the 1970s. While we'll
+explore OOP in depth in the next chapter, it's worth noting that Alan Kay, one of Smalltalk's creators, originally
+conceived of objects not as the class hierarchies that later dominated OOP implementations, but as autonomous
+computational entities communicating through messages. Kay was inspired by biological cells and the ARPANET
+(the precursor to the Internet), envisioning systems of independent objects coordinating through messages.
+
+The early vision of OOP was transformative - it offered a way to manage complexity by encapsulating state and behavior
+into discrete units that communicated through well-defined interfaces. This approach proved particularly valuable
+for modeling real-world systems and building user interfaces. We'll explore the evolution and principles of OOP
+more thoroughly in its dedicated chapter.
+
+Functional programming traces its roots to Alonzo Church's lambda calculus, a formal system developed in the 1930s
+as a way to investigate computability. LISP, created by John McCarthy in 1958, was the first programming language
+to incorporate these ideas, though it wasn't purely functional. More strict functional languages like ML (1973)
+and later Haskell (1990) emerged to explore the benefits of a more purely functional approach.
+
+Functional programming treats computation as the evaluation of mathematical functions and avoids state and mutable data.
+This leads to referential transparency - the property that a function's result depends only on its inputs, not
+on any external state. This constraint makes programs easier to reason about, test, and parallelize. We'll delve
+deeper into functional programming in its dedicated chapter.
+
+Logic programming represents perhaps the most purely declarative approach to programming. Instead of describing
+a sequence of operations or defining functions, logic programming involves stating facts and rules,
+then making queries about what can be deduced from them. The language implementation handles the
+details of how to search for solutions.
+
+Prolog, created in 1972 by Alain Colmerauer and Philippe Roussel, is the most widely known logic
+programming language. Let's examine our earlier Prolog example in more detail:
+
+```prolog
+% Facts about family relationships
+parent(john, bob).    % John is a parent of Bob
+parent(john, lisa).   % John is a parent of Lisa
+parent(mary, bob).    % Mary is a parent of Bob
+parent(mary, lisa).   % Mary is a parent of Lisa
+parent(bob, ann).     % Bob is a parent of Ann
+parent(bob, jim).     % Bob is a parent of Jim
+
+% Rules defining other relationships
+sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+```
+
+In this code, we first define a set of facts using the `parent` predicate. Each fact states a
+relationship - for example, `parent(john, bob)` asserts that "John is a parent of Bob." These
+facts form our knowledge base.
+
+Next, we define rules that allow us to derive new information. The rule `sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.`
+should be read as "X is a sibling of Y if there exists some Z who is a parent of X and also a parent
+of Y, and X is not the same as Y." The variables X, Y, and Z are automatically bound to values that
+satisfy all the conditions.
+
+Similarly, `grandparent(X, Z) :- parent(X, Y), parent(Y, Z).` defines the grandparent relationship:
+"X is a grandparent of Z if X is a parent of some Y and Y is a parent of Z."
+
+When we make a query like `sibling(ann, jim).`, Prolog tries to determine whether this statement can be
+proven true given our facts and rules. Here's how:
+
+1. It looks for a rule for `sibling` and finds `sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.`
+2. It substitutes `ann` for X and `jim` for Y, giving us `sibling(ann, jim) :- parent(Z, ann), parent(Z, jim), ann \= jim.`
+3. It then tries to satisfy each condition:
+   - `parent(Z, ann)`: It looks for facts matching this pattern and finds `parent(bob, ann)`, so Z = bob.
+   - `parent(bob, jim)`: It checks if this fact exists, and indeed finds `parent(bob, jim)`.
+   - `ann \= jim`: It verifies that ann and jim are different individuals.
+4. Since all conditions are satisfied, Prolog confirms that `sibling(ann, jim)` is true.
+
+When we make an open query like `grandparent(X, ann).`, Prolog finds all possible values of X that make the statement true:
+
+1. It looks for a rule for `grandparent` and finds `grandparent(X, Z) :- parent(X, Y), parent(Y, Z).`
+2. It substitutes `ann` for Z, giving us `grandparent(X, ann) :- parent(X, Y), parent(Y, ann).`
+3. It then tries to find values for X and Y that satisfy both conditions:
+   - `parent(Y, ann)`: It finds `parent(bob, ann)`, so Y = bob.
+   - `parent(X, bob)`: It finds `parent(john, bob)` and `parent(mary, bob)`, so X could be either john or mary.
+4. Prolog returns both solutions: X = john and X = mary.
+
+This paradigm is particularly powerful for problems involving complex relationships and constraints.
+The programmer specifies what properties a solution should have, not how to compute it. Prolog's execution
+model uses unification (pattern matching) and backtracking (systematically trying different possibilities)
+to find solutions.
+
+Logic programming excels in areas like expert systems, constraint satisfaction problems, natural language
+processing, and certain types of artificial intelligence. It allows complex logical relationships to be
+expressed concisely and problems to be solved declaratively.
+
+The constraint of having to express problems in terms of logical relations forces a different kind of thinking
+than imperative or functional programming. It encourages breaking problems down into facts and rules, which can
+often lead to elegant solutions for certain classes of problems.
+
+Stack-based programming represents a radically different approach to program structure. In this paradigm,
+operations primarily manipulate values on a stack rather than in named variables. Forth, created by Charles
+Moore in the early 1970s, is the canonical stack-based language.
+
+Let's examine our earlier Forth example in more detail:
+
+```forth
+: SQUARE ( n -- n^2 )  DUP * ;
+: SUM-OF-SQUARES ( a b -- c )  SQUARE SWAP SQUARE + ;
+
+5 7 SUM-OF-SQUARES .  \ Prints 74
+```
+
+In Forth, programs are built from "words" (similar to functions in other languages) that manipulate a data
+stack. Reading this example:
+
+- `: SQUARE ( n -- n^2 ) DUP * ;` defines a word called SQUARE. The comment `( n -- n^2 )` is a
+  stack effect diagram showing that SQUARE takes one value from the stack and replaces it with its square.
+  The implementation uses `DUP` to duplicate the top value on the stack, and `*` to multiply the top two values,
+  replacing them with their product.
+
+- `: SUM-OF-SQUARES ( a b -- c ) SQUARE SWAP SQUARE + ;` defines a word that computes the sum of squares of
+  two numbers. The stack effect diagram shows it takes two values and returns one. The implementation:
+  - `SQUARE` squares the top value (b)
+  - `SWAP` exchanges the top two stack values, bringing a to the top
+  - `SQUARE` squares a
+  - `+` adds the two squared values
+
+- `5 7 SUM-OF-SQUARES .` puts 5 and 7 on the stack, calls SUM-OF-SQUARES, and then prints the result
+  using `.` (which removes and displays the top stack value).
+
+Here's the step-by-step execution:
+
+1. `5` pushes 5 onto the stack. Stack: [5]
+2. `7` pushes 7 onto the stack. Stack: [5 7]
+3. `SUM-OF-SQUARES` executes:
+   - `SQUARE` executes on 7:
+     - `DUP` duplicates 7. Stack: [5 7 7]
+     - `*` multiplies the top two values. Stack: [5 49]
+   - `SWAP` exchanges 5 and 49. Stack: [49 5]
+   - `SQUARE` executes on 5:
+     - `DUP` duplicates 5. Stack: [49 5 5]
+     - `*` multiplies the top two values. Stack: [49 25]
+   - `+` adds 49 and 25. Stack: [74]
+4. `.` prints and removes the top value, 74.
+
+Forth's approach is postfix (also called Reverse Polish Notation), where operators follow their operands. This
+eliminates the need for parentheses and operator precedence rules, resulting in a simple syntax that's easy
+to parse and compile.
+
+The philosophy behind Forth emphasizes extreme simplicity, composability, and efficiency. A complete Forth
+system (compiler, interpreter, and core library) can be implemented in just a few kilobytes. This minimalism was
+crucial in the resource-constrained environment where Forth was developed - Moore initially implemented it
+on a minicomputer with just 8KB of memory.
+
+The constraint of working primarily with a stack forces programmers to break problems down into small,
+composable operations. This often leads to solutions that are remarkably concise and efficient. However,
+it also requires a different mental model than variable-based programming, as you must keep track of
+what's on the stack at each point in your program.
+
+Stack-based programming has found niches in embedded systems, where its small footprint is valuable, and
+in certain specialized domains like graphics and virtual machines. The PostScript language, used for
+describing printed page layouts, is stack-based, as is the bytecode interpreter for the Java Virtual Machine.
+
+Array-based programming offers yet another perspective, treating arrays (or more generally, collections
+of data) as primary objects of manipulation rather than individual elements. This approach enables concise,
+powerful operations on entire data sets without explicit loops or iteration.
+
+APL (A Programming Language), created by Kenneth Iverson in the 1960s, is the quintessential array-oriented
+language. It's famous for its concise notation using a special set of symbols, each representing a
+powerful operation on arrays. Let's examine our earlier APL examples in more detail:
+
+```apl
+⍝ Generate a 10×10 multiplication table
+table ← (⍳10) ∘.× ⍳10
+
+⍝ Find all prime numbers up to 100
+sieve ← {(⍳⍵) ~((⍳⍵) ∘.| ⍳⍵)/⍨(⍳⍵) ≠ ⊤⍨(⍳⍵)}
+sieve 100
+```
+
+In the first example:
+- `⍳10` generates an array containing integers from 1 to 10
+- `∘.×` is the "outer product" operator with multiplication
+- `(⍳10) ∘.× ⍳10` computes the outer product of the vector [1,2,...,10] with itself using multiplication,
+  resulting in a 10×10 matrix where each element is the product of the corresponding row and column indices.
+
+This single line creates an entire multiplication table that would require nested loops in most other languages.
+
+The prime number sieve is more complex but showcases APL's power. Breaking it down:
+
+- `⍳⍵` generates integers from 1 to the input value (⍵)
+- `(⍳⍵) ∘.| ⍳⍵` creates a table of remainders when each number is divided by each number
+- `(⍳⍵) ≠ ⊤⍨(⍳⍵)` identifies numbers that aren't equal to themselves modulo each number
+- `/⍨` filters the original array based on this condition
+- `~` removes certain elements, helping identify the primes
+- The entire expression efficiently implements a prime number sieve in a single, dense line of code
+
+Modern array-oriented languages like BQN and Uiua continue this tradition while attempting to make the
+notation more accessible. For instance, here's a BQN implementation of the multiplication table:
+
+```
+mult_table ← (↕10) +⌜× (↕10)
+```
+
+Array-oriented programming excels at numerical and data processing tasks. Its focus on whole-array operations aligns
+well with how modern hardware works, where operations on contiguous blocks of memory can be highly optimized.
+This paradigm has influenced features in many mainstream languages - NumPy in Python, LINQ in C\#, and array
+programming facilities in Julia and R all draw inspiration from the array-oriented approach.
+
+The constraint of thinking in terms of operations on entire arrays rather than individual elements forces a higher
+level of abstraction. This can lead to solutions that are not only more concise but also more efficient, as
+they can take advantage of vectorized operations and parallelism.
+
+We can therefore say that different paradigms represent different ways of modeling computation:
+
+- Imperative programming models computation as a sequence of steps that modify state
+- Functional programming models computation as the composition and evaluation of mathematical functions
+- Logic programming models computation as deduction from facts and rules
+- Stack-based programming models computation as operations on a stack
+- Array-based programming models computation as operations on entire collections of data
+
+Each paradigm makes certain types of problems easier to solve and makes certain types of errors harder to introduce. For example:
+
+- Functional programming's emphasis on immutability eliminates entire categories of bugs related to shared mutable state
+- Logic programming's declarative nature allows complex relationships to be expressed more concisely
+- Object-oriented programming's encapsulation helps manage complexity in large systems
+- Array-based programming's focus on whole-collection operations can eliminate off-by-one errors common in explicit loops
+
+These paradigms have influenced each other over time. For instance, many imperative languages now incorporate
+functional features, and many functional languages have adopted type systems influenced by object-oriented
+concepts. The boundaries between paradigms are increasingly blurred as languages adopt successful ideas
+from multiple approaches.
+
+The analogy to natural language families is apt but imperfect. Just as Romance languages share vocabulary and
+grammar derived from Latin, programming language families often share syntax, semantics, or conceptual models.
+However, programming languages evolve both through inheritance and through conscious design decisions,
+creating more complex relationships than natural language families.
+
+For example, C++ directly descends from C, inheriting much of its syntax and semantics while adding object-oriented
+and generic programming features. Python, though often grouped with C-like languages due to some syntactic
+similarities, has a very different underlying model influenced by ABC, Modula-3, and various functional languages.
+
+The Lisp family (Common Lisp, Scheme, Clojure) shares the distinctive S-expression syntax and symbolic
+processing capabilities, though they differ significantly in their approach to evaluation, typing, and
+standard libraries. The ML family (Standard ML, OCaml, F\#) shares a heritage of strong static typing
+and pattern matching, though they vary in their purity and platform integration.
+
+An interesting recent example is the Bend language, which superficially resembles Python syntactically but
+internally represents programs as interaction nets based on a graph reduction model. This creates a situation
+where the language looks familiar to Python programmers but operates on fundamentally different principles,
+demonstrating how surface-level similarities can mask deep conceptual differences.
+
+Most modern mainstream languages are multiparadigmatic, incorporating elements from several approaches.
+Java, though primarily object-oriented, has added functional features like lambdas and streams. Python supports
+procedural, object-oriented, and functional styles. Rust combines elements of imperative, functional, and
+generic programming with its unique ownership system.
+
+This multiparadigmatic nature reflects a practical recognition that different problems are best solved
+with different approaches. A graphical user interface might be naturally expressed using objects, while
+a data transformation pipeline might be clearer in a functional style. The ability to select the right
+paradigm for each component of a system is a mark of experienced programmers.
+
+Each paradigm offers a distinct perspective on what programs fundamentally are. To an imperative programmer,
+a program is a sequence of operations. To an object-oriented programmer, it's a network of communicating entities.
+To a functional programmer, it's a composition of mathematical functions. To a logic programmer, it's a set
+of facts and rules for deduction.
+
+Understanding these different perspectives, even ones you don't regularly use, provides valuable mental
+models and problem-solving approaches. A Java programmer might never write production Prolog code, but
+understanding logical reasoning can influence how they model complex business rules. A Python programmer
+might never write APL, but exposure to array-oriented thinking could improve how they use NumPy.
+
+In the following chapters, we'll explore object-oriented, functional, and symbolic programming in greater
+depth. Each offers valuable tools for creating elegant, maintainable code, and understanding when and how
+to apply each paradigm is an essential skill for modern programmers.
 
 == Object-Oriented Programming
 
