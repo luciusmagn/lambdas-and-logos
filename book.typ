@@ -3684,7 +3684,7 @@ have prior to C++#footnote[
 ] manually implemented an object system, but it isn't fun. You want a programming language that has one for
 you.
 
-The most fundamental division in programming paradigms is between imperative and declarative approaches. This split
+The basic division in programming paradigms is between imperative and declarative. This split
 emerged gradually as computing evolved from its origins toward more abstract models. We can blame Fortran and Lisp.
 
 Imperative programming, which includes procedural programming and object-oriented programming, focuses on describing
@@ -3692,7 +3692,14 @@ how a program operates step by step. It's characterized by statements that chang
 explicitly specifying the exact sequence of operations. This approach directly reflects the Von Neumann architecture of
 most computers, where instructions execute sequentially and operate on memory.
 
-Early languages like FORTRAN (1957), ALGOL (1958), and COBOL (1959) were primarily imperative. They provided abstractions
+Early languages like FORTRAN (1957), ALGOL (1958),#footnote[
+    Algol is a bit of a forgotten hero among the programming languages. If you look at it,
+    you will see that on some level, it feels surprisingly modern. It has been extremely
+    influential academically, and if you trace the major influences of mainstream programming
+    languages a couple generations back, you will inevitably arrive at Algol. Algol even
+    transcended its imperative bubble and became one of the inspirations for Scheme, which
+    is a Lisp.
+] and COBOL (1959) were primarily imperative. They provided abstractions
 above assembly language but still required thinking in terms of sequential operations and state changes. Here's a
 simple example in FORTRAN:
 
