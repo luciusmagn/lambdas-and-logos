@@ -3787,7 +3787,9 @@ and later Haskell (1990) emerged to explore the benefits of a more purely functi
     There are once again some unsung heroes like Hope and Miranda.
 ]
 
-Functional programming treats computation as the evaluation of mathematical functions and avoids state and mutable data.
+*Functional programming* treats computation as the evaluation#footnote[
+    Often, we can think about it as reducing expressions as far as we can
+] of mathematical functions and avoids state and mutable data.
 This leads to referential transparency - the property that a function's result depends only on its inputs, not
 on any external state.#footnote[
     In practice, we need to worry about IO as the most problematic side effect / external state.
@@ -3795,12 +3797,18 @@ on any external state.#footnote[
 ] This constraint makes programs easier to reason about, test, and parallelize. We'll delve
 deeper into functional programming in its dedicated chapter.
 
-Logic programming represents perhaps the most purely declarative approach to programming. Instead of describing
-a sequence of operations or defining functions, logic programming involves stating facts and rules,
+*Logic programming* is a more purely declarative approach to programming than even FP. Instead of describing
+a sequence of operations or defining functions, LP involves stating facts and rules,
 then making queries about what can be deduced from them. The language implementation handles the
-details of how to search for solutions.
+details of how to search for solutions.#footnote[
+    Logic programming languages are typically not very fast. That didn't stop people from
+    writing bigger pieces of software in them. The first version of Erlang was written in
+    Prolog, however, it was later rewritten.
+]
 
-Prolog, created in 1972 by Alain Colmerauer and Philippe Roussel, is the most widely known logic
+Prolog, created in 1972 by Alain Colmerauer#footnote[
+    I am sorry Alain, but I have never been able to pronounce your surname correctly
+] and Philippe Roussel, is the most widely known logic
 programming language.#footnote[
     But it's not the only one! You can also check out Mercury.
 ] Let's examine our earlier Prolog example in more detail:
@@ -3819,9 +3827,14 @@ sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.
 grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
 ```
 
-In this code, we first define a set of facts using the `parent` predicate. Each fact states a
+In this snippet, we first define a set of facts using the `parent` predicate. Each fact states a
 relationship - for example, `parent(john, bob)` asserts that "John is a parent of Bob." These
-facts form our knowledge base.
+facts form our knowledge base.#footnote[
+    The family relationships is a fairly classic example of Prolog, it is pretty easy to comprehend.
+    Prolog itself is a surprisingly simple language, and subsets of it are often implemented in other
+    languages for educational purposes. The On Lisp book implements a Prolog in Common Lisp,
+    and
+]
 
 Next, we define rules that allow us to derive new information. The rule `sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.`
 should be read as "X is a sibling of Y if there exists some Z who is a parent of X and also a parent
@@ -3851,10 +3864,12 @@ When we make an open query like `grandparent(X, ann).`, Prolog finds all possibl
    - `parent(X, bob)`: It finds `parent(john, bob)` and `parent(mary, bob)`, so X could be either john or mary.
 4. Prolog returns both solutions: X = john and X = mary.
 
-This paradigm is particularly powerful for problems involving complex relationships and constraints.
+This paradigm is useful, among other things, for solving problems involving complex relationships and constraints.
 The programmer specifies what properties a solution should have, not how to compute it. Prolog's execution
 model uses unification (pattern matching) and backtracking (systematically trying different possibilities)
-to find solutions.
+to find solutions.#footnote[
+    If you want to try implementing this, consider doing it in Lisp!
+]
 
 Logic programming excels in areas like expert systems, constraint satisfaction problems, natural language
 processing, and certain types of artificial intelligence. It allows complex logical relationships to be
@@ -3864,9 +3879,17 @@ The constraint of having to express problems in terms of logical relations force
 than imperative or functional programming. It encourages breaking problems down into facts and rules, which can
 often lead to elegant solutions for certain classes of problems.
 
-Stack-based programming represents a radically different approach to program structure. In this paradigm,
-operations primarily manipulate values on a stack rather than in named variables. Forth, created by Charles
-Moore in the early 1970s, is the canonical stack-based language.
+On the other hand, *stack-based programming* represents a radically different approach to program structure.
+If logic programming was one of the most declarative approaches, then stack-based programming is one of
+the most imperative approaches.
+In this paradigm, operations primarily manipulate values on a stack rather than in named variables.
+*Forth*, created by Charles Moore in the early 1970s, is the canonical stack-based language.#footnote[
+    There are other languages that follow this paradigm, especially since making a stack-based
+    language is fairly simple. Historically, many pieces of older hardware had Forth ported to
+    it as one of the first languages. Since I also talk about Lisp a lot, it would be a shame
+    to not mention Forsp, a kind of tongue-in-cheek language that tries to combine Forth and
+    Lisp.
+]
 
 Let's examine our earlier Forth example in more detail:
 
@@ -3920,21 +3943,65 @@ crucial in the resource-constrained environment where Forth was developed - Moor
 on a minicomputer with just 8KB of memory.
 
 The constraint of working primarily with a stack forces programmers to break problems down into small,
-composable operations. This often leads to solutions that are remarkably concise and efficient. However,
+composable operations. This often leads to solutions that are very concise and efficient. However,
 it also requires a different mental model than variable-based programming, as you must keep track of
-what's on the stack at each point in your program.
+what's on the stack at each point in your program. For me, this is one of the paradigms that I just
+can't wrap my head around to such a degree that I would be able to make proper larger programs in it.
 
 Stack-based programming has found niches in embedded systems, where its small footprint is valuable, and
 in certain specialized domains like graphics and virtual machines. The PostScript language, used for
-describing printed page layouts, is stack-based, as is the bytecode interpreter for the Java Virtual Machine.
+describing printed page layouts, is stack-based, as is the bytecode interpreter for the Java Virtual Machine.#footnote[
+    A lot of virtual machines for programming languages that use a bytecode interpreter are stack
+    machines, interestingly.
+]
 
-Array-based programming offers yet another perspective, treating arrays (or more generally, collections
-of data) as primary objects of manipulation rather than individual elements. This approach enables concise,
-powerful operations on entire data sets without explicit loops or iteration.
+One thing I would like to point is that we don't really have named variables here, and there is another
+language like that, which however falls under functional programming, that has a very weird syntax and
+no named variables or arguments. It is *Bruijn* by *Marvin Borner*, which is a language based on pure _de Bruijn_
+indexed lambda calculus. Instead of assigning names to function params, you just number them! Like so:
+
+```bruijn
+:import std/Combinator .
+:import std/List .
+:import std/Math .
+
+solve [∑(crit <#> ({ (+0) → --0 }))]
+	crit [ψ m ((mod 0) → zero?) (+3) (+5)]
+
+:test ((solve (+10)) =? (+23)) ([[1]])
+
+main [solve (+1000)]
+```
+
+This is a solution to the first Euler problem:
+
+#quote[
+    If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
+
+    Find the sum of all the multiples of 3 or 5 below 1000.
+]
+
+The number `0` unsurrounded by parentheses is the first argument of the `solve` function. Because plain
+numbers (de Bruijn indices) refer to anonymous parameters of functions, we have to always specify
+the number sign of actual numerical values and surround them with parentheses, so in this example, `(+0)`
+is an actual zero.
+
+Moving along, *Array-based programming* offers yet another perspective, treating arrays (or more generally,
+collections of data) as primary objects of manipulation rather than individual elements. This approach
+enables concise, powerful operations on entire data sets without explicit loops or iteration. It is also
+very alien. While even in Forth, you could kinda see a semi-familiar notion of a program if you really
+think about it, array languages are a whole another beast altogether.
 
 APL (A Programming Language), created by Kenneth Iverson in the 1960s, is the quintessential array-oriented
 language. It's famous for its concise notation using a special set of symbols, each representing a
-powerful operation on arrays. Let's examine our earlier APL examples in more detail:
+powerful operation on arrays.#footnote[
+    There literally existed APL keyboards at one point in history. APL has an interesting history,
+    while in the grand tree, most programming languages can trace their heritage to either Fortran,
+    or Lisp (depending of if they slide towards more imperative or more declarative), The tree of
+    APL and its derivatives is another root in the graph of programming languages. It was chiefly
+    inspired by mathematical notation which was first invented in 1950. Much like with Lisp, someone
+    had the bright idea to implement it as a programming language
+] Let's examine an APL example:
 
 ```apl
 ⍝ Generate a 10×10 multiplication table
