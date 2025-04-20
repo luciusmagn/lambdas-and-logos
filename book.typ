@@ -147,44 +147,43 @@
 
 = Preface
 This book is for the junior or intermediate programmer, and for any other
-interested party. To be more specific, you will gain the most from this
+interested party. You will gain the most from this
 book if you fall into one or more of the following categories:
 
 - You are a *university student*, or *recent graduate*. You were taught how to
   program at your school, and you have little experience writing software
   that interacts with the *real world*.
 
-- You are *self-learned*, you write practical projects, but your programming
-  knowledge is *almost completely practical*, driven by need of those projects,
-  and you didn't delve much into the theory of things.
+- You are *self-taught*, you build projects, and your programming
+  knowledge is *purely practical*, learning what you need to make
+  things work.
 
 - You are a *fresh junior developer*, working in a company, and you are painfully
   discovering that maybe there is more to software development than you thought,
   and you now have to grapple with writing software that goes into production,
   is read and critiqued by others, and has to be maintained over a long
-  period of time, and boy, you sure as hell have no experience doing that.
+  period of time, and you likely have no experience doing that.
 
 - You, like me, are an eternal *pursuer of beauty and elegance* in the things
   you do, and you consider programming to be a creative act that can have aesthetic
-  merits
+  merits.
 
-I think that I am getting ahead of myself with the last point, so let's take it
-back from the beginning.
+I am getting ahead of myself with the last point, so let's start from the beginning.
 
-My name is Lukáš Hozda, I am a programmer. I work in Braiins Systems s.r.o, starting as
-an Embedded SW Engineer, now a SWE Methodologist. This is a role that puts me somewhere
+My name is Lukáš Hozda, and I am a programmer. I work at Braiins Systems s.r.o., starting as
+an Embedded SW Engineer and now serving as a SWE Methodologist. This is a role that puts me somewhere
 between a software engineer, an educator/mentor, a public speaker, and a recruiter.#footnote[
     Because of the wide range of my activities, it is somewhat difficult to categorize me in
     the company structure. Right now, I am filed under HR, which lets me jokingly call
     myself the "most technologically competent HR in the world".
-] I first started programming when I was six or seven years old with Borland's
-Turbo Pascal version 5.5. By then, Pascal was already very much out of fashion,
-I was born in 2000, and got the Turbo Pascal books as discarded hand-me-downs from
-the library my mom works as.
+] I began programming when I was six or seven years old with Borland's
+Turbo Pascal version 5.5. By then, Pascal was already out of fashion, as
+I was born in 2000 and received the Turbo Pascal books as discarded hand-me-downs from
+the library where my mom works.
 
 Even before that, I apparently exhibited interest in computers and technology.
-This was to the point that a doctor has speculated that I might be addicted,
-and my parents should not feed my addiction. And it is true I was mesmerized
+This was to the point that a doctor speculated that I might be addicted,
+and my parents should not feed my addiction. Indeed, I was mesmerized
 by the sheer possibility and versatility of computers.#footnote[
     Ironically, my parents' attempts to limit my computer access, and not
     buy me any then-current-gen electronics turned me into a MacGyver
@@ -192,68 +191,68 @@ by the sheer possibility and versatility of computers.#footnote[
     for the shortcomings and lack of performance of the hardware I had access to.
 ]
 
-I think we have forgotten what miracle it is. You hold a device, and it can
+We have forgotten what miracle it is. You hold a device, and it can
 do almost everything. Computers have become the cornerstone of our civilization.
-We made them smaller, we made them bigger, we made them more generalized, and
-more specialized, we have a tendency to replace analog machinery with them,
-because it perhaps requires less brains to program a rice cooker with a sensors,
-than to design a computer-less mechanism to drive all of its functionality.
+We made them smaller, larger, more generalized, and more specialized,
+often replacing analog machinery with them,
+because it may require less effort to program a rice cooker with sensors than
+to design a computer-less mechanism for all its functionality.
 
-Increasingly, we are putting computers in appliances, smart home devices
-and whatever else you can think of. Better yet, following the Inception#footnote[Great movie, by the way]
+We are increasingly embedding computers in appliances, smart home devices, and countless other applications.
+Even more, following the Inception#footnote[Great movie, by the way]
 school of thought, we put computers in your computer. In your desktop or laptop,
 you may have a graphics card - that's a computer in your computer. It has a processing
 unit (the difference being it has a lot of somewhat specialized, weaker cores, as opposed to your CPU,
 which has fewer, stronger, more generalized cores), its own RAM, its own IO, and it can even
 execute code.
 
-In your CPU, there is a tiny additional computer with its own memory, CPU and IO - for Intel,
-the Intel Management Engine, for AMD, the Platform Security Processor. Being a certified
-hater, and heavy classic ThinkPad fan, I am more familiar with turning off the IME.#footnote[I consider it to be a backdoor]
+Your CPU contains a tiny computer with its own memory, CPU, and IO—Intel's Management Engine or
+AMD's Platform Security Processor. Being a certified
+hater, and avid classic ThinkPad fan, I am well-versed in disabling the IME.#footnote[I consider it to be a backdoor]
 This computer inside your CPU is running a Unix-like operating system called MINIX#footnote[
     Secretly making MINIX one of the most widespread desktop operating systems in the world.
 ], and it can talk to the internet, and see absolutely everything going on in your computer.
 
 But all of these computers are unified by one thing - they are running programs. That's why
-we invented computers in the first place, so that we can design algorithms, implement them,
+we invented computers in the first place, so that we can design algorithms, implement,
 and run them.
 
-And, despite the efforts of Large Language Models, someone still has to write those programs.
-That's the job of us, programmers. And I love programming, and I mean the act itself. To me,
+Despite the efforts of Large Language Models, someone still has to write those programs.
+That's our job as programmers. And I love programming, and I mean the act itself. To me,
 programming is one of the ultimate creative activities, and I love exploring it. Over the
-years, I have experimented and used with over a hundred programming languages, tried different
-approaches, and paradigms, all in pursuit of the perfect fit. Nowadays, I mostly write
-Rust (being an early adopter), Common Lisp and Scheme. By the end of this book, you will
+years, I have experimented with over a hundred programming languages, explored different
+approaches and paradigms, all in pursuit of the perfect fit. Today, I primarily write
+Rust (as an early adopter), Common Lisp, and Scheme. By the end of this book, you will
 probably understand why. :)
 
-In other words, I am on an eternal quest of finding the best ideas, and finding solutions
-tailored to my opinions, and striving to write the most elegant code possible. And I am a teacher,
-and I want to share what I have learned to you, dear reader, so that you may write code
-that is more beautiful.
+In other words, I am on an eternal quest of to find the best ideas, craft solutions
+tailored to my opinions, and write the most elegant code possible. And I am a teacher,
+and I want to share what I have learned with you, dear reader, so you may write more
+beautiful code.
 
-This book is also a love letter to the many incredible programmers from the past, and their
-ideas. Ideas, which should be preserved and remain in working memory even today, which may
-be decades since their initial inception.
+This book is also a love letter to the many incredible programmers of the past and their
+ideas. Ideas, which should be preserved and remain in working memory even today, which are
+decades old.
 
 Lukáš Hozda,#linebreak()
 rennaissance man
 
 == About how this book is written
 
-This book is written as a series of topics that, I hope, flow freely from to another. We will
-start with a couple practical points to elaborate what's going on with elegant code, then talk
-about the importance of elegent code (and writing code elegantly -- in a nice and ergonomic manner),
-and then we will explore both small scale and large scale practices that make programming more
-elegant. Naturally, we also explore what it being "elegant" means.
+This book is written as a series of topics that I hope flow seamlessly from one to another. We will
+start with a few practical points to explain what makes code elegant, then discuss
+the value of such code (and writing it clearly and ergonomically),
+then explore both small- and large-scale practices that enhance programming's
+clarity and beauty. Naturally, we also explore what "elegant" means.
 
 I, Lukáš Hozda, write in a meandering, exploratory manner. I change my voice often, depending on the subject matter,
 sometimes more serious, sometimes less.#footnote[
     Some parts of this book are also directly written by the co-author, Luukasa Pörtfors
 ] Throughout the book, you will encounter
-a couple departures (that will always come back to the topic at hand), to provide you with additional
-context, either historical context, or context about alternatives that exist to what we are presenting.
+brief tangents (always returning to the main topic) that provide additional context, whether historical or about
+alternatives to what we present.
 
-In some cases, these tangents were short enough to be contained into footnotes, and so they are there.
+When these tangents were short enough, they were placed in footnotes.
 I encourage you to read the footnotes to grasp the whole idea of what am I trying to communicate.
 
 #block(breakable: false)[
@@ -273,22 +272,22 @@ This book also mentions and provides code examples in a number of programming la
 ]
 Many more will be briefly mentioned in passing.
 
-You are not expected to know all of these languages. Hell, you are not expect to know most of these languages.
+You are not expected to know most of these languages.
 Not knowing them should not stop you from picking up this book. It would be almost impossible to find people
-who "speak" Smalltalk, Lisp, Forth and Haskell at the same time anyway.
+who "speak" Smalltalk, Lisp, Forth, and Haskell at the same time anyway.
 
-These languages to illustrate programming principles and open your eyes to new possibilites and
-philosophies that have shaped the history of programming and how we conceptualize what good programming is.
-We really want to broaden your horizons, and show you what's possible. That is, to see beyond the code and
-have basic understanding of the underlying ideas, so you can apply them elsewhere, too.
+These languages illustrate programming principles and introduce new possibilities and philosophies that have
+shaped programming history and our understanding of good programming.
+This shows how learning new concepts in one context (perhaps among Haskellers) can broaden your horizons,
+enabling you to recognize and apply them elsewhere.
 
-There is a parable with the notion of *monads*, you have probably heard about it, especially in the context
-of Haskell programming. A Haskeller comes up to you and says:
+You may have heard the parable about *monads*, especially in the context of Haskell programming.
+A Haskeller comes up to you and says:
 
 "A monad is just a monoid in the category of endofunctors, what's the problem?"
 
-And you look at him as if he were an alien from a different dimension. Well, that's because they are
-terms that are very theoretical, and you probably don't need to know them for most everyday activities.
+And you stare at them as if they are an alien from another dimension. Well, that's because these are
+theoretical terms you likely don't need for most daily programming tasks.
 
 In reality, the concept of a monad isn't that difficult. It is just a wrapper over values that
 provides two actions:
@@ -296,7 +295,7 @@ provides two actions:
 1. You can put any value into this wrapper
 2. You can chain operations that use wrapped values together
 
-If you have used languages that utilize the following data types:
+If you have used languages with these data types:
 
 - Option or Maybe
 - Result or Either (or both in case of Rust via the very popular `either` crate)
@@ -322,7 +321,7 @@ in terms of monad.#footnote[
 That is an example of how your horizon can be broadened by learning new concepts in one place (perhaps in the company of Haskellers),
 which you can recognize and deal with in other places then on.
 
-Without a further ado, let's get into it.
+Without further ado, let's get into it.
 
 = The Art of Programming
 Programming is a discipline that's almost a century old. Arguably much older if we count the
@@ -338,42 +337,42 @@ into a question of clashing personal philosophies.
 ```pascal
 program HelloWorld;
 begin
- WriteLn('Hello from Lambdas and Logos :)')
+ WriteLn('Hello from Lambdas and Logos :)');
 end.
 ```
-Very similar to my first Pascal program.
+Similar to my first Pascal program.
 
-Very often, we cannot objectively say, which solution to a given problem is the best one,
-although we can generally point out the very bad ones. Furthermore, none of us have the moral superiority
+We often cannot objectively say, which solution to a given problem is the best one,
+although we can generally point out the bad ones. Furthermore, none of us have the moral superiority
 of being a flawless programmer. Show me a programmer and I will show you someone who creates
 bugs.
 
 Writing elegant code means writing code that makes it harder to create insidious bugs, by
-offering clarity and structure that make it easy to navigate, while still being an effective
+offering clarity, and structure that make it easy to navigate, while still being an effective
 solution for the task at hand.
 
 == Lambdas and Logos
-A programming language is a communication medium, just like a human language. It has a grammar,
-and a vocabulary, and just like you can convey a specific meaning by creating a story composed of
+A programming language is a communication medium, just like a human language. It has grammar,
+vocabulary, and just like you can convey a specific meaning by creating a story composed of
 sentences, you can solve an issue by creating a program composed of functions.
 
 Who are we communicating with? The most obvious answer is with the computer. Unfortunately,
 the computer has no notion of humor, sarcasm, hyperbole, metaphor, implications, innuendos or any other
-departure from the most literal meaning of words, and so we have to be precised in what we say.
-You as a programmer might say "The computer isn't doing what it should!", but it does precisely
+departure from the most literal meaning of words, and so we have to be precise in what we say.
+The programmer in you might say "The computer isn't doing what it should!", but it does precisely
 what you told it to do.
 
 If it doesn't do what you want it to do, then you need to phrase it correctly. This turns
-out to be difficult, especially if you are solving a difficult problem. But through grit, spit,
+out to be difficult, especially if you are solving a difficult problem. But through grit, determination,
 and a whole lot of duct tape, we can do it.
 
-What's worse is that we communicate not just with the computer, but with other programmers as well.
+What's worse is that we communicate not just with the computer, but also with other programmers.
 You say: "This program is just for me, I wrote it by myself, for myself!" -- you in 3 months is
 "other programmers".
 
-We need to write programs that are:
-- Understood by the computers
-- Understood by the programmers
+We must write programs that are:
+- Understandable by computers
+- Understandable by programmers
 
 Here is a program in Brainfuck:
 
@@ -386,9 +385,9 @@ http://brainfuck.org/]
 >]<+<<[<<<]>-]]+<<<]+[->>>]>>]>>[.>>>]
 ```
 
-The computer understands this program perfectly, how about you? I would have no idea what's going on.
+The computer understands this program perfectly but what about you? I would have no idea what's going on.
 
-Would it be better if we translated to a different language? Here is the same program in C:
+Would it be better if we translated it to a different language? Here is the same program in C:
 
 #block(breakable: false)[
 ```cpp
@@ -427,8 +426,8 @@ void jonger(int beta[], int alpha, int omega) {
 ```
 ]
 
-I don't know how about you, but it still hard for me to understand what this program does.
-It is still something the the computer understands perfectly, but programmers, not so much.
+I don't know about you, but it is still hard for me to understand what this program does.
+It is still something the computer understands perfectly, but not so much for programmers.
 The issue is that the names of the variables and the function are very non-descriptive.
 
 An adept programmer can now take a minute or a few to figure out that this is an iterative
@@ -473,7 +472,7 @@ void quickSortIterative(int arr[], int low, int high) {
 ]
 
 This now resembles code that may be written by a student who is learning C
-for the first time. In a way, this is correct, but it is ugly. We have two
+for the first time. In a way, this is correct, but is ugly. We have two
 problems to take care of:
 - Code repetition and organization
 - Visuals and documentation
@@ -534,7 +533,7 @@ void quickSortIterative(int arr[], int low, int high) {
 }
 ```
 
-Furthemore, if we recall the logic of *quicksort*, you will note that the step 3#footnote[Per Wikipedia, at least.]
+Furthermore, recalling the logic of *quicksort*, note that step 3#footnote[Per Wikipedia, at least.]
 is partitioning:
 
 #quote[
@@ -603,7 +602,7 @@ void quickSortIterative(int arr[], int low, int high) {
 
 Which we can further improve by inserting some small comments and appropriate whitespace:#footnote[
     It is arguable, how much commenting we need. Often, the answer I would provide is "as little as necessary".
-    Overcommenting is a newbie mistake - we need to strike a balance. Formatting is very important also.
+    Overcommenting is a newbie mistake - we need to strike a balance. Formatting is important too.
     We will discuss this in later on in this
     book
 ]#footnote[
@@ -648,15 +647,15 @@ void quickSortIterative(int arr[], int low, int high) {
 }
 ```
 
-Using functions with descriptive names make your code more readable. The big idea is that we build up
-abstractions. These abstractions represent new actions that we can use to write program in a more
+Using functions with descriptive names makes your code more readable. The key idea is that we build up
+abstractions. These abstractions represent new actions that we can use to program in a more
 descriptive manner, without having to worry about its implementation detail at every step of the way.
 
 Let's take a slight theoretical detour by channeling our inner Dijkstra.#footnote[
     He was a real one, no one could talk shit about programming languages (and programmers)
     quite like he did
 ] Unfortunately, I am unable to find this text, and so I am paraphrasing from memory, but Dijkstra
-essentially says that:
+essentially said that:
 
 - Programs are processes composed of actions
 
@@ -671,10 +670,10 @@ essentially says that:
   *conditional* and *repetitive* composition of actions#footnote[These correspond to code blocks, conditional statements and loops respectively.
       Which renditions of these are available in particular depends on your programming language of choice.]
 
-- The main strength of algorithms is that they can concisely express what many different happenings have in common.
+- The main strength of algorithms are that they can concisely express what many different happenings have in common.
   That is, you can describe how an infinite set of related scenarios are similar to one another
 
-Building, or discovering abstractions is a very important part of every programmer's job. We are creating new
+Building, or discovering abstractions is an important part of every programmer's job. We are creating new
 primitive actions that we can compose into ever more complex processes. So, don't be shy to make functions and
 abstractions.
 
@@ -683,12 +682,12 @@ you identify something that is a general enough notion that it deserves to be de
 
 Preemptively creating abstractions that prove to be unnecessary increases development time,
 can harm performance#footnote[
-    Although for most usecases, you shouldn't sacrificity the clarity and readability of programs for performance.
-    A clear and effective algorithm should always take precedence to microoptimizations.
+    Although for most use cases, you should not sacrifice program clarity and readability for performance.
+    A clear and effective algorithm should always take precedence to micro-optimizations.
 ], increase maintenance cost, and can increase cognitive load without adding value.
 
 The last point is particularly important. Your abstractions should decrease cognitive load,
-not increase it. If you create an abstraction that is harder to understand than the unabstracted code,
+not increase it. If you create an abstraction that is harder to understand than the initial code,
 then it is a terrible abstraction.
 
 Good programming follows "simplicity as a feature". The right amount of abstraction hides complexity when needed,
@@ -696,14 +695,14 @@ but poor abstractions just add complexity. To paraphrase Einstein, *everything s
 but no simpler.*
 
 Simplicity also does not mean _stupidity_. The power of more elaborate programming languages lies in the fact
-that they let you design smarter abstractions that simplify programs effectively. Some programming
+that they let you design smarter abstractions that simplify programs. Some programming
 languages presume that programmers are stupid#footnote[One such language's name rhymes with "No"], and take the
 power of creating generalized abstractions away from them.
 
 This leads us to a very important point: *Programming languages matter.*#footnote[From a certain point of view, that is.]
 
 Programming languages matter because they significantly influence how we model problems and design solutions.
-Different languages aren't just different syntaxes for expressing the same ideas - they embody different philosophies,
+Different languages are not just different syntaxes for expressing the same ideas - they embody different philosophies,
 different trade-offs, and different ways of conceptualizing computation.
 
 Consider how differently you might approach a problem in C (thinking in terms of memory management and pointers),
@@ -723,10 +722,10 @@ vapor they contained.
 The hypothesis has two main variants. The strong version, *linguistic determinism*, claims that language
 completely determines thought, suggesting people cannot conceptualize ideas for which their language lacks words.
 Under this view, speakers of languages without future tense would struggle with long-term planning, or those
-without certain color terms couldn't perceive those distinctions. This strong version has been largely rejected
+without certain color terms could not perceive those distinctions. This strong version has been largely rejected
 by modern linguistics through empirical evidence showing people can think beyond the confines of their language.
 
-The weak version, *linguistic relativity*, suggests that language influences (but doesn't determine)
+The weak version, *linguistic relativity*, suggests that language influences (but does not determine)
 thought and perception. It proposes that language makes certain distinctions easier to notice or express.
 This version has empirical support - for example, languages with different color term boundaries show slight
 differences in color recognition tasks, and languages that use absolute directions (north/south) rather than
@@ -736,7 +735,7 @@ I believe something similar to the weak form applies to programming languages. T
 influences which solutions you see first, which abstractions feel natural, which patterns you reach
 for instinctively, and how you decompose complex problems.
 
-A programmer who only knows imperative languages will struggle to see elegant functional solutions.
+A programmer familiar only with imperative languages may struggle to recognize elegant functional solutions.
 Someone trained only in class-based object-oriented programming might overuse inheritance where
 composition would be clearer. Unfortunately, many programmers tend to be narrow-minded hubristic
 creatures, who need to justify their investment into a particular technology. This has led to
@@ -755,7 +754,7 @@ uncover something about the nature and implementation of programming languages#f
 can possibly go wrong when it comes to memory management and concurrent code.
 Learning Prolog teaches you to think *declaratively* rather than procedurally.
 
-The more diverse your language experience, the richer your conceptual toolkit becomes for solving problems elegantly in any language.
+The broader your language experience, the richer your conceptual toolkit becomes for solving problems elegantly in any language.
 Each paradigm teaches you to see computation from a different angle, and combining these perspectives
 leads to more creative and effective solutions. In the coming chapters, we will examine a number of these
 paradigms and observe even the most basic good practices of writing elegant code.
@@ -849,7 +848,7 @@ Finally, it concatenates the three parts: smaller elements, the pivot, and bigge
 is far more elegant, but it is vulnerable to potentially requiring a lot of nested calls, since we do not pick
 the middle element, but the first element as our starting pivot.
 
-It is perhaps slightly less readable than the previous solution, but we can change to use a middle pivot:
+It may be slightly less readable than the previous solution, but we can use a middle pivot:
 
 ```haskell
 quicksort :: [Int] -> [Int]
@@ -863,23 +862,23 @@ quicksort elements =
     in smaller ++ equal ++ bigger
 ```
 
-The somewhat weird `!!` operator just does list indexing, `elements !! 2` would retrieve the third element of the list `elements`.
+The somewhat weird `!!` operator performs list indexing;
+`elements !! 2` would retrieve the third element of the list `elements`.
 
 Haskell is a very, very powerful language. It is perhaps the one pure functional programming lanuage
 that can be widely applied in practice. This means that we can express ideas fairly elegantly in it,
 because it gives us a lot of tools to our disposal.
 
-On the other hand, learning Haskell takes a bit longer, and requires a bit of a paradigm shift if you
-are coming from languages where the imperative approach reigns supreme. The idea of functional programming
-is powerful enough that mainstream languages are now adopting its wisdom. However, they are largely impure,
-usually because they allow mutability#footnote[
+However, learning Haskell takes longer and requires a paradigm shift if you're coming from imperative languages.
+The idea of functional programming is powerful enough that mainstream languages are now adopting its wisdom.
+However, they are largely impure, usually because they allow mutability#footnote[
     For functional programming, the biggest issue mutating values from the outside,
     that is, whatever what violates referential transparency -- a situation where we
     can replace a function call with the result of said function call and the behavior of the program will not chagne
 ] or make no effort to limit side-effects#footnote[
     Side-effects are once again a problem for referential transparency, and also the predictability of
     a program's execution. Haskell has solved the issue of side-effects with Monadic IO, where the
-]. This is something the languages question do because functional programming is not the primary priority.
+]. This is because functional programming is not their primary priority.
 
 Here is a similar quicksort written in Rust:
 
@@ -904,7 +903,7 @@ fn quicksort(arr: &[i32]) -> Vec<i32> {
     // choose middle element as pivot
     let pivot_idx = arr.len() / 2;
     let pivot = arr[pivot_idx];
-    
+
     // Partition array using the helper function
     let smaller = partition(arr, pivot_idx, |x| x <= pivot);
     let greater = partition(arr, pivot_idx, |x| x > pivot);
@@ -950,7 +949,7 @@ A programming language is good if it fulfills its goals effectively (or at all),
 ]
 and if it is internally consistent.#footnote[
     Some languages are internally inconsistent intentionally, the chief among them being Perl. This is
-    fine, since it has justification, although it may not be your (or my) cup of tea. On the other hand
+    fine, since it has justification, although it may not be y(our) cup of tea. On the other hand,
     PHP is internally inconsistent because it is a patchwork language of dubious heritage.
 ]. These are fairly difficult requirements, and generally, one can point out flaws in the design of any
 programming language. A lot of time, a programmer may reject a programming language as "bad" because
@@ -1035,7 +1034,7 @@ a full-fledged programming language.#footnote[
 
 The form `(defun)`#footnote[
     We will clarify what that is in a moment!
-] has the folloding arguments:
+] has the following arguments:
 - the name of the function -> `hello`
 - a list of arguments -> `(name)`
 - the body of the function, which can be N elements, in this case just a single call of the `(format)`
@@ -1074,13 +1073,13 @@ Therefore, the form `(define-sort-algorithm)` takes five arguments:
 The rules can apply each other using the `(apply-rule ...)` form. So you ask me: "Common Lisp has a built-in syntax
 for describing sorting algorithms? That's awesome, can you give me a source so I can look into it?"
 
-My source is that I made it the fuck up. I actually defined a macro, for this tiny Domain-Specific Language.
+My source is that I made it the fuck up. I actually defined a macro, for this tiny domain-specific language.
 That is something that we do very often in Common Lisp, in order to introduce new structures. Symbolic programming
 is about treating code and data as interchangeable. We can make "functions" (in common parlance macros), that take
 code and output other code. Or take data and output code. Or take code and output data.
 
-This let's us think in terms of the relationships between data, and between code, and create the optimal tools
-to describe the problems we are solving. The curse of Lisp is that it uses parentheses for a syntax that's just lists,
+This lets us think in terms of the relationships between data and code, and create the optimal tools
+to describe the problems we are solving. The curse of Lisp is that it uses parentheses for a syntax that is just lists,
 but it needs syntax to be lists, because Lisp is a language exceptionally suited for manipulating lists! And we want
 to be able to manipulate syntax as lists, so that we can create new syntax with meaning! So Lisp cannot make any other
 choice, or it would not be so good for syntax manipulation!#footnote[
@@ -1089,7 +1088,7 @@ choice, or it would not be so good for syntax manipulation!#footnote[
     there is immense power in simplicity.
 ]
 
-And for this reason, Lisp is not a mainstream programming language. The most mainstream Lisp-y language is Clojure,
+Thus, Lisp is not a mainstream programming language. The most mainstream Lisp-y language is Clojure,
 and Clojure made some sacrifices of "Lispness" by moving less towards symbolic programming and more towards functional
 programming. Oh well.
 
@@ -1246,7 +1245,7 @@ That is, submit to no one, and bend the world to your will.
 == Coding != Programming
 
 In our modern technological landscape, the terms "coding" and "programming" are often used interchangeably,
-as if they were perfect synonyms. Maybe to some they are, but not to me. I view it as linguistic laziness of
+as if they are perfect synonyms. Maybe to some they are, but not to me. I view it as linguistic laziness of
 the highest degree.
 
 This linguistic laziness obscures an important distinction that lies
@@ -1283,10 +1282,10 @@ away from the keyboard as often as at it – in conversations, on whiteboards, d
 or while falling asleep.#footnote[
     My best programming is done on long walks through nature or old Prague. I find that the repetitive motion
     of walking, and the sounds of outside help me eliminate distractions, and naturally lead me into a
-    deep thinking state. On the comparatively rarer occassions that I wear earphones, walks a
+    deep thinking state. On the rare occassions I wear earphones, walks a
 ]
 
-When I tell people I'm a programmer, they often imagine me sitting at a computer typing frantically for hours,
+When I tell people I am a programmer, they often imagine me sitting at a computer typing frantically for hours,
 producing line after line of obscure symbols. This Hollywood-perpetuated image misses the essence of what
 I actually do. Most of my time is spent thinking, reading, discussing, arguing with idiots on the internet,
 sketching, and understanding. The actual typing of code might represent only a fraction of my working day,
@@ -1320,7 +1319,7 @@ for a given usecase.
 As a result, a programmer's code should be refined, clear, and purposeful – a crystallization of
 their thinking process. After all, the code you write is the reflection of your thought process. If your
 thinking about a given problem is disorganized, so will be the code you write.
-Just as good writing isn't merely grammatically correct but also clear, and persuasive, and properly utilizes
+Just as good writing is not merely grammatically correct but also clear, and persuasive, and properly utilizes
 the language you are writing your text in, good programming isn't merely syntactically valid but also elegant
 and comprehensible. The code we write is a communication medium, not just to the computer but to other
 programmers (including our future selves)#footnote[
@@ -1340,9 +1339,9 @@ what enables them to translate messy human systems into computational models tha
 their intended purpose.
 
 As a software engineer, you are the lord of compromises. You need to design and implement a system
-that fullfills a task as well as possible, you have to do it in reasonable time, and you generally
-have to make some sacrifices in the name of integrating the project with the rest of the company ecosystem#footnote[
-    You can't just say "Oh, we have Python everywhere, and our company is mostly Python develepers,
+that fullfills a task as well as possible, you must complete it within a reasonable time, making
+sacrifices to integrate the project with the rest of the company ecosystem#footnote[
+    You can not just say "Oh, we have Python everywhere, and our company is mostly Python develepers,
     so I will write this in a purely functional Haskell, which I happen to know, and it will have monads,
     and blackjack and hookers!". What you can do, however, is integrate elements of good functional style
     into the architecture and implementation of the project in Python, granted that these elements
@@ -1377,9 +1376,9 @@ Scientists use scripting languages to analyze data.#footnote[
 the advent of large language models and AI assistants, the number of people who can produce
 functional code without deep programming knowledge will increase dramatically.
 
-These tools democratize access to coding, which is can be positive,#footnote[
+These tools democratize access to coding, which can be positive,#footnote[
     What I mean is that LLMs are timesavers - you can ask them for small changes, minor refactors,
-    and looking up information. I have benefitted from this, although probably arguably less than someone
+    and looking up information. I have benefitted from this, although probably arguably less so than someone
     who uses more conventional programming languages and technologies.
 ] but they cannot substitute for
 the thinking process at the heart of programming. An LLM can help you express an idea in code, but it
@@ -1452,7 +1451,7 @@ produce will be better for it, and so will your experience of creating it. And I
 the gist of that
 
 == Programming should be fun
-I would like to now expand on one of the last thoughts from the previous section - that programming
+I would like to now expand on a key thought from the previous section - that programming
 should be fun. I would like to paraphrase Gerald Jay Sussman, one of the creators of the Scheme programming
 language. A couple years ago, he had a talk called "Programming (is) should be fun" for the ACM SIGPLAN Scheme conference,
 which resonated with me deeply.#footnote[
@@ -2137,7 +2136,7 @@ work on a 28-inch 4K monitor on the right side and a UW-WQHD 34 inch curved moni
 So why do we still care about line length?
 
 While the 80-character limit might seem arbitrary and outdated, keeping lines of reasonable length serves several
-practical purposes beyond tradition. For my own code, I generally try to stay under 120 characters, though I'm not
+practical purposes beyond tradition. For my own code, I generally try to stay under 120 characters, though I am not
 militantly strict about it. This provides a good balance between using available screen space and maintaining readability.
 It is also something you get a feel for naturally, and you don't even have to worry about it
 
