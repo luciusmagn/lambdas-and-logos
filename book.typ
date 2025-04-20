@@ -3666,11 +3666,14 @@ of programming" in his Turing Award lecture. Floyd borrowed the term from Thomas
 of Scientific Revolutions," which described how scientific fields evolve through paradigm shifts. Floyd argued that
 programming was undergoing similar transformations as new approaches to problem-solving emerged.
 
-Prior to this formal recognition, programmers had already developed distinct approaches to programming, largely influenced
-by the hardware and theoretical models available to them. The earliest electronic computers were programmed in machine
-code or assembly language, where the focus was necessarily on manipulating the machine's state through sequences of
-instructions. This approach naturally led to what we now call imperative programming - giving the computer explicit
-commands to execute in sequence.
+Prior to the formal recognition that we need to talk and reason about something like paradigms, we had already developed
+distinct approaches to programming, largely influenced by the hardware and theoretical models available to them.
+The earliest electronic computers were programmed in machine code or assembly language, where the focus was necessarily
+on manipulating the machine's state through sequences of instructions. This approach naturally led to what we now
+call imperative programming - giving the computer explicit commands to execute in sequence.#footnote[
+    As far as history of programming is concerned, it took us a fairly long time to realize that we
+    should adapt programming languages to humans, not just to computers.
+]
 
 Each programming paradigm represents a set of voluntary constraints that programmers impose upon themselves.
 You may ask me: why would limiting our options be beneficial? Well because when we choose and name a set of
@@ -3682,14 +3685,24 @@ have prior to C++#footnote[
     an idea to build a programming language on top of GOBject - Vala. It looks somewhere between Java and C\#
     and never reached widespread adoption.
 ] manually implemented an object system, but it isn't fun. You want a programming language that has one for
-you.
+you, that's fully integrated.#footnote[
+    You might meet some C programmers that insist that there is a little need for other languages
+    since you can do everything in C anyway. At the time of this writing, I still have in memory a
+    Twitter feud where Jonathan Blow, a legendary developer, spoke about sum types (Rust-like enums,
+    variant types): _A “sum type” is a union. A “product type” is a struct. C has had these since before 1970. If someone uses
+    these terms as though they were some new amazing inventions, they probably do not have much programming experience yet._
+
+    The amazing new invention is that we have named this concept and added first class support for
+    it into languages, which encourages their usage and reduces visual noise significantly. JoBlo
+    is clinically wrong about programming language design.
+]
 
 The basic division in programming paradigms is between imperative and declarative. This split
 emerged gradually as computing evolved from its origins toward more abstract models. We can blame Fortran and Lisp.
 
 Imperative programming, which includes procedural programming and object-oriented programming, focuses on describing
 how a program operates step by step. It's characterized by statements that change a program's state, with the programmer
-explicitly specifying the exact sequence of operations. This approach directly reflects the Von Neumann architecture of
+explicitly specifying the exact sequence of operations. This fairly closely reflects the Von Neumann architecture of
 most computers, where instructions execute sequentially and operate on memory.
 
 Early languages like FORTRAN (1957), ALGOL (1958),#footnote[
@@ -3701,7 +3714,7 @@ Early languages like FORTRAN (1957), ALGOL (1958),#footnote[
     is a Lisp.
 ] and COBOL (1959) were primarily imperative. They provided abstractions
 above assembly language but still required thinking in terms of sequential operations and state changes. Here's a
-simple example in FORTRAN:
+simple example in Fortran:
 
 ```fortran
 C Calculate the sum of numbers from 1 to 10
@@ -3714,43 +3727,73 @@ C Calculate the sum of numbers from 1 to 10
       END
 ```
 
-Declarative programming, which emerged almost simultaneously but took longer to gain mainstream adoption, focuses instead
+Declarative programming, which emerged almost simultaneously but took longer to gain mainstream adoption,#footnote[
+    Turns out, it is sometimes more difficult to describe "what things are" in precise terms as opposed
+    to "how to do them".
+] focuses instead
 on what a program should accomplish without specifying the exact steps. The programmer describes the desired result,
 and the implementation details are handled by the language runtime. This approach creates a higher level of abstraction
 that can be easier to reason about for certain problems.
 
-A pivotal moment in the evolution of programming paradigms came with the structured programming movement of the late 1960s
-and early 1970s. Edsger Dijkstra's 1968 letter "Go To Statement Considered Harmful" criticized the unrestricted use of goto
-statements, arguing they made programs difficult to understand and analyze:
+We can point to a legendary moment in the evolution of programming paradigms which came with the structured#footnote[
+    "Structured" here does not refer to data structures, but to control structures like conditionals and loops.
+]
+programming movement of the late 1960s and early 1970s. Edsger Dijkstra's 1968 letter
+"Go To Statement Considered Harmful" criticized the unrestricted use of goto
+statements, arguing they made programs difficult to understand and analyze:#footnote[
+    Go to Statement Considered Harmful is incredibly short, you should go read it
+]
 
 "The go to statement as it stands is just too primitive; it is too much an invitation to make a mess of one's program.
 It is like the match: useful in skilled hands, disastrous in the hands of a child."
 
-This critique sparked a movement toward structured control flow using if-then-else constructs, loops, and subroutines.
+This criticism was a symptom of a movement toward structured control flow using if-then-else constructs, loops, and subroutines.
 Languages like ALGOL 68 and later Pascal embraced these principles, demonstrating how deliberately constraining programmer
 freedom (by discouraging or eliminating goto) could lead to more reliable and maintainable code.
 
 This period also saw the development of several major paradigms that would shape programming for decades to come:
 
-Object-oriented programming emerged from Simula 67 and gained prominence with Smalltalk in the 1970s. While we'll
+Object-oriented programming emerged from Simula 67 and gained prominence with Smalltalk in the 1970s.#footnote[
+    There is OOP and OOP. The OOP that you are likely most familiar with stems largely from the Simula model.
+    Simula was actually a programming language oriented towards running simulations (hence the name), only the
+    second version became a general-purpose language. Smalltalk is a pure OOP language that drives the paradigm
+    to its greatest extreme. Unfortunately, Smalltalk was too pure for this world, and so it never really took
+    over the mainstream. For some totally unrelated reason, us Lisp programmers are often friends with the
+    Smalltalkers.
+] While we'll
 explore OOP in depth in the next chapter, it's worth noting that Alan Kay, one of Smalltalk's creators, originally
 conceived of objects not as the class hierarchies that later dominated OOP implementations, but as autonomous
 computational entities communicating through messages. Kay was inspired by biological cells and the ARPANET
-(the precursor to the Internet), envisioning systems of independent objects coordinating through messages.
+(the precursor to the Internet), envisioning systems of independent objects coordinating through messages.#footnote[
+    Alan Kay is also one of the most humanist programmers in the world, and he pioneered the idea of
+    bringing both computers and programming to children. He had an idea for a portable computer that could
+    be used in education, the Dynabook, very early on. And he was right, because nowadays, the utility of
+    notebooks/laptops is undisputed.
+]
 
 The early vision of OOP was transformative - it offered a way to manage complexity by encapsulating state and behavior
 into discrete units that communicated through well-defined interfaces. This approach proved particularly valuable
 for modeling real-world systems and building user interfaces. We'll explore the evolution and principles of OOP
-more thoroughly in its dedicated chapter.
+more thoroughly in the next chapter.#footnote[
+    OOP was partly invented particularly to solve some of the issues of programming in the large.
+]
 
-Functional programming traces its roots to Alonzo Church's lambda calculus, a formal system developed in the 1930s
+Functional programming traces its roots to lambda calculus, which we have already briefly discussed in this book,
 as a way to investigate computability. LISP, created by John McCarthy in 1958, was the first programming language
-to incorporate these ideas, though it wasn't purely functional. More strict functional languages like ML (1973)
-and later Haskell (1990) emerged to explore the benefits of a more purely functional approach.
+to incorporate these ideas, though it wasn't purely functional.#footnote[
+    And it still isn't, although some Lisps, like Clojure, lean far more in the direction of FP. Common
+    Lisp is comparatively little FP by current standards, it does not even have tail call optimization.
+] More strict functional languages like ML (1973)
+and later Haskell (1990) emerged to explore the benefits of a more purely functional approach.#footnote[
+    There are once again some unsung heroes like Hope and Miranda.
+]
 
 Functional programming treats computation as the evaluation of mathematical functions and avoids state and mutable data.
 This leads to referential transparency - the property that a function's result depends only on its inputs, not
-on any external state. This constraint makes programs easier to reason about, test, and parallelize. We'll delve
+on any external state.#footnote[
+    In practice, we need to worry about IO as the most problematic side effect / external state.
+    We have briefly hinted at this when we spoke about Monads.
+] This constraint makes programs easier to reason about, test, and parallelize. We'll delve
 deeper into functional programming in its dedicated chapter.
 
 Logic programming represents perhaps the most purely declarative approach to programming. Instead of describing
@@ -3759,7 +3802,9 @@ then making queries about what can be deduced from them. The language implementa
 details of how to search for solutions.
 
 Prolog, created in 1972 by Alain Colmerauer and Philippe Roussel, is the most widely known logic
-programming language. Let's examine our earlier Prolog example in more detail:
+programming language.#footnote[
+    But it's not the only one! You can also check out Mercury.
+] Let's examine our earlier Prolog example in more detail:
 
 ```prolog
 % Facts about family relationships
