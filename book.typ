@@ -90,10 +90,14 @@
 #show heading: it => [#if it.level != 1 [
     #pagebreak()#it#v(0.75em)
 ] else {
-    align(bottom + left)[
-        #pagebreak()#text(size: 10pt, font: "TTLivretText-It", "Chapter " + word_num(counter(heading.where(level: 1)).get().at(0)))#line(length: 100%)#text(size: 35pt, font: "TTLivretText-It")[#it.body]#v(7em)
-    ]
-    pagebreak()
+    if here().page() > 4 {
+        align(bottom + left)[
+            #pagebreak()#text(size: 10pt, font: "TTLivretText-It", "Chapter " + word_num(counter(heading.where(level: 1)).get().at(0)))#line(length: 100%)#text(size: 35pt, font: "TTLivretText-It")[#it.body]#v(7em)
+        ]
+        pagebreak()
+    } else {
+        it
+    }
 }]
 #set quote(block: true)
 #pagebreak()
@@ -3651,22 +3655,26 @@ because some paradigms are subsets of others.#footnote[
     then we would say that procedural is a subset of OOP. I prefer the first approach.
 ]
 
-The introduction of concretely defined programming paradigms aim to solve both problems of programming in the small
+The introduction of concretely defined programming paradigms aims to solve both problems of programming in the small
 and programming in the large. We will talk about them here, although their implications reach into the scope of
 programming in the large as well.
 
 In this book, we will talk about object-oriented programming, since that is the paradigm that most people are familiar
-with, about functional programming, since that is the other paradigm most mentioned, and then symbolic programming,
+with, about functional programming, since that is the other paradigm most often mentioned, and then symbolic programming,
 which is a transcendental paradigm, that rears its (not ugly, beautiful) head in all languages that have a notion of
 meta-programming, and is the best description for what Lisp aims for.
 
 The concept of programming paradigms wasn't formally articulated until 1978, when Robert Floyd used the term "paradigms
 of programming" in his Turing Award lecture. Floyd borrowed the term from Thomas Kuhn's influential book "The Structure
-of Scientific Revolutions," which described how scientific fields evolve through paradigm shifts. Floyd argued that
-programming was undergoing similar transformations as new approaches to problem-solving emerged.
+of Scientific Revolutions," which described how scientific fields evolve through paradigm shifts. It is an excellent
+book, by the way, with far reaching applicability. I have seen it cited in both IT and Psychology literature, the two
+fields most occupying my bookshelves. Floyd argued that programming was undergoing similar transformations as new
+approaches to problem-solving emerged.
 
 Prior to the formal recognition that we need to talk and reason about something like paradigms, we had already developed
-distinct approaches to programming, largely influenced by the hardware and theoretical models available to them.
+opinionated approaches to programming,#footnote[
+    They have always been opinionated, we have just started recognizing that they are
+] largely influenced by the hardware and theoretical models available to them.
 The earliest electronic computers were programmed in machine code or assembly language, where the focus was necessarily
 on manipulating the machine's state through sequences of instructions. This approach naturally led to what we now
 call imperative programming - giving the computer explicit commands to execute in sequence.#footnote[
@@ -3696,13 +3704,16 @@ you, that's fully integrated.#footnote[
     is clinically wrong about programming language design.
 ]
 
-The basic division in programming paradigms is between imperative and declarative. This split
+The basic division in programming paradigms is between _imperative_ and _declarative_. This split
 emerged gradually as computing evolved from its origins toward more abstract models. We can blame Fortran and Lisp.
 
 Imperative programming, which includes procedural programming and object-oriented programming, focuses on describing
 how a program operates step by step. It's characterized by statements that change a program's state, with the programmer
 explicitly specifying the exact sequence of operations. This fairly closely reflects the Von Neumann architecture of
-most computers, where instructions execute sequentially and operate on memory.
+most computers, where instructions execute sequentially and operate on memory.#footnote[
+    Before you rip me apart, I am well-aware that your laptop is Modified Harvard architecture, but
+    at a basic level, from the outside, Von Neumann is a more useful comparison.
+]
 
 Early languages like FORTRAN (1957), ALGOL (1958),#footnote[
     Algol is a bit of a forgotten hero among the programming languages. If you look at it,
@@ -3725,6 +3736,10 @@ C Calculate the sum of numbers from 1 to 10
       PRINT *, 'The sum is:', SUM
       END
 ```
+
+You can see some oddities, such as comments being lines starting with `C` and that odd line 10 number. This number
+is for the conditional jump that the *DO* statement does. The notion of an actual control structure with a scoped
+block of code would only be introduced to Fotran in later versions.
 
 Declarative programming, which emerged almost simultaneously but took longer to gain mainstream adoption,#footnote[
     Turns out, it is sometimes more difficult to describe "what things are" in precise terms as opposed
@@ -3752,7 +3767,7 @@ freedom (by discouraging or eliminating goto) could lead to more reliable and ma
 
 This period also saw the development of several major paradigms that would shape programming for decades to come:
 
-Object-oriented programming emerged from Simula 67 and gained prominence with Smalltalk in the 1970s.#footnote[
+*Object-oriented programming* emerged from Simula 67 and gained prominence with Smalltalk in the 1970s.#footnote[
     There is OOP and OOP. The OOP that you are likely most familiar with stems largely from the Simula model.
     Simula was actually a programming language oriented towards running simulations (hence the name), only the
     second version became a general-purpose language. Smalltalk is a pure OOP language that drives the paradigm
@@ -3945,8 +3960,9 @@ on a minicomputer with just 8KB of memory.
 The constraint of working primarily with a stack forces programmers to break problems down into small,
 composable operations. This often leads to solutions that are very concise and efficient. However,
 it also requires a different mental model than variable-based programming, as you must keep track of
-what's on the stack at each point in your program. For me, this is one of the paradigms that I just
+what's on the stack at each point in your program. For me, this is another paradigm that I just
 can't wrap my head around to such a degree that I would be able to make proper larger programs in it.
+Still, I have nothing but respect for its programmers.
 
 Stack-based programming has found niches in embedded systems, where its small footprint is valuable, and
 in certain specialized domains like graphics and virtual machines. The PostScript language, used for
@@ -4008,7 +4024,7 @@ powerful operation on arrays.#footnote[
 table ← (⍳10) ∘.× ⍳10
 
 ⍝ Find all prime numbers up to 100
-sieve ← {(⍳⍵) ~((⍳⍵) ∘.| ⍳⍵)/⍨(⍳⍵) ≠ ⊤⍨(⍳⍵)}
+sieve ← {(~n∊∊n∘.×n)/n←1↓⍳⍵}
 sieve 100
 ```
 
@@ -4020,20 +4036,29 @@ In the first example:
 
 This single line creates an entire multiplication table that would require nested loops in most other languages.
 
-The prime number sieve is more complex but showcases APL's power. Breaking it down:
+The prime number sieve implementation showcases APL a bit more. Breaking it down:
 
 - `⍳⍵` generates integers from 1 to the input value (⍵)
-- `(⍳⍵) ∘.| ⍳⍵` creates a table of remainders when each number is divided by each number
-- `(⍳⍵) ≠ ⊤⍨(⍳⍵)` identifies numbers that aren't equal to themselves modulo each number
-- `/⍨` filters the original array based on this condition
-- `~` removes certain elements, helping identify the primes
-- The entire expression efficiently implements a prime number sieve in a single, dense line of code
+- `1↓⍳⍵` drops the first element (1), giving us integers from 2 to the input
+- `n←1↓⍳⍵` assigns these integers to the variable n
+- `n∘.×n` creates an outer product using multiplication - this generates a matrix containing all possible products of numbers from 2 to n (which are all composite numbers)
+- `∊n∘.×n` flattens this matrix into a vector of composite numbers
+- `n∊∊n∘.×n` checks which numbers in n appear in this list of composites
+- `~n∊∊n∘.×n` negates this, identifying numbers that don't appear in the list of composites (the primes)
+- The `/` operator filters n to keep only the prime numbers
 
-Modern array-oriented languages like BQN and Uiua continue this tradition while attempting to make the
-notation more accessible. For instance, here's a BQN implementation of the multiplication table:
+Modern array-oriented languages like BQN and Uiua continue the tradition of looking like alien
+hieroglyphics while attempting to make the notation more accessible. For instance, here's the
+example program from Uiua's website:#footnote[
+    Uiua is interesting in that it is both stack-based and array-based. It is also written in Rust,
+    and very new!
+]
 
-```
-mult_table ← (↕10) +⌜× (↕10)
+```apl
+[1 5 8 2]
+⟜/+ # Sum
+⧻   # Length
+÷   # Divide
 ```
 
 Array-oriented programming excels at numerical and data processing tasks. Its focus on whole-array operations aligns
@@ -4043,9 +4068,11 @@ programming facilities in Julia and R all draw inspiration from the array-orient
 
 The constraint of thinking in terms of operations on entire arrays rather than individual elements forces a higher
 level of abstraction. This can lead to solutions that are not only more concise but also more efficient, as
-they can take advantage of vectorized operations and parallelism.
+they can take advantage of vectorized operations and parallelism. My brain, however, could never get
+into array-based programming properly. Sometimes, you are just not wired for a particular paradigm.
 
-We can therefore say that different paradigms represent different ways of modeling computation:
+In any case, we can therefore say that different paradigms represent different ways of
+modeling computation, for instance:
 
 - Imperative programming models computation as a sequence of steps that modify state
 - Functional programming models computation as the composition and evaluation of mathematical functions
@@ -4053,62 +4080,1329 @@ We can therefore say that different paradigms represent different ways of modeli
 - Stack-based programming models computation as operations on a stack
 - Array-based programming models computation as operations on entire collections of data
 
-Each paradigm makes certain types of problems easier to solve and makes certain types of errors harder to introduce. For example:
-
-- Functional programming's emphasis on immutability eliminates entire categories of bugs related to shared mutable state
-- Logic programming's declarative nature allows complex relationships to be expressed more concisely
-- Object-oriented programming's encapsulation helps manage complexity in large systems
-- Array-based programming's focus on whole-collection operations can eliminate off-by-one errors common in explicit loops
+Admittedly, all of these have trade-offs.
 
 These paradigms have influenced each other over time. For instance, many imperative languages now incorporate
 functional features, and many functional languages have adopted type systems influenced by object-oriented
 concepts. The boundaries between paradigms are increasingly blurred as languages adopt successful ideas
-from multiple approaches.
+from multiple approaches. Even in multiparadigmatic languages, which essentially rule the mainstream, we
+can generally pinpoint the primary philosophies underlying each of them. There is no such thing as an
+unopionated programming languages.#footnote[
+    I have heard several times the claim that C is an unopionated language because it was
+    made to build Unix. It isn't, and Unix wasn't an unopionated system either. Some of the
+    opinionation can be traced if you look at C's heritage -- mainly BCPL.
+]
 
-The analogy to natural language families is apt but imperfect. Just as Romance languages share vocabulary and
-grammar derived from Latin, programming language families often share syntax, semantics, or conceptual models.
+Comparing paradigms to natural language families is apt but imperfect. Some natural languages share parts of
+vocabulary and grammar, programming language families often share syntax, semantics, or conceptual models.
 However, programming languages evolve both through inheritance and through conscious design decisions,
-creating more complex relationships than natural language families.
+creating more complex relationships than natural language families, and sometimes, you have languages
+with very different syntax, but similar heritage and values, and languages with similar syntax, but very
+different values.
 
 For example, C++ directly descends from C, inheriting much of its syntax and semantics while adding object-oriented
-and generic programming features. Python, though often grouped with C-like languages due to some syntactic
-similarities, has a very different underlying model influenced by ABC, Modula-3, and various functional languages.
+and generic programming features. Python, though often grouped among _C-like languages_ due to some syntactic
+similarities, has a heritage influenced by ABC, Modula-3, and various functional languages.#footnote[
+    Right now, many imperative languages are sometimes dubbed by some to be C-like when they provide similar
+    control structures, bonus points if they also use braces for block delimitation, but it is not a requirement.
+    In this sense, C++, C\#, Python, Java, Kotlin, Python, Ruby, JavaScript/TypeScript, ActionScript,
+    Lua, Julia and many others are all C-like because they are fundamentally imperative first. However,
+    when tracing the ancestry graphs, it would be better to call all of these languages Algol-like.
+    Algol, as mentioned in a previous footnote, is a language that was extremely influential to the
+    design of contemporary programming languages. A lot of the syntax and practices we are used to know
+    were proliferated thanks to it. There is a great
+    article (although mostly written with the intention of criticizing Go) that showcases how modern does
+    Algol-68 really feel: #link("https://cowlark.com/2009-11-15-go/"). Funnily enough, Algol-68 was
+    considered bloated and difficult to implement at the time.
+]
 
-The Lisp family (Common Lisp, Scheme, Clojure) shares the distinctive S-expression syntax and symbolic
+The Lisp family (Common Lisp, Scheme, Clojure, and many more) shares the S-expression syntax#footnote[
+    Not always, there are languages widely accepted as Lisp or Lisp-adjacent that do not have S-expressions.
+] and symbolic
 processing capabilities, though they differ significantly in their approach to evaluation, typing, and
-standard libraries. The ML family (Standard ML, OCaml, F\#) shares a heritage of strong static typing
+standard libraries.#footnote[
+    And they also differ in philosophies, more on that later.
+] The ML family (Standard ML, OCaml, F\#) shares a heritage of strong static typing
 and pattern matching, though they vary in their purity and platform integration.
 
-An interesting recent example is the Bend language, which superficially resembles Python syntactically but
-internally represents programs as interaction nets based on a graph reduction model. This creates a situation
-where the language looks familiar to Python programmers but operates on fundamentally different principles,
-demonstrating how surface-level similarities can mask deep conceptual differences.
+An interesting recent example is the previously mentioned Bend language, which superficially resembles
+Python on a syntactical level, but internally represents programs as interaction nets based on a graph reduction model.#footnote[
+    Track down the very long footnote a couple pages back that introduces it at large.
+]
 
 Most modern mainstream languages are multiparadigmatic, incorporating elements from several approaches.
 Java, though primarily object-oriented, has added functional features like lambdas and streams. Python supports
 procedural, object-oriented, and functional styles. Rust combines elements of imperative, functional, and
-generic programming with its unique ownership system.
+generic programming with its ownership system.#footnote[
+    The ownership system of Rust isn't really all that special. It just makes the problem of working
+    with pointers explicit, or, more broadly speaking, working with references in a language without
+    a garbage collector.
+]
 
-This multiparadigmatic nature reflects a practical recognition that different problems are best solved
-with different approaches. A graphical user interface might be naturally expressed using objects, while
-a data transformation pipeline might be clearer in a functional style. The ability to select the right
-paradigm for each component of a system is a mark of experienced programmers.
+This multiparadigmatic nature reflects a recognition that different problems are best solved
+with different approaches, and that programming is a philosophical problem. For any problem,
+we cannot find the best approach#footnote[
+    We may, perhaps, find an optimal algorithm for a particular problem, but every
+    algorithm can be implemented in a plethora of ways.
+], and different programmers have strong opinions about how to best express solutions for problem,
+but we can still try to aim for the best possible representation of a problem that we can muster.
+A graphical user interface might be naturally expressed using objects, while a data transformation
+pipeline might be clearer in a functional style. The ability to select the right paradigm for a problem
+is a mark of experience, and a developed skill.
 
-Each paradigm offers a distinct perspective on what programs fundamentally are. To an imperative programmer,
-a program is a sequence of operations. To an object-oriented programmer, it's a network of communicating entities.
-To a functional programmer, it's a composition of mathematical functions. To a logic programmer, it's a set
-of facts and rules for deduction.
+Each paradigm offers a distinct perspective on what programs fundamentally are. In the imperative paradigm,
+a program is a sequence of operations. With an OOP focus, it's a network of communicating entities.#footnote[
+    If you didn't know this, then you are not alone. Some of the mainstream programming languages do great
+    work to obscure what Object-Oriented programming is all about.
+]
+To a functional programmer, it's a composition of mathematical functions facilitating transitions between types.
 
 Understanding these different perspectives, even ones you don't regularly use, provides valuable mental
-models and problem-solving approaches. A Java programmer might never write production Prolog code, but
-understanding logical reasoning can influence how they model complex business rules. A Python programmer
-might never write APL, but exposure to array-oriented thinking could improve how they use NumPy.
+models and problem-solving approaches. If you mostly work with Java, you might never write production Prolog code, but
+understanding logical reasoning can influence how they model complex business rules. A Python bro
+might never write APL, but exposure to array-oriented thinking could improve how he uses NumPy.
 
-In the following chapters, we'll explore object-oriented, functional, and symbolic programming in greater
-depth. Each offers valuable tools for creating elegant, maintainable code, and understanding when and how
-to apply each paradigm is an essential skill for modern programmers.
+The fundamental idea of playing with many languages from different paradigms is that it lets you
+gain transcendental insight -- to see the underlying ideas of programming that shaped different
+languages, and be able to use them appropriately.
+
+Now, we'll explore object-oriented, functional, and symbolic programming in greater
+depth. Each offers valuable tools for creating elegant code, and understanding each paradigm is an essential skill
+for programmers.
 
 == Object-Oriented Programming
+
+Object-oriented programming (OOP) has become one of the most fundamental paradigms in modern software development.
+If you're reading this book, you've almost certainly encountered it, whether you realized it or not. Languages like
+Java, C++, Python, Ruby, and C\# all prominently feature OOP principles, and even languages that aren't primarily
+object-oriented often incorporate elements of the paradigm.
+
+The enduring appeal of OOP comes partly from how naturally it maps to our perception of the world. We instinctively
+understand the world as a collection of objects that have properties and behaviors, and that interact with each
+other. A car has properties (color, size, fuel level) and behaviors (accelerate, brake, turn). It interacts with
+other objects (roads, traffic lights, drivers). This intuitive mapping between real-world concepts and programming
+constructs makes OOP particularly accessible to newcomers and effective for modeling many real-world systems.#footnote[
+    This intuitive mapping is both a strength and weakness of OOP. It makes initial modeling straightforward, but the real world doesn't always decompose neatly into an object hierarchy. Some problems fit OOP perfectly; others require substantial mental gymnastics to express in object-oriented terms.
+]
+
+The story of OOP begins with Simula, developed in the 1960s by Ole-Johan Dahl and Kristen Nygaard at the
+Norwegian Computing Center. As its name suggests, Simula was initially designed for simulation purposes
+rather than as a general-purpose programming language. Simula 67 (released in 1967) introduced many
+concepts that would become fundamental to OOP, including classes, objects, inheritance, and virtual methods.
+
+Here's what Simula code looked like:
+
+```
+CLASS Person(name, age); VALUE age; TEXT name; INTEGER age;
+BEGIN
+    PROCEDURE PrintDetails;
+    BEGIN
+        OutText("Name: "); OutText(name); OutImage;
+        OutText("Age: "); OutInt(age, 0); OutImage;
+    END;
+END;
+
+CLASS Employee INHERITS Person(name, age);
+    TEXT company, role;
+BEGIN
+    PROCEDURE PrintDetails;
+    BEGIN
+        OutText("Employee Details:"); OutImage;
+        Person.PrintDetails;
+        OutText("Company: "); OutText(company); OutImage;
+        OutText("Role: "); OutText(role); OutImage;
+    END;
+END;
+```
+
+Even in this simple example, we can see the core OOP concepts that would influence languages for decades
+to come: classes as templates for objects, inheritance to extend functionality, and methods that operate
+on an object's data. Simula's syntax shows its ALGOL heritage, which would later influence C and many other languages.#footnote[
+    Simula's influence went beyond just OOP. It introduced the concept of coroutines, which are ancestors of today's async/await patterns and generators.
+]
+
+What made Simula revolutionary was its approach to structuring code. Before Simula, programs were
+typically organized around procedures operating on data. Simula instead organized code around the data
+itself, packaging related data and procedures together into units called "classes." A class defined a
+blueprint from which multiple "objects" could be created, each with its own state but sharing the same behavior.
+
+This approach facilitated code reuse in a way that previous paradigms did not. Once a class was defined,
+it could be instantiated multiple times without duplicating code. Through inheritance, new classes
+could extend existing ones, inheriting their properties and behaviors while adding or modifying as needed.
+This hierarchical relationship between classes provided a natural way to model taxonomies and specialized behaviors.
+
+While Simula laid the groundwork for OOP as we know it today, it was Smalltalk that truly embraced and
+refined the paradigm. Developed at Xerox PARC in the 1970s under the leadership of Alan Kay, Smalltalk
+took OOP to its logical extreme. In Smalltalk, everything is an object – even primitive values like numbers
+and booleans, and even classes themselves.
+
+Alan Kay's vision for Smalltalk was influenced by his background in biology and his interest in how complex
+biological systems function through cellular interactions. He envisioned computing objects as autonomous
+entities that communicated by sending messages to each other, similar to how cells in an organism function.
+This message-passing model is still fundamental to OOP, though it's often obscured in modern languages
+behind the syntax of method calls.#footnote[
+    Kay later expressed frustration that his original vision of OOP was lost in translation. He said, "I invented the term Object-Oriented, and I can tell you I did not have C++ in mind." He emphasized that the key ideas were message passing, late binding, and extreme encapsulation - not class hierarchies and type systems.
+]
+
+Kay was also deeply interested in education and making computing accessible to children. He believed that
+computers could be powerful learning tools if they were designed with human cognition in mind. This
+humanist approach influenced not just Smalltalk's design but also led to Kay's concept of the Dynabook – a
+vision of a portable personal computer for education that predated laptops and tablets by decades. Kay's
+work on user interfaces at PARC also contributed to the development of the graphical user
+interface we take for granted today.
+
+Let's dive deeper into Smalltalk with more substantial examples to show how it approaches OOP:
+
+```smalltalk
+"Define a class named BankAccount"
+Object subclass: #BankAccount
+    instanceVariableNames: 'balance owner transactions'
+    classVariableNames: 'MinimumBalance InterestRate'
+    poolDictionaries: ''
+    category: 'BankingExample'
+
+"Class methods for initialization"
+BankAccount class methodsFor: 'initialization'
+    initialize
+        "Set up class variables"
+        MinimumBalance := 100.
+        InterestRate := 0.05.
+
+    new: anOwnerName withInitialDeposit: anAmount
+        "Create a new account with an initial deposit"
+        | account |
+        account := self new.
+        account owner: anOwnerName.
+        account deposit: anAmount.
+        ^ account
+!
+
+"Instance methods for accessing"
+BankAccount methodsFor: 'accessing'
+    balance
+        ^ balance
+
+    owner
+        ^ owner
+
+    owner: aName
+        owner := aName
+
+    transactions
+        ^ transactions copy
+!
+
+"Instance methods for banking operations"
+BankAccount methodsFor: 'operations'
+    initialize
+        "Set up instance variables"
+        balance := 0.
+        transactions := OrderedCollection new.
+        self recordTransaction: 'Account created'
+
+    deposit: anAmount
+        anAmount > 0
+            ifTrue: [
+                balance := balance + anAmount.
+                self recordTransaction: 'Deposit: ', anAmount printString.
+                ^ true ]
+            ifFalse: [
+                self error: 'Cannot deposit negative amount'.
+                ^ false ]
+
+    withdraw: anAmount
+        (anAmount > 0 and: [balance - anAmount >= MinimumBalance])
+            ifTrue: [
+                balance := balance - anAmount.
+                self recordTransaction: 'Withdrawal: ', anAmount printString.
+                ^ true ]
+            ifFalse: [
+                self error: 'Invalid withdrawal amount or insufficient funds'.
+                ^ false ]
+
+    applyInterest
+        | interestAmount |
+        interestAmount := balance * InterestRate.
+        balance := balance + interestAmount.
+        self recordTransaction: 'Interest: ', interestAmount printString
+!
+
+"Private methods"
+BankAccount methodsFor: 'private'
+    recordTransaction: aString
+        transactions add: Date today printString, ' - ', aString
+!
+
+"Initialize the class"
+BankAccount initialize.
+
+"Example usage"
+| account |
+account := BankAccount new: 'John Smith' withInitialDeposit: 1000.
+account deposit: 500.
+account withdraw: 200.
+account applyInterest.
+Transcript show: 'Balance: ', account balance printString; cr.
+Transcript show: 'Transactions:'; cr.
+account transactions do: [:each | Transcript show: each; cr].
+```
+
+This example demonstrates many of Smalltalk's distinctive features:
+
+1. Clean separation of class methods (like `initialize` and `new:withInitialDeposit:`) and instance methods
+2. Method categorization for organizing related methods
+3. Message sending with arguments using keywords (like `new: 'John' withInitialDeposit: 1000`)
+4. The consistent use of blocks (code between square brackets) for control structures
+5. Dynamic typing and duck typing throughout
+
+One distinctive aspect of Smalltalk that isn't apparent from just looking at code snippets is its
+development environment. Unlike most programming languages where you write code in text files,
+compile them, and run the resulting program, Smalltalk uses an "image-based" development model.
+A Smalltalk image is a snapshot of a running Smalltalk system, including all objects and classes
+When you develop in Smalltalk, you're modifying a live environment rather than editing static files.#footnote[
+    This approach has advantages and disadvantages. The tight integration makes development highly
+    interactive, but it can make version control and collaboration more challenging. Modern Smalltalk
+    systems like Pharo have worked to address these issues with tools that bridge the gap between
+    image-based and file-based development.
+]
+
+This approach creates a much more interactive development experience. You can inspect objects, modify
+code, and see the effects immediately without a separate compile-run cycle. It also means that the
+state of your development environment persists between sessions – when you quit Smalltalk and restart
+it later, everything is exactly as you left it.
+
+While Smalltalk never achieved the mainstream success of languages like Java or C++, its influence on
+programming language design has been profound. Modern implementations like Pharo continue to develop
+and extend the Smalltalk tradition, offering a pure object-oriented experience with an integrated
+development environment that realizes many of Kay's original visions.
+
+Pharo, for example, continues the Smalltalk tradition while adding modern features like a powerful
+compiler, advanced refactoring tools, and better integration with the outside world. Here's what the
+Pharo IDE looks like, showing class browsers, inspectors, and live programming:
+
+```
+[TODO: get a nice pharo screenshot lmao]
+```
+
+Now, let's contrast these pure OOP approaches with how OOP has evolved in mainstream languages. Each
+mainstream language has interpreted OOP differently, emphasizing different aspects of the paradigm.
+
+C++ introduced OOP to a generation of C programmers, emphasizing efficiency and backward compatibility:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+class BankAccount {
+private:
+    std::string owner;
+    double balance;
+    std::vector<std::string> transactions;
+
+    // Static (class) members
+    static double minimumBalance;
+    static double interestRate;
+
+public:
+    // Constructor
+    BankAccount(const std::string& ownerName, double initialDeposit)
+        : owner(ownerName), balance(0) {
+        recordTransaction("Account created");
+        deposit(initialDeposit);
+    }
+
+    // Accessors
+    double getBalance() const { return balance; }
+    std::string getOwner() const { return owner; }
+
+    // Operations
+    bool deposit(double amount) {
+        if (amount <= 0) {
+            std::cerr << "Cannot deposit negative or zero amount" << std::endl;
+            return false;
+        }
+
+        balance += amount;
+        recordTransaction("Deposit: " + std::to_string(amount));
+        return true;
+    }
+
+    bool withdraw(double amount) {
+        if (amount <= 0) {
+            std::cerr << "Cannot withdraw negative or zero amount" << std::endl;
+            return false;
+        }
+
+        if (balance - amount < minimumBalance) {
+            std::cerr << "Insufficient funds or below minimum balance" << std::endl;
+            return false;
+        }
+
+        balance -= amount;
+        recordTransaction("Withdrawal: " + std::to_string(amount));
+        return true;
+    }
+
+    void applyInterest() {
+        double interestAmount = balance * interestRate;
+        balance += interestAmount;
+        recordTransaction("Interest applied: " + std::to_string(interestAmount));
+    }
+
+    void printTransactions() const {
+        for (const auto& transaction : transactions) {
+            std::cout << transaction << std::endl;
+        }
+    }
+
+private:
+    void recordTransaction(const std::string& description) {
+        // In a real implementation, we'd include the date
+        transactions.push_back(description);
+    }
+};
+
+// Initialize static members
+double BankAccount::minimumBalance = 100.0;
+double BankAccount::interestRate = 0.05;
+
+int main() {
+    BankAccount account("John Smith", 1000);
+    account.deposit(500);
+    account.withdraw(200);
+    account.applyInterest();
+
+    std::cout << "Balance: " << account.getBalance() << std::endl;
+    std::cout << "Transactions:" << std::endl;
+    account.printTransactions();
+
+    return 0;
+}
+```
+
+C++'s approach to OOP introduced manual memory management concerns and a compilation model that influenced
+how OOP was implemented. It emphasizes compile-time binding and efficiency, with features like inline methods,
+const-correctness, and operator overloading that reflect its systems programming heritage.#footnote[
+    C++ took a pragmatic approach to OOP, adding it to an existing language rather than designing from
+    the ground up. This led to compromises like the need for explicit constructors and destructors, and
+    separation of declaration and implementation. These constraints influenced how generations
+    of programmers thought about OOP.
+]
+
+Java took a "purer" approach to OOP, with automatic memory management and a stricter class-based model:
+
+```java
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class BankAccount {
+    private String owner;
+    private double balance;
+    private List<String> transactions;
+
+    // Static (class) members
+    private static double minimumBalance = 100.0;
+    private static double interestRate = 0.05;
+
+    // Constructor
+    public BankAccount(String ownerName, double initialDeposit) {
+        this.owner = ownerName;
+        this.balance = 0;
+        this.transactions = new ArrayList<>();
+        recordTransaction("Account created");
+        deposit(initialDeposit);
+    }
+
+    // Accessors
+    public double getBalance() {
+        return balance;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    // Operations
+    public boolean deposit(double amount) {
+        if (amount <= 0) {
+            System.err.println("Cannot deposit negative or zero amount");
+            return false;
+        }
+
+        balance += amount;
+        recordTransaction("Deposit: " + amount);
+        return true;
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            System.err.println("Cannot withdraw negative or zero amount");
+            return false;
+        }
+
+        if (balance - amount < minimumBalance) {
+            System.err.println("Insufficient funds or below minimum balance");
+            return false;
+        }
+
+        balance -= amount;
+        recordTransaction("Withdrawal: " + amount);
+        return true;
+    }
+
+    public void applyInterest() {
+        double interestAmount = balance * interestRate;
+        balance += interestAmount;
+        recordTransaction("Interest applied: " + interestAmount);
+    }
+
+    public void printTransactions() {
+        for (String transaction : transactions) {
+            System.out.println(transaction);
+        }
+    }
+
+    private void recordTransaction(String description) {
+        transactions.add(new Date() + " - " + description);
+    }
+
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("John Smith", 1000);
+        account.deposit(500);
+        account.withdraw(200);
+        account.applyInterest();
+
+        System.out.println("Balance: " + account.getBalance());
+        System.out.println("Transactions:");
+        account.printTransactions();
+    }
+}
+```
+
+Java simplified OOP for a generation of programmers by removing pointer arithmetic, multiple inheritance,
+and manual memory management. Its "everything is a class" approach (except for primitives) made OOP the default
+paradigm, though it has gradually incorporated functional elements in recent versions.#footnote[
+    Java's design choices - single inheritance with interfaces, a separate primitive type system, and
+    emphasis on safety over power - shaped how corporate software development embraced OOP. Its success
+    institutionalized a particular vision of OOP that's still dominant in enterprise software.
+    I hate it so much. I don't like Java much either, but at least it has
+    improved significantly in recent years, while enterprise software hasn't. Steer clear of anything that
+    says "enterprise" on it.
+]
+
+Python offers a more dynamic approach to OOP, with duck typing and runtime method resolution:
+
+```python
+from datetime import datetime
+
+class BankAccount:
+    # Class variables
+    minimum_balance = 100.0
+    interest_rate = 0.05
+
+    def __init__(self, owner_name, initial_deposit):
+        self.owner = owner_name
+        self.balance = 0
+        self.transactions = []
+        self._record_transaction("Account created")
+        self.deposit(initial_deposit)
+
+    def deposit(self, amount):
+        if amount <= 0:
+            print("Cannot deposit negative or zero amount")
+            return False
+
+        self.balance += amount
+        self._record_transaction(f"Deposit: {amount}")
+        return True
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            print("Cannot withdraw negative or zero amount")
+            return False
+
+        if self.balance - amount < self.minimum_balance:
+            print("Insufficient funds or below minimum balance")
+            return False
+
+        self.balance -= amount
+        self._record_transaction(f"Withdrawal: {amount}")
+        return True
+
+    def apply_interest(self):
+        interest_amount = self.balance * self.interest_rate
+        self.balance += interest_amount
+        self._record_transaction(f"Interest applied: {interest_amount}")
+
+    def _record_transaction(self, description):
+        self.transactions.append(f"{datetime.now()} - {description}")
+
+    def print_transactions(self):
+        for transaction in self.transactions:
+            print(transaction)
+
+# Example usage
+account = BankAccount("John Smith", 1000)
+account.deposit(500)
+account.withdraw(200)
+account.apply_interest()
+
+print(f"Balance: {account.balance}")
+print("Transactions:")
+account.print_transactions()
+```
+
+Python's OOP model is notably more flexible than Java's or C++'s. It supports multiple inheritance,
+dynamic method resolution with its Method Resolution Order (MRO) algorithm, and metaclasses for
+customizing class creation.#footnote[
+    Python's approach reflects its "we're all adults here" philosophy. It doesn't prevent you from
+    accessing private members (conventionally prefixed with underscore), modifying classes at runtime,
+    or monkey-patching existing objects. This flexibility can be powerful but requires discipline.
+    Many programmers don't have that discipline. Try to be better, and not use something like that
+    just because it is available, but because it is your last option. Ideally use a linter that
+    will scream at you for transgressions.
+]
+
+Speaking of metaclasses, they're one of Python's more advanced OOP features that allow you to customize
+class creation. Here's an example:
+
+```python
+# Metaclass example
+class LoggingType(type):
+    def __new__(mcs, name, bases, attrs):
+        # Add logging to all methods
+        for attr_name, attr_value in attrs.items():
+            if callable(attr_value) and not attr_name.startswith('__'):
+                attrs[attr_name] = LoggingType.make_logging_method(attr_name, attr_value)
+
+        return super().__new__(mcs, name, bases, attrs)
+
+    @staticmethod
+    def make_logging_method(name, method):
+        def logged_method(self, *args, **kwargs):
+            print(f"Calling {name} with args: {args}, kwargs: {kwargs}")
+            result = method(self, *args, **kwargs)
+            print(f"{name} returned: {result}")
+            return result
+        return logged_method
+
+# Use the metaclass
+class EnhancedBankAccount(BankAccount, metaclass=LoggingType):
+    def transfer(self, target_account, amount):
+        if self.withdraw(amount):
+            target_account.deposit(amount)
+            return True
+        return False
+
+# Now all method calls will be logged
+enhanced = EnhancedBankAccount("Jane Smith", 2000)
+enhanced.deposit(300)  # This will log the call and return value
+```
+
+Metaclasses allow you to intervene in the class creation process, modifying attributes, adding methods,
+or enforcing constraints. They're the mechanism behind many Python frameworks like Django's ORM and SQLAlchemy.
+
+Over the decades, three main approaches to OOP have emerged:
+
+1. Inheritance-based OOP, exemplified by languages like Java, C++, and Python, where classes form hierarchies through inheritance relationships.
+
+2. Composition-based OOP, which favors building objects by combining simpler components rather than through inheritance hierarchies. This approach is often summarized as "favor composition over inheritance" and is embraced by many modern languages including Rust.
+
+3. Prototype-based OOP, which eschews classes altogether in favor of creating new objects by cloning and modifying existing ones. This approach was pioneered by the language Self and is most prominently featured in JavaScript.
+
+Let's look at Rust's approach to composition-based OOP. Rust doesn't have inheritance, but it
+offers traits that enable polymorphism through composition:
+
+```rust
+use std::fmt;
+
+// Define traits (interfaces)
+trait Account {
+    fn balance(&self) -> f64;
+    fn owner(&self) -> &str;
+    fn deposit(&mut self, amount: f64) -> bool;
+    fn withdraw(&mut self, amount: f64) -> bool;
+}
+
+trait InterestBearing {
+    fn apply_interest(&mut self);
+    fn interest_rate(&self) -> f64;
+}
+
+// Implement a basic bank account
+struct BankAccount {
+    owner: String,
+    balance: f64,
+    transactions: Vec<String>,
+    minimum_balance: f64,
+}
+
+impl BankAccount {
+    fn new(owner: String, initial_deposit: f64) -> Self {
+        let mut account = BankAccount {
+            owner,
+            balance: 0.0,
+            transactions: Vec::new(),
+            minimum_balance: 100.0,
+        };
+        account.record_transaction("Account created".to_string());
+        account.deposit(initial_deposit);
+        account
+    }
+
+    fn record_transaction(&mut self, description: String) {
+        // In a real implementation we'd include the current date/time
+        self.transactions.push(description);
+    }
+
+    fn print_transactions(&self) {
+        for transaction in &self.transactions {
+            println!("{}", transaction);
+        }
+    }
+}
+
+impl Account for BankAccount {
+    fn balance(&self) -> f64 {
+        self.balance
+    }
+
+    fn owner(&self) -> &str {
+        &self.owner
+    }
+
+    fn deposit(&mut self, amount: f64) -> bool {
+        if amount <= 0.0 {
+            println!("Cannot deposit negative or zero amount");
+            return false;
+        }
+
+        self.balance += amount;
+        self.record_transaction(format!("Deposit: {}", amount));
+        true
+    }
+
+    fn withdraw(&mut self, amount: f64) -> bool {
+        if amount <= 0.0 {
+            println!("Cannot withdraw negative or zero amount");
+            return false;
+        }
+
+        if self.balance - amount < self.minimum_balance {
+            println!("Insufficient funds or below minimum balance");
+            return false;
+        }
+
+        self.balance -= amount;
+        self.record_transaction(format!("Withdrawal: {}", amount));
+        true
+    }
+}
+
+// Implement interest-bearing capability
+impl InterestBearing for BankAccount {
+    fn interest_rate(&self) -> f64 {
+        0.05 // 5% interest rate
+    }
+
+    fn apply_interest(&mut self) {
+        let interest_amount = self.balance * self.interest_rate();
+        self.balance += interest_amount;
+        self.record_transaction(format!("Interest applied: {}", interest_amount));
+    }
+}
+
+// Example usage with trait objects
+fn process_account(account: &mut dyn Account) {
+    println!("Processing account for {}", account.owner());
+    account.deposit(100.0);
+    account.withdraw(50.0);
+    println!("New balance: {}", account.balance());
+}
+
+fn main() {
+    let mut account = BankAccount::new("John Smith".to_string(), 1000.0);
+
+    // Use the account through trait interfaces
+    account.deposit(500.0);
+    account.withdraw(200.0);
+    account.apply_interest();
+
+    println!("Balance: {}", account.balance());
+    println!("Transactions:");
+    account.print_transactions();
+
+    // Process the account through a function taking any Account
+    process_account(&mut account);
+}
+```
+
+Rust's approach emphasizes what objects can do (their behavior) rather than what they are
+(their class hierarchy). This aligns with the principle of composition over inheritance and
+helps avoid some of the pitfalls of deep inheritance hierarchies.#footnote[
+    Rust's trait system was influenced by Haskell's typeclasses, showing how ideas from functional programming have influenced modern OOP. This cross-pollination between paradigms has become increasingly common.
+]
+
+The prototype-based approach, exemplified by Self and JavaScript, works quite differently.
+
+Self deserves special mention in our exploration of OOP paradigms. Developed at Xerox PARC#footnote[
+    Xerox Palo Alto Research Center (PARC) is a place that you will hear about a lot when you start
+    looking into the history of programming.
+] in the
+late 1980s by David Ungar and Randall Smith, Self took the idea of prototype-based programming
+to its purest form. Unlike class-based languages where objects are instances of classes, in Self
+everything is an object that can be cloned to create new objects. There's no distinction between
+classes and instances - just objects serving as prototypes for other objects. Self pioneered many
+techniques that are now standard in language implementation, including advanced just-in-time
+compilation and adaptive optimization.#footnote[
+    One of the reasons why Smalltalk didn't take is that it wasn't really fast enough for computers
+    then. Self was very fast. In fact, there were implementations of Smalltalk written in Self
+    that leveraged its runtime to become faster. Too late, though.
+] Its influence extends beyond programming languages to user
+interfaces - it featured a groundbreaking graphical programming environment where code and
+objects could be manipulated directly, an approach that influenced later systems like
+Squeak Smalltalk. Here's how a bank account might look in Self:
+
+```self
+"Create a prototype bank account object"
+(|
+  "Define slots (properties and methods)"
+  owner <- 'Prototype'.
+  balance <- 0.
+  transactions <- [].
+  minimumBalance <- 100.
+
+  "Method to deposit money"
+  deposit: amount = (
+    (amount <= 0) ifTrue: [
+      'Cannot deposit negative or zero amount' print.
+      ^ false
+    ].
+    balance: balance + amount.
+    self recordTransaction: 'Deposit: ' concatenate: amount printString.
+    ^ true
+  ).
+
+  "Method to withdraw money"
+  withdraw: amount = (
+    (amount <= 0) ifTrue: [
+      'Cannot withdraw negative or zero amount' print.
+      ^ false
+    ].
+    (balance - amount < minimumBalance) ifTrue: [
+      'Insufficient funds or below minimum balance' print.
+      ^ false
+    ].
+    balance: balance - amount.
+    self recordTransaction: 'Withdrawal: ' concatenate: amount printString.
+    ^ true
+  ).
+
+  "Private method to record a transaction"
+  recordTransaction: description = (
+    transactions: transactions copyWith: description
+  ).
+
+  "Method to print all transactions"
+  printTransactions = (
+    transactions do: [|:t| t print]
+  ).
+|) "End of object definition"
+
+"Clone the prototype to create an actual account"
+bankAccount: bankAccountPrototype clone.
+bankAccount owner: 'John Smith'.
+bankAccount deposit: 1000.
+bankAccount deposit: 500.
+bankAccount withdraw: 200.
+bankAccount printTransactions.
+```
+
+This example demonstrates Self's core paradigm: there's no class definition, just a prototype object
+that gets cloned. The syntax is unusual - slots are defined within `(| ... |)` delimiters, with method
+definitions containing their code directly. The prototype model makes the creation of one-off objects
+or objects with unique behaviors particularly elegant, an idea that JavaScript later adopted and popularized.#footnote[
+    Self's influence extends beyond its innovative object model. It pioneered optimization techniques
+    like polymorphic inline caches and type feedback that made dynamically-typed languages practical
+    for performance-sensitive applications. These techniques are now standard in JavaScript engines
+    like Google's V8, showing how research languages can impact mainstream development decades later.
+    This happens all the time, by the way. It still remains one of our greatest tasks that we take
+    the fruits of academic labor and take them to the masses.
+]
+
+In JavaScript, there are no classes in the traditional sense (though it added class syntax as
+syntactic sugar in ES6). Instead, objects are created based on other objects – their prototypes:
+
+```javascript
+// Create an object to serve as a prototype for bank accounts
+const bankAccountPrototype = {
+    deposit(amount) {
+        if (amount <= 0) {
+            console.log("Cannot deposit negative or zero amount");
+            return false;
+        }
+
+        this.balance += amount;
+        this._recordTransaction(`Deposit: ${amount}`);
+        return true;
+    },
+
+    withdraw(amount) {
+        if (amount <= 0) {
+            console.log("Cannot withdraw negative or zero amount");
+            return false;
+        }
+
+        if (this.balance - amount < this.minimumBalance) {
+            console.log("Insufficient funds or below minimum balance");
+            return false;
+        }
+
+        this.balance -= amount;
+        this._recordTransaction(`Withdrawal: ${amount}`);
+        return true;
+    },
+
+    applyInterest() {
+        const interestAmount = this.balance * this.interestRate;
+        this.balance += interestAmount;
+        this._recordTransaction(`Interest applied: ${interestAmount}`);
+    },
+
+    _recordTransaction(description) {
+        // In a real implementation, we'd include the current date
+        this.transactions.push(description);
+    },
+
+    printTransactions() {
+        for (const transaction of this.transactions) {
+            console.log(transaction);
+        }
+    }
+};
+
+// Function to create new bank accounts
+function createBankAccount(ownerName, initialDeposit) {
+    // Create a new object with the prototype
+    const account = Object.create(bankAccountPrototype);
+
+    // Initialize state
+    account.owner = ownerName;
+    account.balance = 0;
+    account.transactions = [];
+    account.minimumBalance = 100;
+    account.interestRate = 0.05;
+
+    // Record creation and make initial deposit
+    account._recordTransaction("Account created");
+    account.deposit(initialDeposit);
+
+    return account;
+}
+
+// Create and use an account
+const account = createBankAccount("John Smith", 1000);
+account.deposit(500);
+account.withdraw(200);
+account.applyInterest();
+
+console.log(`Balance: ${account.balance}`);
+console.log("Transactions:");
+account.printTransactions();
+
+// Modern JavaScript also has class syntax, but it's still prototypes under the hood
+class BankAccount {
+    static minimumBalance = 100;
+    static interestRate = 0.05;
+
+    constructor(ownerName, initialDeposit) {
+        this.owner = ownerName;
+        this.balance = 0;
+        this.transactions = [];
+        this._recordTransaction("Account created");
+        this.deposit(initialDeposit);
+    }
+
+    deposit(amount) {
+        if (amount <= 0) {
+            console.log("Cannot deposit negative or zero amount");
+            return false;
+        }
+
+        this.balance += amount;
+        this._recordTransaction(`Deposit: ${amount}`);
+        return true;
+    }
+
+    withdraw(amount) {
+        if (amount <= 0) {
+            console.log("Cannot withdraw negative or zero amount");
+            return false;
+        }
+
+        if (this.balance - amount < BankAccount.minimumBalance) {
+            console.log("Insufficient funds or below minimum balance");
+            return false;
+        }
+
+        this.balance -= amount;
+        this._recordTransaction(`Withdrawal: ${amount}`);
+        return true;
+    }
+
+    applyInterest() {
+        const interestAmount = this.balance * BankAccount.interestRate;
+        this.balance += interestAmount;
+        this._recordTransaction(`Interest applied: ${interestAmount}`);
+    }
+
+    _recordTransaction(description) {
+        this.transactions.push(`${new Date().toISOString()} - ${description}`);
+    }
+
+    printTransactions() {
+        for (const transaction of this.transactions) {
+            console.log(transaction);
+        }
+    }
+}
+
+// The same usage with class syntax
+const classAccount = new BankAccount("Jane Smith", 2000);
+// ...rest of usage is identical
+```
+
+Even with JavaScript's modern class syntax, this prototype-based behavior is still happening
+under the hood. The language's unusual approach to OOP is a direct result of its heritage – JavaScript
+was created by Brendan Eich in just 10 days, drawing inspiration from Self's prototype-based OOP
+and Scheme's functional programming, all while having to look syntactically like Java
+to appease business interests.#footnote[
+    The story of JavaScript's creation is a fascinating case study in design constraints. Netscape needed
+    a language for the web that could appeal to non-professional programmers while looking familiar to Java
+    programmers (for marketing reasons). Eich, who preferred Scheme, had to create something that appeared
+    Java-like but had the flexibility of prototype-based systems. The result was a language with quirks that
+    still plague developers, but also with a flexibility that allowed it to become the language of the web.
+    In reality, JavaScript was perfectly fine for its intended usecase - as small glue for adding bits of
+    interactivity to websites. Or in other words, small scale scripting. The problems really begin at scale.
+]
+
+Common Lisp offers yet another perspective on OOP with its Common Lisp Object System (CLOS). Rather than methods being attached to classes as in most OOP languages, CLOS methods are defined separately and can operate on multiple objects of different classes simultaneously. This approach, called "multiple dispatch," offers a level of expressiveness not found in single-dispatch OOP languages:
+
+```lisp
+;;; Define the basic bank account class
+(defclass bank-account ()
+  ((owner :initarg :owner :accessor account-owner)
+   (balance :initform 0 :accessor account-balance)
+   (transactions :initform () :accessor account-transactions)
+   (minimum-balance :initform 100 :allocation :class))
+  (:documentation "A basic bank account"))
+
+;;; Define a subclass for interest-bearing accounts
+(defclass interest-bearing-account (bank-account)
+  ((interest-rate :initform 0.05 :allocation :class))
+  (:documentation "A bank account that earns interest"))
+
+;;; Initialize method for setting up a new account
+(defmethod initialize-instance :after ((account bank-account) &key initial-deposit)
+  (record-transaction account "Account created")
+  (when initial-deposit
+    (deposit account initial-deposit)))
+
+;;; Method for depositing money
+(defmethod deposit ((account bank-account) amount)
+  (if (<= amount 0)
+      (progn
+        (format t "Cannot deposit negative or zero amount~%")
+        nil)
+      (progn
+        (incf (account-balance account) amount)
+        (record-transaction account (format nil "Deposit: ~A" amount))
+        t)))
+
+;;; Method for withdrawing money
+(defmethod withdraw ((account bank-account) amount)
+  (with-slots (balance minimum-balance) account
+    (cond
+      ((<= amount 0)
+       (format t "Cannot withdraw negative or zero amount~%")
+       nil)
+      ((< (- balance amount) minimum-balance)
+       (format t "Insufficient funds or below minimum balance~%")
+       nil)
+      (t
+       (decf balance amount)
+       (record-transaction account (format nil "Withdrawal: ~A" amount))
+       t))))
+
+;;; Method for applying interest (specialized for interest-bearing accounts)
+(defmethod apply-interest ((account interest-bearing-account))
+  (with-slots (balance interest-rate) account
+    (let ((interest-amount (* balance interest-rate)))
+      (incf balance interest-amount)
+      (record-transaction account (format nil "Interest applied: ~A" interest-amount)))))
+
+;;; Helper method for recording transactions
+(defmethod record-transaction ((account bank-account) description)
+  (push (cons (get-universal-time) description)
+        (account-transactions account)))
+
+;;; Method for printing transactions
+(defmethod print-transactions ((account bank-account))
+  (dolist (transaction (reverse (account-transactions account)))
+    (format t "~A - ~A~%"
+            (format-timestring nil (universal-to-timestamp (car transaction)))
+            (cdr transaction))))
+
+;;; Example usage
+(defun test-bank-account ()
+  (let ((account (make-instance 'interest-bearing-account
+                                :owner "John Smith"
+                                :initial-deposit 1000)))
+    (deposit account 500)
+    (withdraw account 200)
+    (apply-interest account)
+    (format t "Balance: ~A~%" (account-balance account))
+    (format t "Transactions:~%")
+    (print-transactions account)))
+```
+
+CLOS differs from mainstream OOP in several key ways:
+
+1. Methods are defined outside of classes, not within them
+2. Method dispatch can be based on multiple arguments, not just the receiver
+3. Methods can be specialized based on arbitrary combinations of argument types
+4. Method combination allows for before, after, and around methods on the same generic function
+
+CLOS also features an advanced meta-object protocol (MOP) that allows programmers to customize the behavior of the object system itself. This is similar to metaclasses in languages like Python, but significantly more powerful. With the MOP, you can change how classes are created, how inheritance works, how methods are dispatched, and more. This level of customization allows CLOS to be adapted to different problem domains in ways that most OOP systems cannot match.#footnote[
+    The CLOS MOP is arguably one of the most sophisticated object systems ever designed. It takes the principle of "objects all the way down" to its logical conclusion, allowing programmers to redefine even the most fundamental aspects of the object system. This power comes at the cost of complexity, but it enables frameworks that would be impossible in more rigid OOP systems.
+]
+
+Here's a simplified example of using the MOP to create custom behavior:
+
+```lisp
+(require :closer-mop)  ; A library for working with the MOP
+
+;; Define a metaclass for auto-logging classes
+(defclass auto-logging-class (standard-class)
+  ())
+
+;; Validate the class definition
+(defmethod validate-superclass ((class auto-logging-class) (superclass standard-class))
+  t)
+
+;; Customize method behavior for classes with this metaclass
+(defmethod closer-mop:compute-effective-method-function :around
+           ((generic-function standard-generic-function)
+            (methods list)
+            (options list)
+            (auto-logging-class auto-logging-class))
+  (let ((original-function (call-next-method)))
+    (lambda (&rest args)
+      (format t "~&Calling method ~A with args: ~S~%"
+              (closer-mop:generic-function-name generic-function) args)
+      (let ((result (apply original-function args)))
+        (format t "~&Method ~A returned: ~S~%"
+                (closer-mop:generic-function-name generic-function) result)
+        result))))
+
+;; Use the metaclass
+(defclass logged-account ()
+  ((owner :initarg :owner :accessor account-owner)
+   (balance :initform 0 :accessor account-balance))
+  (:metaclass auto-logging-class))
+
+;; Methods for this class will be automatically logged
+(defmethod deposit ((account logged-account) amount)
+  (incf (account-balance account) amount)
+  amount)
+
+;; Test
+(defun test-logged-account ()
+  (let ((account (make-instance 'logged-account :owner "Jane Smith")))
+    (deposit account 1000)
+    (account-balance account)))
+```
+
+This example demonstrates how the MOP allows us to intercept and modify the behavior of
+method dispatch itself. When methods are called on instances of `logged-account`, the system
+will automatically log the call and its result.
+
+Another important concept related to OOP is the actor model, which takes the idea of message-passing
+between objects to its logical conclusion. In the actor model, "actors" are computational entities
+that can send messages to each other, create new actors, and determine how to respond to
+the next message received. Unlike traditional OOP where method calls are synchronous,
+actors typically communicate asynchronously.
+
+The actor model was first described by Carl Hewitt in 1973 and has proven particularly valuable
+for concurrent and distributed systems. Each actor maintains its own private state and can only
+affect other actors by sending them messages – there's no shared mutable state, which
+eliminates many concurrency hazards.
+
+Erlang, which we mentioned previously in this book, was one of the first languages to fully embrace
+the actor model, using it to build highly reliable telecommunications systems. Here's an example of
+a bank account implemented as an Erlang actor:
+
+```erlang
+-module(bank_account).
+-export([start/2, deposit/2, withdraw/2, balance/1, stop/1]).
+
+%% Start a new account actor
+start(Owner, InitialDeposit) ->
+    io:format("Creating account for ~p~n", [Owner]),
+    AccountPid = spawn(fun() -> account_loop(Owner, 0, []) end),
+    deposit(AccountPid, InitialDeposit),
+    AccountPid.
+
+%% Send a deposit message to the account
+deposit(Account, Amount) when Amount > 0 ->
+    Account ! {deposit, self(), Amount},
+    receive
+        {ok, NewBalance} -> {ok, NewBalance};
+        Error -> Error
+    after 5000 ->
+        {error, timeout}
+    end;
+deposit(_, _) ->
+    {error, "Cannot deposit negative or zero amount"}.
+
+%% Send a withdraw message to the account
+withdraw(Account, Amount) when Amount > 0 ->
+    Account ! {withdraw, self(), Amount},
+    receive
+        {ok, NewBalance} -> {ok, NewBalance};
+        Error -> Error
+    after 5000 ->
+        {error, timeout}
+    end;
+withdraw(_, _) ->
+    {error, "Cannot withdraw negative or zero amount"}.
+
+%% Get the current balance
+balance(Account) ->
+    Account ! {balance, self()},
+    receive
+        {balance, Balance} -> Balance
+    after 5000 ->
+        {error, timeout}
+    end.
+
+%% Stop the account actor
+stop(Account) ->
+    Account ! stop,
+    ok.
+
+%% Internal account loop function
+account_loop(Owner, Balance, Transactions) ->
+    MinimumBalance = 100,
+    receive
+        {deposit, From, Amount} ->
+            NewBalance = Balance + Amount,
+            NewTransactions = [{deposit, Amount, erlang:timestamp()} | Transactions],
+            From ! {ok, NewBalance},
+            account_loop(Owner, NewBalance, NewTransactions);
+
+        {withdraw, From, Amount} ->
+            if
+                Balance - Amount < MinimumBalance ->
+                    From ! {error, "Insufficient funds or below minimum balance"},
+                    account_loop(Owner, Balance, Transactions);
+                true ->
+                    NewBalance = Balance - Amount,
+                    NewTransactions = [{withdraw, Amount, erlang:timestamp()} | Transactions],
+                    From ! {ok, NewBalance},
+                    account_loop(Owner, NewBalance, NewTransactions)
+            end;
+
+        {balance, From} ->
+            From ! {balance, Balance},
+            account_loop(Owner, Balance, Transactions);
+
+        stop ->
+            io:format("Account for ~p stopped~n", [Owner]),
+            ok;
+
+        Unknown ->
+            io:format("Unknown message: ~p~n", [Unknown]),
+            account_loop(Owner, Balance, Transactions)
+    end.
+
+%% Example usage
+%% In the Erlang shell:
+%% Account = bank_account:start("John Smith", 1000).
+%% bank_account:deposit(Account, 500).
+%% bank_account:withdraw(Account, 200).
+%% bank_account:balance(Account).
+%% bank_account:stop(Account).
+```
+
+More recently, languages and frameworks like Akka (for the JVM), Elixir (based on Erlang),
+and libraries in various languages have brought actor-based concurrency to a wider audience.
+
+The actor model can be seen as taking Alan Kay's original vision of objects as autonomous
+communicating entities to its purest form. In fact, Kay has noted that his early vision of
+object-oriented programming was closer to what we now call the actor model than to the class-based
+inheritance systems that came to dominate mainstream OOP.#footnote[
+    This divergence between Kay's original vision and what became mainstream OOP highlights how ideas evolve
+    and transform as they're implemented in different contexts. The class-based, inheritance-heavy approach
+    that became dominant was easier to reconcile with existing programming models and compiler technology of the time.
+]
+
+Despite its many strengths, OOP is not without challenges and limitations. One common criticism
+is that poorly designed OOP systems can actually increase complexity rather than manage it.
+This often happens when inheritance hierarchies become too deep or tangled. Consider a class hierarchy like:
+
+```
+Entity
+  └── Human
+       └── User
+            └── RegisteredUser
+                 └── RegisteredAdminUser
+```
+
+Such deep nesting can lead to several problems. It becomes difficult to understand the behavior of
+a class without understanding all of its ancestors. Changes to base classes can have unexpected
+effects on derived classes. The hierarchy may also force unnatural classifications – what if we
+need a RegisteredGuestUser? Does it also inherit from RegisteredUser? What behaviors are truly common?#footnote[
+    This problem is sometimes called the "fragile base class problem." When a base class changes, all derived classes might be affected in ways that are difficult to predict. This makes maintenance harder and creates a coupling that can be tighter than intended.
+]
+
+This is where composition often proves more flexible than inheritance. Instead of building a deep
+hierarchy, we might instead define interfaces (or traits, protocols, etc. depending on the language)
+for different behaviors:
+
+```
+User interface: Authentication, ProfileManagement
+Admin interface: SystemAccess, UserManagement
+Guest interface: LimitedAccess
+
+RegisteredAdminUser implements: User, Admin
+RegisteredGuestUser implements: User, Guest
+```
+
+Now objects can mix and match behaviors as needed without being forced into a rigid hierarchy. This
+approach is particularly well-suited to modeling situations where entities might have overlapping
+but not hierarchical sets of behaviors.
+
+Inheritance-based OOP does excel in certain domains. Graphical user interface frameworks often use
+inheritance effectively, with base classes for general concepts like "Window" or "Control" and
+specialized classes for specific types like "Button" or "Textbox." The key is to use inheritance
+when there's a genuine "is-a" relationship and the Liskov Substitution Principle holds (any instance
+of a base class should be replaceable with an instance of a derived class without altering the
+program's correctness).
+
+In summary, object-oriented programming offers a powerful set of tools for modeling problems and
+organizing code. Its intuitiveness and flexibility have made it a dominant paradigm in software
+development. However, like any tool, it must be applied judiciously. Understanding the different
+approaches to OOP – inheritance-based, composition-based, and prototype-based – along with alternatives
+like the actor model and CLOS, gives programmers more options for tackling problems effectively.
+
+The core insights of OOP – encapsulation, message-passing, and modeling problems in terms of interacting
+entities – remain valuable even as our understanding of software design continues to evolve. The key
+is to use these ideas where they make sense, rather than trying to force every problem into an
+object-oriented mold. As the saying goes, when all you have is a hammer, everything looks like
+a nail. A skilled programmer has many tools and knows when each is appropriate.
 
 == Functional Programming
 
