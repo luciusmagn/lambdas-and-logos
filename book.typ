@@ -229,7 +229,7 @@ approaches and paradigms, all in pursuit of the perfect fit. Today, I primarily 
 Rust (as an early adopter), Common Lisp, and Scheme. By the end of this book, you will
 probably understand why. :)
 
-In other words, I am on an eternal quest of to find the best ideas, craft solutions
+In other words, I am on an eternal quest to find the best ideas, craft solutions
 tailored to my opinions, and write the most elegant code possible. And I am a teacher,
 and I want to share what I have learned with you, dear reader, so you may write more
 beautiful code.
@@ -239,7 +239,7 @@ ideas. Ideas, which should be preserved and remain in working memory even today,
 decades old.
 
 Lukáš Hozda,#linebreak()
-rennaissance man
+renaissance man
 
 == About how this book is written
 
@@ -257,7 +257,7 @@ brief tangents (always returning to the main topic) that provide additional cont
 alternatives to what we present.
 
 When these tangents were short enough, they were placed in footnotes.
-I encourage you to read the footnotes to grasp the whole idea of what am I trying to communicate.
+I encourage you to read the footnotes to grasp the whole idea of what I am trying to communicate.
 
 #block(breakable: false)[
 This book also mentions and provides code examples in a number of programming languages and technologies, these include (in no particular order):
@@ -314,7 +314,7 @@ If you have used languages with these data types:
 
 Then you have used a monad. What is powerful about the idea of monads, from a theoretical standpoint is that
 now that we have defined something like this, we start seeing monads everywhere, and we can reason about operations
-in terms of monad.#footnote[
+in terms of monads.#footnote[
     If you are curious about _somewhat_ layman explanations of the other technical terms, then *monoid* means
     "something that has an identity element (like the empty list) and an associative binary operation (like list concatenation)".
     An *endofunctor* is something that can "map back to itself". If you know Rust or any other language with options,
@@ -323,7 +323,7 @@ in terms of monad.#footnote[
 ]
 
 That is an example of how your horizon can be broadened by learning new concepts in one place (perhaps in the company of Haskellers),
-which you can recognize and deal with in other places then on.
+which you can recognize and deal with in other places later on.
 
 Without further ado, let's get into it.
 
@@ -607,12 +607,12 @@ void quickSortIterative(int arr[], int low, int high) {
 Which we can further improve by inserting some small comments and appropriate whitespace:#footnote[
     It is arguable, how much commenting we need. Often, the answer I would provide is "as little as necessary".
     Overcommenting is a newbie mistake - we need to strike a balance. Formatting is important too.
-    We will discuss this in later on in this
+    We will discuss this later on in this
     book
 ]#footnote[
     Also, note that there is the stack data structure lurking around in this implementation. We should probably
-    point it out and describe it, if we find more usecases for it in our program than just this simple
-    quicksorť
+    point it out and describe it, if we find more use cases for it in our program than just this simple
+    quicksort
 ]
 
 ```cpp
@@ -706,14 +706,18 @@ power of creating generalized abstractions away from them.
 This leads us to a very important point: *Programming languages matter.*#footnote[From a certain point of view, that is.]
 
 Programming languages matter because they significantly influence how we model problems and design solutions.
-Different languages are not just different syntaxes for expressing the same ideas - they embody different philosophies,
+Different languages are more than different syntaxes for expressing the same ideas - they embody different philosophies,
 different trade-offs, and different ways of conceptualizing computation.
 
 Consider how differently you might approach a problem in C (thinking in terms of memory management and pointers),
 Haskell (thinking in terms of type transformations), Prolog (thinking in terms of logical relations),
 or APL (thinking in terms of array operations).
 
-This influence of language on thought reminds me of the *Sapir-Whorf hypothesis* from linguistics.
+This influence of language on thought reminds me of the *Sapir-Whorf hypothesis* from linguistics.#footnote[
+    For a modern overview, see John A. Lucy's *Language Diversity and Thought* (1992), and Lera Boroditsky's
+    "How Language Shapes Thought" (Scientific American, 2011). The strong deterministic reading is widely rejected;
+    weaker linguistic relativity claims have substantially better empirical support.
+]
 Developed in the early 20th century by Edward Sapir and later expanded by his student Benjamin Lee Whorf,
 this hypothesis explores the relationship between language and cognition.
 
@@ -798,7 +802,10 @@ discouraged, because most languages don't have tail-call optimizations#footnote[
 elegant representation of a particular problem recursively is not a tail call.
 
 Quicksort is fine if we choose the appropriate pivot point. Usually, we go about `log2(N)` calls deep, and
-to reach the 1000 calls recursion limit Python imposes by default, we would need an array in the ballpark
+to reach the 1000 calls recursion limit Python imposes by default#footnote[
+    In CPython, the default recursion limit is typically 1000. See the Python `sys` module documentation
+    for `sys.getrecursionlimit()` and `sys.setrecursionlimit()`.
+], we would need an array in the ballpark
 of 10^307 elements. We probably can't fit such an array into memory (or anywhere else) anyway, so this
 algorithm is fine to be represented recursively without paying much attention to the size of the input.
 
@@ -869,7 +876,7 @@ quicksort elements =
 The somewhat weird `!!` operator performs list indexing;
 `elements !! 2` would retrieve the third element of the list `elements`.
 
-Haskell is a very, very powerful language. It is perhaps the one pure functional programming lanuage
+Haskell is a very, very powerful language. It is perhaps the one pure functional programming language
 that can be widely applied in practice. This means that we can express ideas fairly elegantly in it,
 because it gives us a lot of tools to our disposal.
 
@@ -878,10 +885,12 @@ The idea of functional programming is powerful enough that mainstream languages 
 However, they are largely impure, usually because they allow mutability#footnote[
     For functional programming, the biggest issue mutating values from the outside,
     that is, whatever what violates referential transparency -- a situation where we
-    can replace a function call with the result of said function call and the behavior of the program will not chagne
+    can replace a function call with the result of said function call and the behavior of the program will not change
 ] or make no effort to limit side-effects#footnote[
     Side-effects are once again a problem for referential transparency, and also the predictability of
-    a program's execution. Haskell has solved the issue of side-effects with Monadic IO, where the
+    a program's execution. Haskell addresses this with typed effects via `IO` and related abstractions.
+    For references, see the *Haskell 2010 Language Report* (chapter 7, basic I/O), and Philip Wadler's
+    "Monads for Functional Programming" (1995).
 ]. This is because functional programming is not their primary priority.
 
 Here is a similar quicksort written in Rust:
@@ -932,7 +941,7 @@ arr.iter()
    .collect()
 ```
 
-And immutablity by default. We have to use the `mut` keyword for the only variable we modify in this example:
+And immutability by default. We have to use the `mut` keyword for the only variable we modify in this example:
 
 ```rust
 let mut result = quicksort(&smaller);
@@ -941,7 +950,7 @@ result.extend(quicksort(&greater));
 ```
 
 Functional programming is not the primary goal of Rust, but its features help towards its major goals:
-Control, explicitness and safety. Since different programming have different goals, we cannot say that
+Control, explicitness and safety. Since different programming languages have different goals, we cannot say that
 a language is bad because it does not have full features of paradigm A, if it never intended to do so
 in the first place.
 
@@ -956,7 +965,7 @@ and if it is internally consistent.#footnote[
     fine, since it has justification, although it may not be y(our) cup of tea. On the other hand,
     PHP is internally inconsistent because it is a patchwork language of dubious heritage.
 ]. These are fairly difficult requirements, and generally, one can point out flaws in the design of any
-programming language. A lot of time, a programmer may reject a programming language as "bad" because
+programming language. A lot of times, a programmer may reject a programming language as "bad" because
 its goals either aren't noble enough, or mean nothing to him. One may reject Python, because it is
 not functional enough, somebody else may reject Rust, because they never had a memory safety incident,
 or programmed in a language where such issues show up. A Lisp enjoyer may reject everything that does
@@ -964,7 +973,7 @@ not have metaprogramming and S-expressions.#footnote[
     Although in my experience, contemporary Lisp programmers have been exceptionally nice people.
 ]
 
-Sometimes, programming language make intentional sacrifices in their design that prove to be far too
+Sometimes, programming languages make intentional sacrifices in their design that prove to be far too
 expensive for the general programmer population, which hampers the adoption of a programming language.
 Let's take a look at one last `quicksort` implementation, this time in Common Lisp, solved in the style
 of symbolic programming:
@@ -1009,7 +1018,7 @@ jeremy  ;; symbol
 ```]
 
 - #block[The *list*, which is a sequence in parentheses containing atoms or other lists:#footnote[
-    In Lisp (which originally stood for #strong[LIS]t #strong[P]rocessor), lists are heterogenous, each element can be a different type. Because lists can also contain lists,
+    In Lisp (which originally stood for #strong[LIS]t #strong[P]rocessor), lists are heterogeneous, each element can be a different type. Because lists can also contain lists,
     we can easily represent values of all sorts of nested data structures. In fact, the notion of user-defined types came quite
     late -- we could just shove everything into lists.
 ]
@@ -1031,7 +1040,7 @@ a full-fledged programming language.#footnote[
 ```lisp
 (defun hello (name)
   ;; t means print to standard output,
-  ;; ~A is printing a positional argumentfor display
+  ;; ~A is printing a positional argument for display
   ;; ~% means newline... Lisp is quite old
   (format t "Hello, ~A!~%" name))
 ```
@@ -1096,7 +1105,7 @@ Thus, Lisp is not a mainstream programming language. The most mainstream Lisp-y 
 and Clojure made some sacrifices of "Lispness" by moving less towards symbolic programming and more towards functional
 programming. Oh well.
 
-For the non-Lisper, macro definitions often look like nasal demons. Here is the definitionn of my
+For the non-Lisper, macro definitions often look like nasal demons. Here is the definition of my
 `(define-sort-algorithm)`. It is perfectly fine and expected if you don't understand it, there is a lot
 of context and knowledge you are unlikely to have at this point, unless you have done Lisp before:
 
@@ -1214,7 +1223,7 @@ perceive and categorize the world, programming languages influence how we decomp
 solutions. A programmer fluent only in C sees the world in terms of procedures and memory management.
 A dedicated Haskell programmer sees it as type transformations and pure functions. A Lisp hacker
 sees code itself as just another data structure to manipulate, and the language as a malleable
-medium of communication. Conlanger's paradise
+medium of communication. A conlanger's paradise.
 
 The true art of programming lies not in mastering any single language or paradigm#footnote[
     Although mastering any of them certainly helps, the big idea is to never become narrow-minded in your approach
@@ -1246,6 +1255,11 @@ challenge remains the same: to express your ideas in a way that both computers a
 
 That is, submit to no one, and bend the world to your will.
 
+=== Takeaways
+- Programming is communication with two audiences: computers and humans.
+- Abstractions are useful when they lower cognitive load and clarify intent.
+- Learning multiple language paradigms expands the solution space you can perceive.
+
 == Coding != Programming
 
 In our modern technological landscape, the terms "coding" and "programming" are often used interchangeably,
@@ -1270,7 +1284,7 @@ This is not to diminish its difficulty; good coding requires attention to detail
 features, and technical skill. But coding, in isolation, is merely implementation.
 
 Maybe, as a junior developer employed in a company, you will be doing a great deal of coding, because
-it takes a while to gain experience and penetrate both the domain the product you are working is situated
+it takes a while to gain experience and penetrate both the domain the product you are working in is situated
 in, and its implementation. This is fine, but you shouldn't have the false impression that this is all
 there is to it, and that you shouldn't be thinking when writing code, even if someone already did all
 the planning for you, and all you are presented with is a task in the form of "In class X, add method Y,
@@ -1286,7 +1300,7 @@ away from the keyboard as often as at it – in conversations, on whiteboards, d
 or while falling asleep.#footnote[
     My best programming is done on long walks through nature or old Prague. I find that the repetitive motion
     of walking, and the sounds of outside help me eliminate distractions, and naturally lead me into a
-    deep thinking state. On the rare occassions I wear earphones, walks a
+    deep thinking state. On the rare occasions I wear earphones, walks are less immersive.
 ]
 
 When I tell people I am a programmer, they often imagine me sitting at a computer typing frantically for hours,
@@ -1318,7 +1332,7 @@ say they want)#footnote[
 ], the constraints of the system, and the implications of different approaches. A programmer
 recognizes that the hardest part of building software isn't the "coding" – it's figuring out
 what to build, and how to build it, and especially how to build it in a way that is robust enough
-for a given usecase.
+for a given use case.
 
 As a result, a programmer's code should be refined, clear, and purposeful – a crystallization of
 their thinking process. After all, the code you write is the reflection of your thought process. If your
@@ -1343,9 +1357,9 @@ what enables them to translate messy human systems into computational models tha
 their intended purpose.
 
 As a software engineer, you are the lord of compromises. You need to design and implement a system
-that fullfills a task as well as possible, you must complete it within a reasonable time, making
+that fulfills a task as well as possible, you must complete it within a reasonable time, making
 sacrifices to integrate the project with the rest of the company ecosystem#footnote[
-    You can not just say "Oh, we have Python everywhere, and our company is mostly Python develepers,
+    You cannot just say "Oh, we have Python everywhere, and our company is mostly Python developers,
     so I will write this in a purely functional Haskell, which I happen to know, and it will have monads,
     and blackjack and hookers!". What you can do, however, is integrate elements of good functional style
     into the architecture and implementation of the project in Python, granted that these elements
@@ -1361,7 +1375,7 @@ what's possible and pushes the boundaries of our field.
 In my free time, I like to guide my programming activities according to the following mantra:
 
 #quote[
-    _Program in such a way that any practical appliaction of your code is purely coincidental_
+    _Program in such a way that any practical application of your code is purely coincidental_
 ]
 
 This is great for having fun, and for learning a lot. It is important to make a distinction, which
@@ -1399,7 +1413,7 @@ electronic health record system with an understanding of security, data integrit
 scalability, and regulatory compliance, and the perhaps pessimistic understanding of the possibility of human
 error at every step of the way.#footnote[
     At least at the time of this writing, the so-called vibe coding has been a path to hell,
-    and understanding code remains a neccessary skill. This also applies reflexively - the better
+    and understanding code remains a necessary skill. This also applies reflexively - the better
     programmer you are, the better you can describe problems, and the better you can utilize AI
     in a productive way.
 ]
@@ -1447,21 +1461,29 @@ coding – it's a mode of thinking, a way of approaching problems, and a creativ
 to produce code as its artifact.
 
 As you progress through this book and your career, strive to be more than someone who writes code.#footnote[
-    And never thing there isn't any further milestone you can aim for!
+    And never think there isn't any further milestone you can aim for!
 ]
-Think clearly about problems, design elegant solutions, who communicate
+Think clearly about problems, design elegant solutions that communicate
 effectively through code, and find joy in the creative process of programming. The code you
 produce will be better for it, and so will your experience of creating it. And I suppose that's
 the gist of that
 
+=== Takeaways
+- Coding is implementation; programming is problem modeling, design, and trade-off management.
+- Clear code starts with clear thinking about requirements, constraints, and intent.
+- Treat programming as a creative discipline, but hold it to professional standards.
+
 == Programming should be fun
 I would like to now expand on a key thought from the previous section - that programming
 should be fun. I would like to paraphrase Gerald Jay Sussman, one of the creators of the Scheme programming
-language. A couple years ago, he had a talk called "Programming (is) should be fun" for the ACM SIGPLAN Scheme conference,
+language. A couple years ago, he had a talk called "Programming (is) should be fun" for the ACM SIGPLAN Scheme conference#footnote[
+    Source: ACM SIGPLAN Scheme'22 conference talk, 2022-10-12, streamed on YouTube:
+    #link("https://www.youtube.com/watch?v=2MYzvQ1v8Ww&t=2227s")
+],
 which resonated with me deeply.#footnote[
     Scheme is a very elegant language, in that for how minimalistic it is, it is quite powerful, and a lot of programming
     ideas can be expressed quite clearly. The vast majority of its syntactic forms can be expressed in terms of only a
-    handful special forms. You can built up many control structures with macros and those forms. Particularly the idea of
+    handful of special forms. You can build up many control structures with macros and those forms. Particularly the idea of
     a closure - a lambda/anonymous function that captures things from its environment is quite powerful - powerful enough
     that it is present in Common Lisp too, which often practices dynamic scope unlike Scheme and most other languages,
     as the _let over lambda_ pattern. An excellent, although a bit too enthusiastic,
@@ -1475,6 +1497,8 @@ Sussman and his colleague Harold Abelson began their seminal book "Structure and
     originally *was* essentially Scheme (business people, who famously hated all fun, told Brendan Eich to replace his
     Scheme in browser with something that looks more like Java, which was a very marketable buzzword, given
     Java's novelty and popularity at the time).
+    For citation purposes: Harold Abelson, Gerald Jay Sussman, and Julie Sussman,
+    *Structure and Interpretation of Computer Programs*, 2nd edition, MIT Press, 1996.
 ] with a quote from Alan Perlis that sets the tone for their approach to computing:
 
 #quote[
@@ -1521,7 +1545,7 @@ Today, this is not true in all universities. Some universities offer courses suc
 which are far less about vocational training. The shift toward more vocational training is understandable, seeing
 as in recent decades, companies have wanted to hire more and more programmers, as software takes an increasingly
 important role in running our society.#footnote[
-    Can you imagine a govermnent where all the operations are up to people, and no software is involved? It
+    Can you imagine a government where all the operations are up to people, and no software is involved? It
     doesn't even work *with* the software, let alone without.
 ]
 
@@ -1540,7 +1564,7 @@ As an antidote to these trends, Sussman advocates for a return to programming as
 He suggests we should build systems from first principles, understanding each component thoroughly.
 Rather than treating complex systems as black boxes, we should strive to understand them "all the way
 down" - from high-level abstractions to the hardware that executes our code.#footnote[
-    This should be def
+    This should be defined.
 ]
 
 What is most interesting to me, Sussman takes a contrarian perspective on bugs and errors that many professional
@@ -1617,7 +1641,12 @@ not only make our work more personally fulfilling but also become better problem
 
 And I couldn't have said it better myself.
 
-== It's not just the code
+=== Takeaways
+- Fun and rigor are not opposites; curiosity improves technical depth.
+- Bugs are signals that expose gaps in understanding and sharpen mental models.
+- Avoid black-box cargo culting: understand systems deeply enough to reason about them.
+
+== Beyond the code
 
 Understanding of code comes primarily from how you write the actual lines of code, as in, the text in them. However, that is not all.
 There are other things that are important to help your understanding, and to proliferate the understanding of others.
@@ -1748,7 +1777,7 @@ Let's broaden the scope. Physical comfort significantly impacts your ability to 
 lets you see more context at once. A comfortable chair prevents back pain during long coding sessions. And perhaps most importantly,
 a good keyboard can prevent repetitive strain injuries that plague many programmers.
 
-I personally use a Corne v3 split keyboard, which keeps my wrists at a comortable angle and reduces the distance my fingers need to travel.
+I personally use a Corne v3 split keyboard, which keeps my wrists at a comfortable angle and reduces the distance my fingers need to travel.
 Split keyboards look strange to the uninitiated, but they're designed around human anatomy rather than manufacturing convenience. Your
 tools should adapt to you, not the other way around.
 
@@ -1776,14 +1805,14 @@ mechanical level) as efficient as possible.#footnote[
     There has been a very interesting editing model, apart from the aforementioned editors called *structural editing*. The idea of
     structural editing is that the editor is able to build a syntactic tree out of the source code (which is very difficult, since most of
     the time, when you are actively editing code, you have invalid syntax issues -- "of course there's a missing semicolon and unclosed parenthesis! I didn't finish writing it yet!"),
-    and let's you maniputa the syntactic tree directly. This can be extremely effective, since the editor truly understands the source code.
+    and lets you manipulate the syntactic tree directly. This can be extremely effective, since the editor truly understands the source code.
     However, it is hard to implement and get used to. Structural editing is fairly popular in the Lisp world because of how easy it is to parse.
     Check out the packages/functionality of *paredit* and *parinfer*.
 ]
 
 The modal editing of Vim means you spend less time reaching for arrow keys or the mouse. The extensibility of Emacs means you can create
 custom workflows that match exactly how you think.#footnote[
-    I have a modal editing setup in my Emacs that's fairly similar to Kakoune's/Helix's modal editing model. Emacs let's you override
+    I have a modal editing setup in my Emacs that's fairly similar to Kakoune's/Helix's modal editing model. Emacs lets you override
     completely everything. You could make it behave like VS Code, if you wanted to. This book was written in Emacs, too.
 ] The modern amenities of Neovim and Helix bring these powerful paradigms into the present
 with sensible defaults and better performance.
@@ -1831,7 +1860,7 @@ they should understand not just what it does, but why it does it that way. This 
 - Tests demonstrate expected behavior in concrete terms
 - Version control messages explain the evolution of the code#footnote[
     I wouldn't actually consider version control to be that important as a medium of communication for users of a library, framework, program, whatever.
-    However, I have had some instances, where a library changed unexpectedly (and the author didn't use proper semantig versioning !!!!), and being
+    However, I have had some instances, where a library changed unexpectedly (and the author didn't use proper semantic versioning !!!!), and being
     able to track down changes with their justification has been immensely helpful. Version control is also a good record of how work has evolved,
     when you need to get back in the groove after returning to a project you have not actively developed for a long while.
 ]
@@ -1842,6 +1871,11 @@ needs to understand, modify, or build upon your work.
 The big idea is that for elegant programs and proper understanding, it helps to view the code in a way that helps you the most, and when
 distributing it, you should aid the understanding of others. The environment, both physical and digital, in which you write code is as important
 as the code itself. By optimizing this environment and presenting your code clearly, you make elegance more achievable.
+
+=== Takeaways
+- Tooling, focus, and ergonomics directly affect code quality.
+- Readability depends on presentation: formatting, comments, tests, docs, and history.
+- Optimize your environment to reduce friction between thought and implementation.
 
 == Elegant code and the cost of inelegant code
 
@@ -1864,16 +1898,21 @@ clear conventions, regardless of what those conventions are, will produce more m
 follows different practices. The most valuable patterns are those applied uniformly—they become the reliable grammar through which
 your code communicates its purpose to present and future maintainers.
 
+=== Takeaways
+- Elegant code reduces maintenance cost, debugging effort, and onboarding friction.
+- Inelegant shortcuts accumulate as technical debt and compound over time.
+- Consistency across the codebase matters more than any specific stylistic dogma.
+
 = Programming in the small
-It is very easy to take the features of modern programming language for granted and as essential. You couldn't imagine a programming language
+It is very easy to take the features of modern programming languages for granted and as essential. You couldn't imagine a programming language
 not having these features. I am talking about features like proper if statements, functions, recursion, proper loops (of all shapes and sizes),
-access visibility modiifiers (so you can decide what is public, what is private and everything in-between), proper module systems, so that whole
+access visibility modifiers (so you can decide what is public, what is private and everything in-between), proper module systems, so that whole
 programs don't share a single namespace with their libraries, user-definable data structures, so that you can assign more meaning to the data
 you are working with, and so on.
 
 All of these things are concepts that did not exist in programming languages, at some point. Better yet, we have been doing programming
-for decades before each of them has been introduced. We are introducing more more and more concepts all the time, some of them are user-facing,
-some of them simplify or improve the implementation of programming languages themselves. They are either born of theory, or of necesssity.
+for decades before each of them has been introduced. We are introducing more and more concepts all the time, some of them are user-facing,
+some of them simplify or improve the implementation of programming languages themselves. They are either born of theory, or of necessity.
 
 At one moment in history, we had to start thinking about how to organize programs. This was at both a small scale, and a large scale.
 The large scale has previously had much less attention because truth to be told, our programs just weren't that big. And there weren't as
@@ -1888,7 +1927,9 @@ far simpler because we often only had a single-core CPU, and the CPU was far mor
 A pivotal moment, which inspired the name of the two main parts of the book was when we formally started talking about "programming in the small",
 and "programming in the large". This breakthrough of recognizing the two distinct scales of programming came with the publication of a seminal
 paper by Frank DeRemer and Hans Kron in 1976, titled *"Programming-in-the-Large Versus Programming-in-the-Small"* in IEEE Transactions on Software Engineering.#footnote[
-    You should pirate this paper if you don't have institutional acccess. IEEE wants like 45\$ for it.
+    Bibliographic details: Frank DeRemer and Hans Kron, "Programming-in-the-Large Versus Programming-in-the-Small,"
+    *IEEE Transactions on Software Engineering*, Vol. SE-2, No. 2, pp. 80-86, June 1976.
+    You should pirate this paper if you don't have institutional access. IEEE wants like 45\$ for it.
 ] This paper explicitly distinguished between the concerns of writing individual modules and algorithms (programming in the small) versus the
 challenges of organizing complete systems composed of many interconnected modules (programming in the large).
 
@@ -2010,7 +2051,7 @@ Python has packages and imports. Common Lisp has packages and systems. R6RS Sche
     And if you are curious, Emacs Lisp has nothing. Lmao.
 ] The list goes on.
 
-Interestingly, the idea of having separate interface files did not really catch on. Apart from C/C++, there is only a couple
+Interestingly, the idea of having separate interface files did not really catch on. Apart from C/C++, there are only a couple of
 programming languages that do something like that#footnote[
     Typically better than C/C++'s minimalistic solution.
 ], for instance Ada, or OCaml. The rest of the languages typically does not utilize two separate file types. And the compilers
@@ -2075,7 +2116,7 @@ Ada uses a somewhat verbose syntax that reduces ambiguity and includes features 
 
     - callers must satisfy preconditions,
     - implementations must ensure postconditions
-    This creates a framework that treats software interfaces like legal contracts with mutual obligations. Design by contracct
+    This creates a framework that treats software interfaces like legal contracts with mutual obligations. Design by contract
     was invented several decades earlier by Bertrand Meyer with his Eiffel programming language. Eiffel is mostly just
     a research language, but very interesting to check out!
 ]
@@ -2094,10 +2135,10 @@ The growth of microservices architecture could even
 be seen as another approach to managing the complexity of programming in the large - decomposing systems into smaller, more manageable pieces
 that can be developed and deployed independently. However, using microservices adds complexity that is not justified for the scale of most projects.
 As with everything else, we need to think, and figure out the least wasteful way to tackle a problem.#footnote[
-    Microservices were quite the fad a few years ago, but now, most experienced programmers take a more measure approach.
+    Microservices were quite the fad a few years ago, but now, most experienced programmers take a more measured approach.
     If you don't need to scale horizontally using microservices, then they are a lot of extra work. Microservices are, however,
     useful when you are combining several different technologies, and are more malleable if you decide to make a rewrite from
-    one language into another (or other major refactors), since it is _relatively easy_ to rewrite services one by one, incerementally
+    one language into another (or other major refactors), since it is _relatively easy_ to rewrite services one by one, incrementally
     replacing the old ones with new ones in a living system.
 ]
 
@@ -2106,7 +2147,7 @@ efficient, and elegant code at the level of individual functions, classes, and m
 components into coherent systems that can grow and evolve over time. But even as we examine these concepts separately, remember that they are
 intimately connected. The decisions you make at the small scale affect what's possible at the large scale, and the structures you establish at the
 large scale influence how you approach the small.#footnote[
-    Another way to think about is that if you create an intractable mess at the smallest scale, you don't have the clarity of mind to
+    Another way to think about it is that if you create an intractable mess at the smallest scale, you don't have the clarity of mind to
     think about the highest level abstractions and architectural decisions you could make.
 ]
 
@@ -2128,7 +2169,10 @@ recommended line length limit of 80 characters.
 This specific limitation of 80 characters comes from the early days of computing. IBM punch cards, introduced
 in the late 19th century and widely used until the 1970s, could hold exactly 80 characters per card. Later,
 when text terminals replaced punch cards, manufacturers naturally adopted the same 80-column width as the standard.
-VT100 terminals, which became a de facto standard, displayed 80 columns by 24 rows of text. Early programmers grew
+VT100 terminals, which became a de facto standard, displayed 80 columns by 24 rows of text.#footnote[
+    See DEC documentation for the VT100 family (late 1970s), which standardized 80-column display mode and helped
+    cement 80x24 as a practical terminal baseline in programming culture.
+] Early programmers grew
 accustomed to this constraint, and it's remarkable how this technological limitation from the era of physical media
 continues to influence our digital practices today.
 
@@ -2501,11 +2545,16 @@ Ultimately, line length limits and whitespace usage are small details, but progr
 accumulate to create either clarity or confusion. By being thoughtful about these aspects of your code, you reduce friction
 for everyone who needs to read, understand, and modify it -- including your future self.
 
-One final note is that my recommendation also goes against the pursuit of making solution in the least amount of lines.
+One final note is that my recommendation also goes against the pursuit of making solutions in the least amount of lines.
 You may have heard people say things like: "This window manager only has 2000 lines of code (LOC)!"
 
 Well, my suggestions go against that. If you want a similar, yet still useful metric, either count non-empty lines, or semicolons,
 in the languages that have them.
+
+=== Takeaways
+- Reasonable line-length limits improve readability and often force better structure.
+- Use formatters to enforce style and avoid wasting review time on formatting debates.
+- Whitespace should communicate structure, not just satisfy arbitrary aesthetics.
 
 == Source code files
 
@@ -2516,7 +2565,7 @@ Long source files can be problematic. When a file grows beyond a few hundred lin
 it becomes difficult to navigate and understand as a cohesive unit. The upper limit depends somewhat on the language and the
 nature of the code, but I think you can develop a feel for it. There are exceptions, of course -- generated code, certain types
 of data-heavy files, or code in languages where the class-per-file convention doesn't apply might legitimately be longer.#footnote[
-    There is utility a whole projects being in the same file. This makes it more portable/practical, since a single file
+    There is utility in whole projects being in the same file. This makes it more portable/practical, since a single file
     is easier to distribute. Particularly in C, there is a trend of single file (usually single header) libraries.
 ]
 But if you're regularly creating multi-thousand-line source files by hand, it's worth considering whether they could be split
@@ -2842,9 +2891,14 @@ factorial(N, Result) :-
 
 If we reversed the order of the clauses, Prolog would needlessly try the recursive clause first.
 
-All these considerations may seem like tinny details, but they compound to significantly affect readability and maintainability.
+All these considerations may seem like tiny details, but they compound to significantly affect readability and maintainability.
 A well-organized source file reduces the mental load on readers, allowing them to find what they need quickly and
 understand the code's structure without unnecessary effort. And once again, you are a reader too! So make your job easier, too.
+
+=== Takeaways
+- Each source file should have a clear purpose and predictable internal organization.
+- Keep related definitions close and split oversized files into cohesive units.
+- Use structural tools (folding, indexes, symbol views) to preserve navigability.
 
 == Naming things
 
@@ -2859,7 +2913,7 @@ can mislead readers and introduce subtle bugs.#footnote[
 
 The primary goal of a name is to communicate the purpose of the symbol it represents.#footnote[
     By symbol I mean class, variable, struct, constant, function, method, macro, module name, package name,
-    interface, trait, typeclass and whatever else you can think of a as a logical named unit in a given
+    interface, trait, typeclass and whatever else you can think of as a logical named unit in a given
     programming language.
 ] When someone reads your function
 name along with its parameters and return type, they should be able to make a reasonable guess about what the
@@ -2882,8 +2936,8 @@ The latter immediately communicates its purpose. We would be shocked if this fun
 return the sum of the two parameters.#footnote[
     This function could have been called just `add`, and in many languages, it would have been. However,
     C generics are a bit problematic and bordering on functionally non-existent, and C also has no notion
-    of methods, or modules, so `add()` is very likely to polute the namespace of bigger projects. Remember
-    that `add()` can stand for adding up to numbers (and here we have the problem of numerous number tupes),
+    of methods, or modules, so `add()` is very likely to pollute the namespace of bigger projects. Remember
+    that `add()` can stand for adding up to numbers (and here we have the problem of numerous number types),
     but also for adding an element to a collection (e.g. a vector or a linked list -- although semantically,
     you could have a different names for it -- `push` or `append`)
 ]
@@ -2894,7 +2948,7 @@ for variables,#footnote[
     Often, but not always. C and C++ are both very inconsistent in naming conventions. There are many style guides
     with different ideas about how you should do things. Generally, the style guides are at their core the reflection
     of the time and culture they were created in. For C++, I used to generally try and follow the LLVM project style
-    guide, since if someone is a deeply-knowledgeable authority on that language, its probably the guys developing
+    guide, since if someone is a deeply-knowledgeable authority on that language, it's probably the guys developing
     a major compiler for it.
 ] and PascalCase for classes. Java uses camelCase for methods and variables, and PascalCase for classes.
 Python generally uses snake_case for almost everything except classes, which use PascalCase.
@@ -2903,7 +2957,7 @@ If you're contributing to an existing project that has established naming conven
 from the language norms or your personal preferences. Consistency is more valuable than personal expression when it
 comes to code readability. If you believe the project's conventions need improvement, that's a discussion to have with
 the team rather than a unilateral decision to make in your next commit.#footnote[
-    I don't think this is really neccessary to say, but it helps to have justification for the changes you suggest.
+    I don't think this is really necessary to say, but it helps to have justification for the changes you suggest.
     Just barging in and saying "your naming conventions are shit" probably won't garner you much support in your
     endeavor.
 ]
@@ -2911,8 +2965,10 @@ the team rather than a unilateral decision to make in your next commit.#footnote
 The history of naming conventions includes some interesting diversions. Hungarian notation,#footnote[
     It is called "hungarian" because it was invented by Charles Simonyi, who is hungarian. He was a programmer
     at Xerox PARC, one of the legendary places where major advances in computing were being made in the last
-    century. He later joined Microsoft. There is a an alleged second justification for "hungarian", and that is
+    century. He later joined Microsoft. There is an alleged second justification for "hungarian", and that is
     "because it made programs look like they were written in some inscrutable foreign language".
+    For references, see Charles Simonyi's archived memo "Hungarian Notation", and Joel Spolsky's
+    "Making Wrong Code Look Wrong" (2005), which explains Apps Hungarian vs Systems Hungarian in practical terms.
 ] popularized at Microsoft
 in the 1980s, prefixed variable names with information about their type. For example, `szName` indicated a zero-terminated string,
 while `iCount` indicated an integer.#footnote[
@@ -3097,7 +3153,10 @@ further enhancing readability.#footnote[
 ]
 
 Since we're discussing C idioms, it's worth mentioning a common mistake: adding the suffix `_t` to type names. This suffix is reserved
-by POSIX for standard type definitions. If you create your own type like `my_struct_t`, you risk conflicts with future standards.
+by POSIX for standard type definitions.#footnote[
+    See POSIX.1-2017, Base Definitions, section 2.2.2 ("The Name Space"), which reserves many implementation and standard names,
+    including families of type names used by the standard. Using project-specific `_t` names can create avoidable future conflicts.
+] If you create your own type like `my_struct_t`, you risk conflicts with future standards.
 Instead, use no suffix at all.
 
 Modern programming languages have features that allow more concise naming without sacrificing clarity. With methods, generics, or
@@ -3201,7 +3260,7 @@ they're often given meaningful names for complex values but single letters for s
 
 The essence of good naming is that it makes code easier to understand for humans. A computer doesn't care what you call your
 variables -- you could name everything `x1`, `x2`, `x3` and the program would run the same.#footnote[
-    Have you seend YandereDev's code? You would be surprised what people are capable of creating that somehow still kinda
+    Have you seen YandereDev's code? You would be surprised what people are capable of creating that somehow still kinda
     runs.
 ] But you and your collaborators need to
 read, understand, and modify that code. Good names are documentation, explaining the purpose and intent of each piece of code.
@@ -3210,6 +3269,11 @@ In any case, be consistent. Consistency within a codebase is more important than
 your functions use `snake_case` and half use `camelCase`, readers will be constantly distracted by the inconsistency.#footnote[
     I actually get physically annoyed at inconsistent code.
 ] Pick conventions that work for your project and stick to them religiously.
+
+=== Takeaways
+- Names are first-line documentation and should communicate purpose, not trivia.
+- Follow language and project conventions; consistency beats personal taste.
+- Keep names as short as context allows, but as descriptive as understanding requires.
 
 And since we mentioned the word documentation, let's look at it more broadly.
 
@@ -3252,7 +3316,12 @@ pub fn add(a: i32, b: i32) -> i32 {
 )
 
 When you run `cargo doc`, Rust generates beautiful HTML documentation that includes these examples. But more importantly, when you
-run `cargo test`, Rust will actually execute the code in your documentation examples as tests. These "doctests" ensure that your
+run `cargo test`, Rust will actually execute the code in your documentation examples as tests.#footnote[
+    References: `cargo doc` command docs at
+    #link("https://doc.rust-lang.org/cargo/commands/cargo-doc.html"),
+    and rustdoc documentation tests at
+    #link("https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html").
+] These "doctests" ensure that your
 documentation stays in sync with your code. If you change the behavior of a function without updating its documentation, the tests will fail.
 
 This is a brilliant solution to the age-old problem of *documentation drift*, where documentation becomes increasingly inaccurate as code
@@ -3261,7 +3330,7 @@ tools that offer similar functionality.
 
 Not that many languages are as tightly integrated with documentation as Rust is, but many of them have tools in
 their ecosystems that can parse and generate documentation from specially formatted comments. Let's consider this
-completelely undocummented example of Scala:#footnote[
+completely undocumented example of Scala:#footnote[
     Scala is one of the two languages for the JVM that I respect, the other being Clojure. Scala is a
     language with a very difficult job - it has to be able to integrate with the JVM ecosystem at large,
     it has to be functional, but because it interacts with Java, there has to be some Object Oriented
@@ -3415,8 +3484,13 @@ it without having to dig through `git blame`. For example:
 
 This practice isn't universally followed, and whether you do it depends on your team's preferences and workflow.
 
-Documentation is an important part of elegant code, so don't skimp out on it. Ideally, you should be creating is you are creating
+Documentation is an important part of elegant code, so don't skimp out on it. Ideally, you should be creating it as you are creating
 the project. Just like writing integration tests, it helps you get some insight into whatever it is that you are doing.
+
+=== Takeaways
+- Documentation serves different audiences: users, integrators, and contributors.
+- Comments should explain *why* and constraints, not restate obvious code.
+- Good commit history is part of documentation and preserves design intent.
 
 == Taming your hubris
 
@@ -3506,7 +3580,10 @@ The Sieve of Atkin is theoretically more efficient for very large numbers, but i
 at a glance, and easy to implement incorrectly. The Sieve of Eratosthenes is straightforward, well-understood, and
 sufficient for most practical applications. And for small ranges, a simple lookup table might be the most readable and efficient solution of all.
 
-This exemplifies the KISS principle - Keep It Simple, Stupid. Often attributed to Kelly Johnson of Lockheed Skunk Works,
+This exemplifies the KISS principle - Keep It Simple, Stupid.#footnote[
+    The KISS formulation is commonly attributed to Kelly Johnson at Lockheed Skunk Works, though the wording
+    circulated in multiple variants over time and attribution is partly anecdotal.
+] Often attributed to Kelly Johnson of Lockheed Skunk Works,
 this principle reminds us that simplicity should be a key goal in design. Systems work best when they're simple rather than complex.
 
 Complex code is more prone to bugs, harder to test, and creates a higher cognitive load for everyone who has to work
@@ -3551,7 +3628,10 @@ rather than state machines. It treats functions as first-class values that can b
 and created dynamically. This was an extremely abstract concept for a programming language in 1958.
 
 Lambda calculus and Turing machines represent two fundamentally different but equally powerful models of computation that
-emerged in the 1930s. While both can compute the same set of functions (as demonstrated by the Church-Turing thesis), they
+emerged in the 1930s. While both can compute the same set of functions (as demonstrated by the Church-Turing thesis#footnote[
+    Primary references: Alonzo Church, "An Unsolvable Problem of Elementary Number Theory" (1936), and
+    Alan M. Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem" (1936; corrections 1937).
+]), they
 offer radically different perspectives on what computation is.
 
 Turing machines model computation as a sequence of state changes on a memory tape - a mechanical process of reading, writing,
@@ -3641,6 +3721,11 @@ there's always more to learn. Balance your ambition with a willingness to questi
 The best programmers aren't those who never make mistakes or always choose the perfect solution on the first try. They're
 those who can recognize their mistakes, adapt their thinking, and continually improve their craft through a
 combination of ambition and humility.
+
+=== Takeaways
+- Ambition is valuable, but unchecked cleverness creates fragile systems.
+- Prefer the simplest solution that satisfies real requirements and constraints.
+- Humility, feedback, and iteration are long-term force multipliers.
 
 == Paradigms
 
@@ -3739,7 +3824,7 @@ C Calculate the sum of numbers from 1 to 10
 
 You can see some oddities, such as comments being lines starting with `C` and that odd line 10 number. This number
 is for the conditional jump that the *DO* statement does. The notion of an actual control structure with a scoped
-block of code would only be introduced to Fotran in later versions.
+block of code would only be introduced to Fortran in later versions.
 
 Declarative programming, which emerged almost simultaneously but took longer to gain mainstream adoption,#footnote[
     Turns out, it is sometimes more difficult to describe "what things are" in precise terms as opposed
@@ -3755,7 +3840,8 @@ We can point to a legendary moment in the evolution of programming paradigms whi
 programming movement of the late 1960s and early 1970s. Edsger Dijkstra's 1968 letter
 "Go To Statement Considered Harmful" criticized the unrestricted use of goto
 statements, arguing they made programs difficult to understand and analyze:#footnote[
-    Go to Statement Considered Harmful is incredibly short, you should go read it
+    E. W. Dijkstra, "Go To Statement Considered Harmful," *Communications of the ACM* 11(3), pp. 147-148, 1968.
+    It is incredibly short; you should go read it.
 ]
 
 "The go to statement as it stands is just too primitive; it is too much an invitation to make a mess of one's program.
@@ -3774,6 +3860,8 @@ This period also saw the development of several major paradigms that would shape
     to its greatest extreme. Unfortunately, Smalltalk was too pure for this world, and so it never really took
     over the mainstream. For some totally unrelated reason, us Lisp programmers are often friends with the
     Smalltalkers.
+    For historical grounding, see Ole-Johan Dahl, Bjørn Myhrhaug, and Kristen Nygaard, *SIMULA 67 Common Base Language*,
+    Norwegian Computing Center publication S-22, 1970.
 ] While we'll
 explore OOP in depth in the next chapter, it's worth noting that Alan Kay, one of Smalltalk's creators, originally
 conceived of objects not as the class hierarchies that later dominated OOP implementations, but as autonomous
@@ -3847,8 +3935,7 @@ relationship - for example, `parent(john, bob)` asserts that "John is a parent o
 facts form our knowledge base.#footnote[
     The family relationships is a fairly classic example of Prolog, it is pretty easy to comprehend.
     Prolog itself is a surprisingly simple language, and subsets of it are often implemented in other
-    languages for educational purposes. The On Lisp book implements a Prolog in Common Lisp,
-    and
+    languages for educational purposes. The On Lisp book implements a Prolog in Common Lisp.
 ]
 
 Next, we define rules that allow us to derive new information. The rule `sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.`
@@ -4006,14 +4093,14 @@ Moving along, *Array-based programming* offers yet another perspective, treating
 collections of data) as primary objects of manipulation rather than individual elements. This approach
 enables concise, powerful operations on entire data sets without explicit loops or iteration. It is also
 very alien. While even in Forth, you could kinda see a semi-familiar notion of a program if you really
-think about it, array languages are a whole another beast altogether.
+think about it, array languages are a whole other beast altogether.
 
 APL (A Programming Language), created by Kenneth Iverson in the 1960s, is the quintessential array-oriented
 language. It's famous for its concise notation using a special set of symbols, each representing a
 powerful operation on arrays.#footnote[
     There literally existed APL keyboards at one point in history. APL has an interesting history,
     while in the grand tree, most programming languages can trace their heritage to either Fortran,
-    or Lisp (depending of if they slide towards more imperative or more declarative), The tree of
+    or Lisp (depending on whether they slide towards more imperative or more declarative), The tree of
     APL and its derivatives is another root in the graph of programming languages. It was chiefly
     inspired by mathematical notation which was first invented in 1950. Much like with Lisp, someone
     had the bright idea to implement it as a programming language
@@ -4087,9 +4174,9 @@ functional features, and many functional languages have adopted type systems inf
 concepts. The boundaries between paradigms are increasingly blurred as languages adopt successful ideas
 from multiple approaches. Even in multiparadigmatic languages, which essentially rule the mainstream, we
 can generally pinpoint the primary philosophies underlying each of them. There is no such thing as an
-unopionated programming languages.#footnote[
-    I have heard several times the claim that C is an unopionated language because it was
-    made to build Unix. It isn't, and Unix wasn't an unopionated system either. Some of the
+unopinionated programming language.#footnote[
+    I have heard several times the claim that C is an unopinionated language because it was
+    made to build Unix. It isn't, and Unix wasn't an unopinionated system either. Some of the
     opinionation can be traced if you look at C's heritage -- mainly BCPL.
 ]
 
@@ -4170,6 +4257,11 @@ Now, we'll explore object-oriented, functional, and symbolic programming in grea
 depth. Each offers valuable tools for creating elegant code, and understanding each paradigm is an essential skill
 for programmers.
 
+=== Takeaways
+- Paradigms are different constraint systems for modeling computation.
+- Learning multiple paradigms expands your mental models and design vocabulary.
+- Choose paradigms pragmatically per problem, not ideologically.
+
 == Object-Oriented Programming
 
 Object-oriented programming (OOP) has become one of the most fundamental paradigms in modern software development.
@@ -4187,7 +4279,10 @@ constructs makes OOP particularly accessible to newcomers and effective for mode
 
 The story of OOP begins with Simula, developed in the 1960s by Ole-Johan Dahl and Kristen Nygaard at the
 Norwegian Computing Center. As its name suggests, Simula was initially designed for simulation purposes
-rather than as a general-purpose programming language. Simula 67 (released in 1967) introduced many
+rather than as a general-purpose programming language. Simula 67 (released in 1967)#footnote[
+    A good primary reference is the *SIMULA 67 Common Base Language* report (Dahl, Myhrhaug, Nygaard, 1970),
+    which documents the language form that influenced mainstream object-oriented design.
+] introduced many
 concepts that would become fundamental to OOP, including classes, objects, inheritance, and virtual methods.
 
 Here's what Simula code looked like:
@@ -4246,7 +4341,9 @@ behind the syntax of method calls.#footnote[
 
 Kay was also deeply interested in education and making computing accessible to children. He believed that
 computers could be powerful learning tools if they were designed with human cognition in mind. This
-humanist approach influenced not just Smalltalk's design but also led to Kay's concept of the Dynabook – a
+humanist approach influenced not just Smalltalk's design but also led to Kay's concept of the Dynabook#footnote[
+    Alan Kay, "A Personal Computer for Children of All Ages" (1972), the foundational Dynabook essay.
+] – a
 vision of a portable personal computer for education that predated laptops and tablets by decades. Kay's
 work on user interfaces at PARC also contributed to the development of the graphical user
 interface we take for granted today.
@@ -4860,6 +4957,10 @@ compilation and adaptive optimization.#footnote[
     One of the reasons why Smalltalk didn't take is that it wasn't really fast enough for computers
     then. Self was very fast. In fact, there were implementations of Smalltalk written in Self
     that leveraged its runtime to become faster. Too late, though.
+    For implementation impact, see Chambers, Ungar, and Lee, "An Efficient Implementation of SELF,
+    a Dynamically-Typed Object-Oriented Language Based on Prototypes" (OOPSLA 1989), and Hölzle,
+    Chambers, and Ungar, "Optimizing Dynamically-Typed Object-Oriented Languages With Polymorphic Inline Caches"
+    (ECOOP 1991).
 ] Its influence extends beyond programming languages to user
 interfaces - it featured a groundbreaking graphical programming environment where code and
 objects could be manipulated directly, an approach that influenced later systems like
@@ -5084,7 +5185,7 @@ to appease business interests.#footnote[
     programmers (for marketing reasons). Eich, who preferred Scheme, had to create something that appeared
     Java-like but had the flexibility of prototype-based systems. The result was a language with quirks that
     still plague developers, but also with a flexibility that allowed it to become the language of the web.
-    In reality, JavaScript was perfectly fine for its intended usecase - as small glue for adding bits of
+    In reality, JavaScript was perfectly fine for its intended use case - as small glue for adding bits of
     interactivity to websites. Or in other words, small scale scripting. The problems really begin at scale.
 ]
 
@@ -5235,7 +5336,10 @@ that can send messages to each other, create new actors, and determine how to re
 the next message received. Unlike traditional OOP where method calls are synchronous,
 actors typically communicate asynchronously.
 
-The actor model was first described by Carl Hewitt in 1973 and has proven particularly valuable
+The actor model was first described by Carl Hewitt in 1973#footnote[
+    Carl Hewitt, Peter Bishop, and Richard Steiger, "A Universal Modular ACTOR Formalism for Artificial Intelligence"
+    (IJCAI 1973) is one of the foundational actor-model references.
+] and has proven particularly valuable
 for concurrent and distributed systems. Each actor maintains its own private state and can only
 affect other actors by sending them messages – there's no shared mutable state, which
 eliminates many concurrency hazards.
@@ -5388,7 +5492,22 @@ but not hierarchical sets of behaviors.
 Inheritance-based OOP does excel in certain domains. Graphical user interface frameworks often use
 inheritance effectively, with base classes for general concepts like "Window" or "Control" and
 specialized classes for specific types like "Button" or "Textbox." The key is to use inheritance
-when there's a genuine "is-a" relationship and the Liskov Substitution Principle holds (any instance
+when there's a genuine "is-a" relationship and the Liskov Substitution Principle holds#footnote[
+    The core idea is *behavioral substitutability*: if `S` is a subtype of `T`, code that relies on `T` should
+    continue to work correctly when given an `S`, without special-case handling. This is stricter than
+    "inherits from" at the syntax level.
+
+    Practical rule of thumb:
+    - A subtype must not strengthen preconditions expected by base-type callers.
+    - A subtype should preserve or strengthen postconditions of the base contract.
+    - Invariants visible through the base interface must remain valid.
+
+    Classic failure mode: modeling `Square` as a subtype of mutable `Rectangle`. If client code assumes it can
+    set width and height independently on `Rectangle`, that assumption breaks for `Square`, violating substitutability.
+
+    Formal reference: Barbara Liskov and Jeannette Wing, "A Behavioral Notion of Subtyping,"
+    *ACM TOPLAS* 16(6), 1994, doi:10.1145/197320.197383.
+] (any instance
 of a base class should be replaceable with an instance of a derived class without altering the
 program's correctness).
 
@@ -5404,6 +5523,11 @@ is to use these ideas where they make sense, rather than trying to force every p
 object-oriented mold. As the saying goes, when all you have is a hammer, everything looks like
 a nail. A skilled programmer has many tools and knows when each is appropriate.
 
+=== Takeaways
+- OOP has multiple forms: class-based inheritance, composition-first designs, and prototype systems.
+- Favor composition when inheritance hierarchies start coupling unrelated concerns.
+- Use OOP as a modeling tool, not as a universal solution template.
+
 == Functional Programming
 
 == Symbolic Programming
@@ -5413,6 +5537,287 @@ a nail. A skilled programmer has many tools and knows when each is appropriate.
 == Design patterns
 
 = Programming in the large
+
+== Why snippets can mislead
+
+I would like to now spend a bit of time on something that is, in my experience, one of the
+most misleading failure modes in language comparisons:
+
+you compare tiny snippets, conclude that "these languages are basically the same," and then six months later
+you are halfway through a real system, your architecture is calcified, your team is unhappy, and suddenly
+you discover that what looked similar locally is very different globally.
+
+Let's start with a deliberately tiny trio of examples that look quite similar on purpose.#footnote[
+    I am intentionally choosing a local transformation where all three languages have clean syntax.
+    This is exactly the point: local similarity is real, but incomplete.
+]
+
+Rust:
+
+```rs
+struct User {
+    name: String,
+    active: bool,
+}
+
+fn active_names(users: &[User]) -> Vec<&str> {
+    users.iter()
+         .filter(|user| user.active)
+         .map(|user| user.name.as_str())
+         .collect()
+}
+```
+
+C++:
+
+```cpp
+struct User {
+    std::string name;
+    bool active;
+};
+
+std::vector<std::string_view>
+active_names(const std::vector<User>& users) {
+    std::vector<std::string_view> out;
+    out.reserve(users.size());
+    for (const auto& user : users) {
+        if (user.active) {
+            out.push_back(user.name);
+        }
+    }
+    return out;
+}
+```
+
+Common Lisp:
+
+```lisp
+(defstruct user
+  (name   "" :type string)
+  (active nil :type boolean))
+
+(defun active-names (users)
+  (mapcar #'user-name
+          (remove-if-not #'user-active users)))
+```
+
+At a glance, these really do look similar. We have a collection, a predicate, a projection, a result.
+You are not crazy if you look at this and think: "Okay, sure, all of these can do this just fine."
+
+And yes, absolutely, they can.
+
+Now the trap: this comparison tells us almost nothing about programming in the large.
+It tells us that local expression is possible. It does not tell us how a 100-file system
+is likely to evolve under team pressure, production constraints, and years of maintenance.
+
+That is where language differences stop being mostly syntactic and start being architectural.
+
+=== Where divergence begins
+
+When systems get larger, we stop asking "Can I express this loop?" and start asking uglier questions:
+
+- Who owns this state, and who is allowed to mutate it?
+- Where is the boundary between public API and internal implementation?
+- How do failures cross layers of the program?
+- How are side effects contained, if at all?
+- What concurrency model are we implicitly signing up for?
+- How much mechanical pain does the toolchain impose during refactors?
+
+These questions almost never appear in toy snippets. They dominate real software.
+
+If we do not want to write full case studies here,#footnote[
+    Which would indeed explode the length of this chapter, and you would hate me for it.
+] we can still examine the pressure points with compact examples.
+
+=== Pressure point one: boundaries
+
+Rust gives you a built-in visibility vocabulary that people actually use pervasively:
+
+```rs
+mod repository;          // private module
+pub mod service;         // public module
+
+pub use service::UserService;
+pub(crate) use repository::UserRepository;
+```
+
+C++ gives you strong encapsulation tools too, but the boundary is often split across headers,
+translation units, namespaces, and build configuration:
+
+```cpp
+// user_service.hpp
+namespace app {
+class UserService {
+public:
+    std::vector<UserDto> active_users() const;
+private:
+    UserRepository repository_;
+};
+}
+```
+
+Common Lisp boundaries are usually expressed through packages and exported symbols:
+
+```lisp
+(defpackage :app/service
+  (:use :cl)
+  (:export :user-service-active-users))
+
+(in-package :app/service)
+```
+
+All of these are valid mechanisms. The key difference is not "which syntax is prettier" but
+"which constraints are naturally enforced by default in daily team work."
+
+=== Pressure point two: failure semantics
+
+At small scale, everybody can return something or throw something.
+At large scale, failure semantics become architecture.
+
+Rust tends to keep failure visible in types:
+
+```rs
+fn load_user(user_id: UserId) -> Result<User, UserError> {
+    // ...
+}
+```
+
+C++ often uses exceptions, though modern codebases may selectively adopt `std::expected`#footnote[
+    `std::expected` is standardized in C++23. Whether your project uses it consistently is a social and
+    tooling question as much as a language question.
+] or project-specific result wrappers:
+
+```cpp
+User load_user(UserId id);            // may throw
+// or:
+std::expected<User, UserError> load_user(UserId id);
+```
+
+Common Lisp gives you a sophisticated condition system with handlers and restarts:
+
+```lisp
+(handler-case
+    (load-user user-id)
+  (user-not-found (condition)
+    (declare (ignore condition))
+    nil))
+```
+
+Again, all three can represent failure, but they push teams toward different error architectures.
+
+=== Pressure point three: state and mutability
+
+A large system is not a function. It is a pile of state transitions with varying levels of regret.
+
+Rust's ownership and borrowing rules force you to think about aliasing and mutation at boundaries:
+
+```rs
+fn update_user(cache: &mut HashMap<UserId, User>, user: User) {
+    cache.insert(user.id, user);
+}
+```
+
+C++ gives you precise control, and also precise ways to hurt yourself if conventions are weak:
+
+```cpp
+void update_user(std::unordered_map<UserId, User>& cache, User user) {
+    cache[user.id] = std::move(user);
+}
+```
+
+Common Lisp is highly flexible; mutability is easy and expressive:
+
+```lisp
+(setf (gethash user-id cache) user)
+```
+
+That flexibility is often wonderful for exploratory programming. In larger systems, it means discipline has to come
+from design rules, review culture, and agreed conventions.#footnote[
+    This is not unique to Lisp. Every language leaves some discipline to teams.
+    The interesting question is where the language enforces discipline and where it does not.
+]
+
+=== Pressure point four: effects
+
+If business logic and side effects are tangled, large systems become difficult to test and reason about.
+
+Even in languages without "pure by default" semantics, we can still separate pure transformations from I/O, but
+some languages make that separation more natural than others:
+
+```lisp
+;; pure
+(defun user->dto (user)
+  (list :id (user-id user) :name (user-name user)))
+
+;; effectful
+(defun user-fetch-and-render (db user-id)
+  (aif (user-repository-find db user-id)
+       (render-json (user->dto it))
+       (render-404)))
+```
+
+This distinction, repeated consistently across modules, is one of the most practical differences between codebases that age well
+and codebases that slowly collapse into incident-driven archaeology.
+
+=== Pressure point five: concurrency model
+
+Concurrency is where snippet-level comparisons really break down.
+At snippet scale, "spawn a thread" looks trivial in almost every language.
+At architecture scale, memory model, synchronization defaults, and failure isolation rules will decide your fate.
+
+Rust nudges you toward message passing and data-race safety:
+
+```rs
+use std::sync::mpsc;
+use std::thread;
+
+let (tx, rx) = mpsc::channel();
+thread::spawn(move || tx.send("done").unwrap());
+let _ = rx.recv().unwrap();
+```
+
+C++ can do the same, and can also do many other patterns, including dangerous ones:
+
+```cpp
+std::mutex lock;
+std::thread worker([&] {
+    std::scoped_lock guard(lock);
+    shared_state++;
+});
+worker.join();
+```
+
+Common Lisp concurrency is implementation-specific in practice, usually via libraries and implementation facilities#footnote[
+    Common Lisp standardization predates modern threading expectations, so production code uses implementation and ecosystem choices.
+    That can be a strength (flexibility) or a weakness (portability friction), depending on your constraints.
+]:
+
+```lisp
+;; illustrative sketch, implementation-dependent
+(bt:make-thread
+ (lambda ()
+   (process-work-item item)))
+```
+
+Same "concept," very different architectural consequences.
+
+=== Tooling pressure is architecture pressure
+
+One thing that junior developers often underestimate is that the build tool, package manager, test runner,
+and module system are convenience features and architectural shaping forces at the same time.
+
+When a language ecosystem makes dependency hygiene, reproducible builds, and cross-module refactors easy,
+teams can afford to maintain cleaner boundaries. When the tooling makes that painful, teams start making
+shortcuts "just for now," which gradually become permanent.
+
+If you remember only one thing from this section, let it be this:
+the architecture you end up with is only partially a function of your brilliance.
+It is also a function of what your language and tooling make easy, hard, visible, and invisible.
+
+=== Takeaways
+- Similar snippets can hide drastically different architectural pressure.
+- Compare languages by boundary discipline, failure model, state model, effect handling, and concurrency defaults.
+- In large systems, tooling ergonomics are not cosmetic; they directly shape architecture.
 
 == Preparation and agility
 
